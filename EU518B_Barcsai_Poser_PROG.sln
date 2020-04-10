@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParentalControl.View", "Par
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParentalControl.Data", "ParentalControl.Data\ParentalControl.Data.csproj", "{C0D5A4E5-1033-4C4C-AA90-24D737E88C9E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParentalControl.Data.Tests", "ParentalControl.Data.Tests\ParentalControl.Data.Tests.csproj", "{8559BE44-AF5F-4F47-ABFC-99C78B4A8A89}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{C0D5A4E5-1033-4C4C-AA90-24D737E88C9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C0D5A4E5-1033-4C4C-AA90-24D737E88C9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C0D5A4E5-1033-4C4C-AA90-24D737E88C9E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8559BE44-AF5F-4F47-ABFC-99C78B4A8A89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8559BE44-AF5F-4F47-ABFC-99C78B4A8A89}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8559BE44-AF5F-4F47-ABFC-99C78B4A8A89}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8559BE44-AF5F-4F47-ABFC-99C78B4A8A89}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

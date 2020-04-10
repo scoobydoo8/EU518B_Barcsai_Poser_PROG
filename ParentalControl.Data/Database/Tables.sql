@@ -5,7 +5,7 @@ DROP TABLE IF EXISTS [dbo].[ProgramSettings];
 DROP TABLE IF EXISTS [dbo].[Users];
 
 CREATE TABLE [dbo].[Users] (
-	[ID]					INT				NOT NULL,
+	[ID]					INT				NOT NULL	IDENTITY,
 	[Username]				VARCHAR (127)	NOT NULL,
 	[Password]				VARCHAR (127)	NOT NULL,
 	[SecurityQuestion]		VARCHAR (127)	NOT NULL,
@@ -15,7 +15,7 @@ CREATE TABLE [dbo].[Users] (
 );
 
 CREATE TABLE [dbo].[ProgramSettings] (
-	[ID]					INT				NOT NULL,
+	[ID]					INT				NOT NULL	IDENTITY,
 	[UserID]				INT				NOT NULL,
 	[Name]					VARCHAR (63)	NOT NULL,
 	[Path]					VARCHAR (255)	NOT NULL,
@@ -33,7 +33,7 @@ CREATE TABLE [dbo].[ProgramSettings] (
 );
 
 CREATE TABLE [dbo].[TimeSettings] (
-	[ID]					INT				NOT NULL,
+	[ID]					INT				NOT NULL	IDENTITY,
 	[UserID]				INT				NOT NULL,
 	[Occasional]			BIT				NOT NULL,
 	[Minutes]				INT				NOT NULL,
@@ -46,14 +46,14 @@ CREATE TABLE [dbo].[TimeSettings] (
 );
 
 CREATE TABLE [dbo].[Keywords] (
-	[ID]					INT				NOT NULL,
+	[ID]					INT				NOT NULL	IDENTITY,
 	[Name]					VARCHAR (255)	NOT NULL,
 
 	PRIMARY KEY				CLUSTERED		([ID] ASC)
 );
 
 CREATE TABLE [dbo].[WebSettings] (
-	[ID]					INT				NOT NULL,
+	[ID]					INT				NOT NULL	IDENTITY,
 	[UserID]				INT				NOT NULL,
 	[KeywordID]				INT				NOT NULL,
 
