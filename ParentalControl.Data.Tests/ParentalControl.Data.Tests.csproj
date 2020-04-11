@@ -91,6 +91,10 @@
       <Project>{c0d5a4e5-1033-4c4c-aa90-24d737e88c9e}</Project>
       <Name>ParentalControl.Data</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ParentalControl.Interface\ParentalControl.Interface.csproj">
+      <Project>{11520837-c058-45d8-ba21-c87678e2f6f7}</Project>
+      <Name>ParentalControl.Interface</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.118\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
