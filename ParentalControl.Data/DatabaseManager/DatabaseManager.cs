@@ -19,7 +19,6 @@ namespace ParentalControl.Data
     {
         private static DatabaseManager databaseManager = null;
         private ParentalControlEntities entities;
-        private DbContextTransaction transaction;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DatabaseManager"/> class.
@@ -27,7 +26,6 @@ namespace ParentalControl.Data
         private DatabaseManager()
         {
             this.entities = new ParentalControlEntities();
-            this.transaction = null;
         }
 
         /// <summary>
@@ -45,49 +43,23 @@ namespace ParentalControl.Data
         }
 
         /// <summary>
-        /// Prepare transaction.
-        /// </summary>
-        public void BeginTransaction()
-        {
-            this.transaction = this.entities.Database.BeginTransaction();
-        }
-
-        /// <summary>
-        /// Commit changes.
-        /// </summary>
-        public void Commit()
-        {
-            this.transaction.Commit();
-            this.transaction.Dispose();
-            this.transaction = null;
-        }
-
-        /// <summary>
-        /// Rollback changes.
-        /// </summary>
-        public void Rollback()
-        {
-            this.transaction.Rollback();
-            this.transaction.Dispose();
-            this.transaction = null;
-        }
-
-        /// <summary>
-        /// This should be use for create, update and delete transacions.
+        /// This must be used for create, update and delete transacions.
         /// </summary>
         /// <param name="action">Transaction action.</param>
         public void Transaction(Action action)
         {
-            try
+            using (var transaction = this.entities.Database.BeginTransaction())
             {
-                this.BeginTransaction();
-                action();
-                this.entities.SaveChanges();
-                this.Commit();
-            }
-            catch (Exception)
-            {
-                this.Rollback();
+                try
+                {
+                    action();
+                    this.entities.SaveChanges();
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                }
             }
         }
 
