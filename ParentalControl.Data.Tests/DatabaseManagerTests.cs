@@ -17,12 +17,18 @@ namespace ParentalControl.Data.Tests
     using NUnit.Framework;
     using ParentalControl.Data.Database;
 
+    /// <summary>
+    /// DatabaseManagerTests class.
+    /// </summary>
     [TestFixture]
     public class DatabaseManagerTests
     {
         private DatabaseManager databaseManager;
         private Mock<ParentalControlEntities> mockParentalControlEntities;
 
+        /// <summary>
+        /// Initialize tests.
+        /// </summary>
         [SetUp]
         public void Init()
         {
@@ -65,9 +71,7 @@ namespace ParentalControl.Data.Tests
             }
 
             Type t = typeof(T);
-
             ConstructorInfo ci = t.GetConstructor(BindingFlags.Instance | BindingFlags.NonPublic, null, paramTypes, null);
-
             return (T)ci.Invoke(paramValues);
         }
 

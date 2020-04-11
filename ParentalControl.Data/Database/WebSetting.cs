@@ -12,19 +12,49 @@ namespace ParentalControl.Data.Database
     using System;
     using System.Collections.Generic;
     
+    /// <summary>
+    /// WebSettings class.
+    /// </summary>
     public partial class WebSetting
     {
         internal WebSetting(int userID, int keywordID)
         {
-            UserID = userID;
-            KeywordID = keywordID;
+            this.UserID = userID;
+            this.KeywordID = keywordID;
         }
 
+        /// <summary>
+        /// ID.
+        /// </summary>
         public int ID { get; set; }
+
+        /// <summary>
+        /// UserID.
+        /// </summary>
         public int UserID { get; set; }
+
+        /// <summary>
+        /// KeywordID.
+        /// </summary>
         public int KeywordID { get; set; }
-    
+
+        /// <summary>
+        /// Keyword.
+        /// </summary>
         public virtual Keyword Keyword { get; set; }
+
+        /// <summary>
+        /// User.
+        /// </summary>
         public virtual User User { get; set; }
+
+        /// <summary>
+        /// To string.
+        /// </summary>
+        /// <returns>String.</returns>
+        public override string ToString()
+        {
+            return string.Format("{0} - {1}", this.UserID, this.KeywordID);
+        }
     }
 }

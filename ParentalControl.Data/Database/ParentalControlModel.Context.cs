@@ -12,23 +12,52 @@ namespace ParentalControl.Data.Database
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
-    
+
+    /// <summary>
+    /// ParentalControlEntities class.
+    /// </summary>
     public partial class ParentalControlEntities : DbContext
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ParentalControlEntities"/> class.
+        /// </summary>
         public ParentalControlEntities()
             : base("name=ParentalControlEntities")
         {
         }
-    
+
+        /// <summary>
+        /// On model creating.
+        /// </summary>
+        /// <param name="modelBuilder">Model builder.</param>
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             throw new UnintentionalCodeFirstException();
         }
-    
+        
+        /// <summary>
+        /// Keywords.
+        /// </summary>
         public virtual DbSet<Keyword> Keywords { get; set; }
+
+        /// <summary>
+        /// Program settings.
+        /// </summary>
         public virtual DbSet<ProgramSetting> ProgramSettings { get; set; }
+
+        /// <summary>
+        /// Time settings.
+        /// </summary>
         public virtual DbSet<TimeSetting> TimeSettings { get; set; }
+
+        /// <summary>
+        /// Users.
+        /// </summary>
         public virtual DbSet<User> Users { get; set; }
+
+        /// <summary>
+        /// Web settings.
+        /// </summary>
         public virtual DbSet<WebSetting> WebSettings { get; set; }
     }
 }
