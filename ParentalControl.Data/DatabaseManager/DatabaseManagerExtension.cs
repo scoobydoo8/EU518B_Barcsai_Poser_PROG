@@ -1,12 +1,16 @@
-﻿namespace ParentalControl.Data
+﻿// <copyright file="DatabaseManagerExtension.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+namespace ParentalControl.Data
 {
-    using ParentalControl.Data.Database;
     using System;
     using System.Collections.Generic;
     using System.Data.Entity;
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
+    using ParentalControl.Data.Database;
 
     /// <summary>
     /// Database Extension class.
@@ -19,6 +23,7 @@
         /// <typeparam name="T">T.</typeparam>
         /// <param name="table">Table.</param>
         /// <param name="item">Item.</param>
+        /// <exception cref="ArgumentNullException">If table or item is null.</exception>
         public static void Create<T>(this DbSet<T> table, T item)
             where T : class
         {
@@ -39,6 +44,7 @@
         /// <param name="table">Table.</param>
         /// <param name="condition">Condition.</param>
         /// <returns>List.</returns>
+        /// <exception cref="ArgumentNullException">If table is null.</exception>
         public static List<T> Read<T>(this DbSet<T> table, Func<T, bool> condition)
             where T : class
         {
@@ -50,9 +56,10 @@
         /// </summary>
         /// <typeparam name="T">T.</typeparam>
         /// <param name="table">Table.</param>
-        /// <param name="condition">Condition.</param>
         /// <param name="action">Action.</param>
-        public static void Update<T>(this DbSet<T> table, Func<T, bool> condition, Action<T> action)
+        /// <param name="condition">Condition.</param>
+        /// <exception cref="ArgumentNullException">If table or action is null.</exception>
+        public static void Update<T>(this DbSet<T> table, Action<T> action, Func<T, bool> condition)
             where T : class
         {
             if (action != null)
@@ -74,6 +81,9 @@
         /// <typeparam name="T">T.</typeparam>
         /// <param name="table">Table.</param>
         /// <param name="condition">Condition.</param>
+        /// <exception cref="ArgumentNullException">If table is null.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">If Where returns out of range..</exception>
+        /// <exception cref="ArgumentException">Because of RemoveRange.</exception>
         public static void Delete<T>(this DbSet<T> table, Func<T, bool> condition)
             where T : class
         {
