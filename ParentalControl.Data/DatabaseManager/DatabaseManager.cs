@@ -11,11 +11,13 @@ namespace ParentalControl.Data
     using System.Text;
     using System.Threading.Tasks;
     using ParentalControl.Data.Database;
+    using ParentalControl.Interface.Database;
+    using ParentalControl.Interface.DatabaseManager;
 
     /// <summary>
     /// DatabaseManager class.
     /// </summary>
-    public class DatabaseManager
+    public class DatabaseManager : IDatabaseManager
     {
         private static DatabaseManager databaseManager = null;
         private ParentalControlEntities entities;
@@ -284,6 +286,116 @@ namespace ParentalControl.Data
             }
 
             this.entities.Keywords.Delete(condition);
+        }
+
+        /// <inheritdoc/>
+        public List<IUser> ReadUsers(Func<IUser, bool> condition = null)
+        {
+            Func<User, bool> userCondition = x => condition == null || condition(x);
+            return this.ReadUsers(userCondition).ToList<IUser>();
+        }
+
+        /// <inheritdoc/>
+        public List<IProgramSetting> ReadProgramSettings(Func<IProgramSetting, bool> condition = null)
+        {
+            Func<ProgramSetting, bool> programSettingCondition = x => condition == null || condition(x);
+            return this.ReadProgramSettings(programSettingCondition).ToList<IProgramSetting>();
+        }
+
+        /// <inheritdoc/>
+        public List<ITimeSetting> ReadTimeSettings(Func<ITimeSetting, bool> condition = null)
+        {
+            Func<TimeSetting, bool> timeSettingCondition = x => condition == null || condition(x);
+            return this.ReadTimeSettings(timeSettingCondition).ToList<ITimeSetting>();
+        }
+
+        /// <inheritdoc/>
+        public List<IWebSetting> ReadWebSettings(Func<IWebSetting, bool> condition = null)
+        {
+            Func<WebSetting, bool> webSettingCondition = x => condition == null || condition(x);
+            return this.ReadWebSettings(webSettingCondition).ToList<IWebSetting>();
+        }
+
+        /// <inheritdoc/>
+        public List<IKeyword> ReadKeywords(Func<IKeyword, bool> condition = null)
+        {
+            Func<Keyword, bool> keywordCondition = x => condition == null || condition(x);
+            return this.ReadKeywords(keywordCondition).ToList<IKeyword>();
+        }
+
+        /// <inheritdoc/>
+        public void UpdateUsers(Action<IUser> action, Func<IUser, bool> condition = null)
+        {
+            Action<User> userAction = x => action(x);
+            Func<User, bool> userCondition = x => condition == null || condition(x);
+            this.UpdateUsers(userAction, userCondition);
+        }
+
+        /// <inheritdoc/>
+        public void UpdateProgramSettings(Action<IProgramSetting> action, Func<IProgramSetting, bool> condition = null)
+        {
+            Action<ProgramSetting> programSettingAction = x => action(x);
+            Func<ProgramSetting, bool> programSettingCondition = x => condition == null || condition(x);
+            this.UpdateProgramSettings(programSettingAction, programSettingCondition);
+        }
+
+        /// <inheritdoc/>
+        public void UpdateTimeSettings(Action<ITimeSetting> action, Func<ITimeSetting, bool> condition = null)
+        {
+            Action<TimeSetting> timeSettingAction = x => action(x);
+            Func<TimeSetting, bool> timeSettingCondition = x => condition == null || condition(x);
+            this.UpdateTimeSettings(timeSettingAction, timeSettingCondition);
+        }
+
+        /// <inheritdoc/>
+        public void UpdateWebSettings(Action<IWebSetting> action, Func<IWebSetting, bool> condition = null)
+        {
+            Action<WebSetting> webSettingAction = x => action(x);
+            Func<WebSetting, bool> webSettingCondition = x => condition == null || condition(x);
+            this.UpdateWebSettings(webSettingAction, webSettingCondition);
+        }
+
+        /// <inheritdoc/>
+        public void UpdateKeywords(Action<IKeyword> action, Func<IKeyword, bool> condition = null)
+        {
+            Action<Keyword> keywordAction = x => action(x);
+            Func<Keyword, bool> keywordCondition = x => condition == null || condition(x);
+            this.UpdateKeywords(keywordAction, keywordCondition);
+        }
+
+        /// <inheritdoc/>
+        public void DeleteUsers(Func<IUser, bool> condition = null)
+        {
+            Func<User, bool> userCondition = x => condition == null || condition(x);
+            this.DeleteUsers(userCondition);
+        }
+
+        /// <inheritdoc/>
+        public void DeleteProgramSettings(Func<IProgramSetting, bool> condition = null)
+        {
+            Func<ProgramSetting, bool> programSettingCondition = x => condition == null || condition(x);
+            this.DeleteProgramSettings(programSettingCondition);
+        }
+
+        /// <inheritdoc/>
+        public void DeleteTimeSettings(Func<ITimeSetting, bool> condition = null)
+        {
+            Func<TimeSetting, bool> timeSettingCondition = x => condition == null || condition(x);
+            this.DeleteTimeSettings(timeSettingCondition);
+        }
+
+        /// <inheritdoc/>
+        public void DeleteWebSettings(Func<IWebSetting, bool> condition = null)
+        {
+            Func<WebSetting, bool> webSettingCondition = x => condition == null || condition(x);
+            this.DeleteWebSettings(webSettingCondition);
+        }
+
+        /// <inheritdoc/>
+        public void DeleteKeywords(Func<IKeyword, bool> condition = null)
+        {
+            Func<Keyword, bool> keywordCondition = x => condition == null || condition(x);
+            this.DeleteKeywords(keywordCondition);
         }
     }
 }

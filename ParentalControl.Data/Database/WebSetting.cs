@@ -9,13 +9,14 @@
 
 namespace ParentalControl.Data.Database
 {
+    using ParentalControl.Interface.Database;
     using System;
     using System.Collections.Generic;
     
     /// <summary>
     /// WebSettings class.
     /// </summary>
-    public partial class WebSetting
+    public partial class WebSetting : IWebSetting
     {
         internal WebSetting(int userID, int keywordID)
         {

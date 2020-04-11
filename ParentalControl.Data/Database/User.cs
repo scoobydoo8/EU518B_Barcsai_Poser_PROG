@@ -9,13 +9,14 @@
 
 namespace ParentalControl.Data.Database
 {
+    using ParentalControl.Interface.Database;
     using System;
     using System.Collections.Generic;
     
     /// <summary>
     /// User class.
     /// </summary>
-    public partial class User
+    public partial class User : IUser
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         private User()

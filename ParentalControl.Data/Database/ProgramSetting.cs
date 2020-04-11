@@ -9,13 +9,14 @@
 
 namespace ParentalControl.Data.Database
 {
+    using ParentalControl.Interface.Database;
     using System;
     using System.Collections.Generic;
     
     /// <summary>
     /// Program setting class.
     /// </summary>
-    public partial class ProgramSetting
+    public partial class ProgramSetting : IProgramSetting
     {
         internal ProgramSetting(int userID, string name, string path, bool occasional, int minutes, bool repeat, int pause, int quantity, bool orderly, TimeSpan fromTime, TimeSpan toTime)
         {

@@ -9,13 +9,14 @@
 
 namespace ParentalControl.Data.Database
 {
+    using ParentalControl.Interface.Database;
     using System;
     using System.Collections.Generic;
     
     /// <summary>
     /// TimeSetting class.
     /// </summary>
-    public partial class TimeSetting
+    public partial class TimeSetting : ITimeSetting
     {
         internal TimeSetting(int userID, bool occasional, int minutes, bool orderly, TimeSpan fromTime, TimeSpan toTime)
         {

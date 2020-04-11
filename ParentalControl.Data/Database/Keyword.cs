@@ -10,13 +10,14 @@
 
 namespace ParentalControl.Data.Database
 {
+    using ParentalControl.Interface.Database;
     using System;
     using System.Collections.Generic;
 
     /// <summary>
     /// Keyword class.
     /// </summary>
-    public partial class Keyword
+    public partial class Keyword : IKeyword
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         private Keyword()

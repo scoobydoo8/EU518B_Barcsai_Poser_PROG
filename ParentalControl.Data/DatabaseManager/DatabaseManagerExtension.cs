@@ -15,7 +15,7 @@ namespace ParentalControl.Data
     /// <summary>
     /// Database Extension class.
     /// </summary>
-    public static class DatabaseManagerExtension
+    internal static class DatabaseManagerExtension
     {
         /// <summary>
         /// Create.
@@ -24,7 +24,7 @@ namespace ParentalControl.Data
         /// <param name="table">Table.</param>
         /// <param name="item">Item.</param>
         /// <exception cref="ArgumentNullException">If table or item is null.</exception>
-        public static void Create<T>(this DbSet<T> table, T item)
+        internal static void Create<T>(this DbSet<T> table, T item)
             where T : class
         {
             if (item != null)
@@ -45,7 +45,7 @@ namespace ParentalControl.Data
         /// <param name="condition">Condition.</param>
         /// <returns>List.</returns>
         /// <exception cref="ArgumentNullException">If table is null.</exception>
-        public static List<T> Read<T>(this DbSet<T> table, Func<T, bool> condition)
+        internal static List<T> Read<T>(this DbSet<T> table, Func<T, bool> condition)
             where T : class
         {
             return table.Where(x => condition == null || condition(x)).ToList();
@@ -59,7 +59,7 @@ namespace ParentalControl.Data
         /// <param name="action">Action.</param>
         /// <param name="condition">Condition.</param>
         /// <exception cref="ArgumentNullException">If table or action is null.</exception>
-        public static void Update<T>(this DbSet<T> table, Action<T> action, Func<T, bool> condition)
+        internal static void Update<T>(this DbSet<T> table, Action<T> action, Func<T, bool> condition)
             where T : class
         {
             if (action != null)
@@ -84,7 +84,7 @@ namespace ParentalControl.Data
         /// <exception cref="ArgumentNullException">If table is null.</exception>
         /// <exception cref="ArgumentOutOfRangeException">If Where returns out of range..</exception>
         /// <exception cref="ArgumentException">Because of RemoveRange.</exception>
-        public static void Delete<T>(this DbSet<T> table, Func<T, bool> condition)
+        internal static void Delete<T>(this DbSet<T> table, Func<T, bool> condition)
             where T : class
         {
             table.RemoveRange(table.Where(x => condition == null || condition(x)));
