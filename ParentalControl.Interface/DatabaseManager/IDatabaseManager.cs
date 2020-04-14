@@ -23,15 +23,6 @@ namespace ParentalControl.Interface.DatabaseManager
         void Transaction(Action action);
 
         /// <summary>
-        /// Create user.
-        /// </summary>
-        /// <param name="username">Username.</param>
-        /// <param name="password">Password.</param>
-        /// <param name="securityQuestion">Security question.</param>
-        /// <param name="securityAnswer">Security answer.</param>
-        void CreateUser(string username, string password, string securityQuestion, string securityAnswer);
-
-        /// <summary>
         /// Create program setting.
         /// </summary>
         /// <param name="userID">UserID.</param>
