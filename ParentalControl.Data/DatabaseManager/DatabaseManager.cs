@@ -72,61 +72,63 @@ namespace ParentalControl.Data
         /// <param name="password">Password.</param>
         /// <param name="securityQuestion">Security question.</param>
         /// <param name="securityAnswer">Security answer.</param>
-        public void CreateUser(string username, string password, string securityQuestion, string securityAnswer)
+        /// <returns>Success.</returns>
+        public bool CreateUser(string username, string password, string securityQuestion, string securityAnswer)
         {
-            this.entities.Users.Create(new User(username, password, securityQuestion, securityAnswer));
+            if (!this.ReadUsers(x => x.Username == username).Any())
+            {
+                this.entities.Users.Create(new User(username, password, securityQuestion, securityAnswer));
+                return true;
+            }
+
+            return false;
         }
 
-        /// <summary>
-        /// Create program setting.
-        /// </summary>
-        /// <param name="userID">UserID.</param>
-        /// <param name="name">Name.</param>
-        /// <param name="path">Path.</param>
-        /// <param name="occasional">Occasional.</param>
-        /// <param name="minutes">Minutes.</param>
-        /// <param name="repeat">Repeat.</param>
-        /// <param name="pause">Puase.</param>
-        /// <param name="quantity">Quantity.</param>
-        /// <param name="orderly">Orderly.</param>
-        /// <param name="fromTime">From time.</param>
-        /// <param name="toTime">To time.</param>
-        public void CreateProgramSetting(int userID, string name, string path, bool occasional = default, int minutes = default, bool repeat = default, int pause = default, int quantity = default, bool orderly = default, TimeSpan fromTime = default, TimeSpan toTime = default)
+        /// <inheritdoc/>
+        public bool CreateProgramLimitation(int userID, string name, string path, bool occasional = default, int minutes = default, bool repeat = default, int pause = default, int quantity = default, bool orderly = default, TimeSpan fromTime = default, TimeSpan toTime = default)
         {
-            this.entities.ProgramSettings.Create(new ProgramSetting(userID, name, path, occasional, minutes, repeat, pause, quantity, orderly, fromTime, toTime));
+            var user = this.ReadUsers(x => x.ID == userID).FirstOrDefault();
+            if (user != null && !this.ReadProgramLimitations(x => x.Path == path).Any())
+            {
+                if (user.Orderly && orderly)
+                {
+                    if (user.FromTime > fromTime)
+                    {
+                        fromTime = user.FromTime;
+                    }
+
+                    if (user.ToTime < toTime)
+                    {
+                        toTime = user.ToTime;
+                    }
+                }
+
+                this.entities.ProgramLimitations.Create(new ProgramLimitation(userID, name, path, occasional, minutes, repeat, pause, quantity, orderly, fromTime, toTime));
+                return true;
+            }
+
+            return false;
         }
 
-        /// <summary>
-        /// Create time setting.
-        /// </summary>
-        /// <param name="userID">UserID.</param>
-        /// <param name="occasional">Occasional.</param>
-        /// <param name="minutes">Minutes.</param>
-        /// <param name="orderly">Orderly.</param>
-        /// <param name="fromTime">From time.</param>
-        /// <param name="toTime">To time.</param>
-        public void CreateTimeSetting(int userID, bool occasional = default, int minutes = default, bool orderly = default, TimeSpan fromTime = default, TimeSpan toTime = default)
+        /// <inheritdoc/>
+        public void CreateWebLimitation(int userID, int keywordID)
         {
-            this.entities.TimeSettings.Create(new TimeSetting(userID, occasional, minutes, orderly, fromTime, toTime));
+            if (this.ReadUsers(x => x.ID == userID).Any() && this.ReadKeywords(x => x.ID == keywordID).Any())
+            {
+                this.entities.WebLimitations.Create(new WebLimitation(userID, keywordID));
+            }
         }
 
-        /// <summary>
-        /// Create web setting.
-        /// </summary>
-        /// <param name="userID">UserID.</param>
-        /// <param name="keywordID">KeywordID.</param>
-        public void CreateWebSetting(int userID, int keywordID)
+        /// <inheritdoc/>
+        public bool CreateKeyword(string name)
         {
-            this.entities.WebSettings.Create(new WebSetting(userID, keywordID));
-        }
+            if (!this.ReadKeywords(x => x.Name == name).Any())
+            {
+                this.entities.Keywords.Create(new Keyword(name));
+                return true;
+            }
 
-        /// <summary>
-        /// Create keyword.
-        /// </summary>
-        /// <param name="name">Name.</param>
-        public void CreateKeyword(string name)
-        {
-            this.entities.Keywords.Create(new Keyword(name));
+            return false;
         }
 
         /// <summary>
@@ -139,34 +141,42 @@ namespace ParentalControl.Data
             return this.entities.Users.Read(condition);
         }
 
-        /// <summary>
-        /// Read program setting.
-        /// </summary>
-        /// <param name="condition">Condition.</param>
-        /// <returns>List.</returns>
-        public List<ProgramSetting> ReadProgramSettings(Func<ProgramSetting, bool> condition = null)
+        /// <inheritdoc/>
+        public List<IUser> ReadUsers(Func<IUser, bool> condition = null)
         {
-            return this.entities.ProgramSettings.Read(condition);
+            return this.ReadUsers(condition == null ? null : (Func<User, bool>)condition).ToList<IUser>();
         }
 
         /// <summary>
-        /// Read time setting.
+        /// Read program limitations.
         /// </summary>
         /// <param name="condition">Condition.</param>
         /// <returns>List.</returns>
-        public List<TimeSetting> ReadTimeSettings(Func<TimeSetting, bool> condition = null)
+        public List<ProgramLimitation> ReadProgramLimitations(Func<ProgramLimitation, bool> condition = null)
         {
-            return this.entities.TimeSettings.Read(condition);
+            return this.entities.ProgramLimitations.Read(condition);
+        }
+
+        /// <inheritdoc/>
+        public List<IProgramLimitation> ReadProgramLimitations(Func<IProgramLimitation, bool> condition = null)
+        {
+            return this.ReadProgramLimitations(condition == null ? null : (Func<ProgramLimitation, bool>)condition).ToList<IProgramLimitation>();
         }
 
         /// <summary>
-        /// Read web setting.
+        /// Read web limitations.
         /// </summary>
         /// <param name="condition">Condition.</param>
         /// <returns>List.</returns>
-        public List<WebSetting> ReadWebSettings(Func<WebSetting, bool> condition = null)
+        public List<WebLimitation> ReadWebLimitations(Func<WebLimitation, bool> condition = null)
         {
-            return this.entities.WebSettings.Read(condition);
+            return this.entities.WebLimitations.Read(condition);
+        }
+
+        /// <inheritdoc/>
+        public List<IWebLimitation> ReadWebLimitations(Func<IWebLimitation, bool> condition = null)
+        {
+            return this.ReadWebLimitations(condition == null ? null : (Func<WebLimitation, bool>)condition).ToList<IWebLimitation>();
         }
 
         /// <summary>
@@ -179,6 +189,12 @@ namespace ParentalControl.Data
             return this.entities.Keywords.Read(condition);
         }
 
+        /// <inheritdoc/>
+        public List<IKeyword> ReadKeywords(Func<IKeyword, bool> condition = null)
+        {
+            return this.ReadKeywords(condition == null ? null : (Func<Keyword, bool>)condition).ToList<IKeyword>();
+        }
+
         /// <summary>
         /// Update users.
         /// </summary>
@@ -189,34 +205,26 @@ namespace ParentalControl.Data
             this.entities.Users.Update(action, condition);
         }
 
-        /// <summary>
-        /// Update program settings.
-        /// </summary>
-        /// <param name="action">Action.</param>
-        /// <param name="condition">Condition.</param>
-        public void UpdateProgramSettings(Action<ProgramSetting> action, Func<ProgramSetting, bool> condition = null)
+        /// <inheritdoc/>
+        public void UpdateUsers(Action<IUser> action, Func<IUser, bool> condition = null)
         {
-            this.entities.ProgramSettings.Update(action, condition);
+            this.UpdateUsers(action == null ? null : (Action<User>)action, condition == null ? null : (Func<User, bool>)condition);
         }
 
         /// <summary>
-        /// Update time settings.
+        /// Update program limitations.
         /// </summary>
         /// <param name="action">Action.</param>
         /// <param name="condition">Condition.</param>
-        public void UpdateTimeSettings(Action<TimeSetting> action, Func<TimeSetting, bool> condition = null)
+        public void UpdateProgramLimitations(Action<ProgramLimitation> action, Func<ProgramLimitation, bool> condition = null)
         {
-            this.entities.TimeSettings.Update(action, condition);
+            this.entities.ProgramLimitations.Update(action, condition);
         }
 
-        /// <summary>
-        /// Update web settings.
-        /// </summary>
-        /// <param name="action">Action.</param>
-        /// <param name="condition">Condition.</param>
-        public void UpdateWebSettings(Action<WebSetting> action, Func<WebSetting, bool> condition = null)
+        /// <inheritdoc/>
+        public void UpdateProgramLimitations(Action<IProgramLimitation> action, Func<IProgramLimitation, bool> condition = null)
         {
-            this.entities.WebSettings.Update(action, condition);
+            this.UpdateProgramLimitations(action == null ? null : (Action<ProgramLimitation>)action, condition == null ? null : (Func<ProgramLimitation, bool>)condition);
         }
 
         /// <summary>
@@ -229,6 +237,12 @@ namespace ParentalControl.Data
             this.entities.Keywords.Update(action, condition);
         }
 
+        /// <inheritdoc/>
+        public void UpdateKeywords(Action<IKeyword> action, Func<IKeyword, bool> condition = null)
+        {
+            this.UpdateKeywords(action == null ? null : (Action<Keyword>)action, condition == null ? null : (Func<Keyword, bool>)condition);
+        }
+
         /// <summary>
         /// Delete users.
         /// </summary>
@@ -238,39 +252,47 @@ namespace ParentalControl.Data
             var users = this.ReadUsers(condition);
             foreach (var user in users)
             {
-                this.DeleteProgramSettings(x => x.UserID == user.ID);
-                this.DeleteTimeSettings(x => x.UserID == user.ID);
-                this.DeleteWebSettings(x => x.UserID == user.ID);
+                this.DeleteProgramLimitations((ProgramLimitation x) => x.UserID == user.ID);
+                this.DeleteWebLimitations((WebLimitation x) => x.UserID == user.ID);
             }
 
             this.entities.Users.Delete(condition);
         }
 
-        /// <summary>
-        /// Delete program settings.
-        /// </summary>
-        /// <param name="condition">Condition.</param>
-        public void DeleteProgramSettings(Func<ProgramSetting, bool> condition = null)
+        /// <inheritdoc/>
+        public void DeleteUsers(Func<IUser, bool> condition = null)
         {
-            this.entities.ProgramSettings.Delete(condition);
+            this.DeleteUsers(condition == null ? null : (Func<User, bool>)condition);
         }
 
         /// <summary>
-        /// Delete time settings.
+        /// Delete program limitations.
         /// </summary>
         /// <param name="condition">Condition.</param>
-        public void DeleteTimeSettings(Func<TimeSetting, bool> condition = null)
+        public void DeleteProgramLimitations(Func<ProgramLimitation, bool> condition = null)
         {
-            this.entities.TimeSettings.Delete(condition);
+            this.entities.ProgramLimitations.Delete(condition);
+        }
+
+        /// <inheritdoc/>
+        public void DeleteProgramLimitations(Func<IProgramLimitation, bool> condition = null)
+        {
+            this.DeleteProgramLimitations(condition == null ? null : (Func<ProgramLimitation, bool>)condition);
         }
 
         /// <summary>
-        /// Delete web settings.
+        /// Delete web limitations.
         /// </summary>
         /// <param name="condition">Condition.</param>
-        public void DeleteWebSettings(Func<WebSetting, bool> condition = null)
+        public void DeleteWebLimitations(Func<WebLimitation, bool> condition = null)
         {
-            this.entities.WebSettings.Delete(condition);
+            this.entities.WebLimitations.Delete(condition);
+        }
+
+        /// <inheritdoc/>
+        public void DeleteWebLimitations(Func<IWebLimitation, bool> condition = null)
+        {
+            this.DeleteWebLimitations(condition == null ? null : (Func<WebLimitation, bool>)condition);
         }
 
         /// <summary>
@@ -282,120 +304,16 @@ namespace ParentalControl.Data
             var keywords = this.ReadKeywords(condition);
             foreach (var keyword in keywords)
             {
-                this.DeleteWebSettings(x => x.KeywordID == keyword.ID);
+                this.DeleteWebLimitations(x => x.KeywordID == keyword.ID);
             }
 
             this.entities.Keywords.Delete(condition);
         }
 
         /// <inheritdoc/>
-        public List<IUser> ReadUsers(Func<IUser, bool> condition = null)
-        {
-            Func<User, bool> userCondition = x => condition == null || condition(x);
-            return this.ReadUsers(userCondition).ToList<IUser>();
-        }
-
-        /// <inheritdoc/>
-        public List<IProgramSetting> ReadProgramSettings(Func<IProgramSetting, bool> condition = null)
-        {
-            Func<ProgramSetting, bool> programSettingCondition = x => condition == null || condition(x);
-            return this.ReadProgramSettings(programSettingCondition).ToList<IProgramSetting>();
-        }
-
-        /// <inheritdoc/>
-        public List<ITimeSetting> ReadTimeSettings(Func<ITimeSetting, bool> condition = null)
-        {
-            Func<TimeSetting, bool> timeSettingCondition = x => condition == null || condition(x);
-            return this.ReadTimeSettings(timeSettingCondition).ToList<ITimeSetting>();
-        }
-
-        /// <inheritdoc/>
-        public List<IWebSetting> ReadWebSettings(Func<IWebSetting, bool> condition = null)
-        {
-            Func<WebSetting, bool> webSettingCondition = x => condition == null || condition(x);
-            return this.ReadWebSettings(webSettingCondition).ToList<IWebSetting>();
-        }
-
-        /// <inheritdoc/>
-        public List<IKeyword> ReadKeywords(Func<IKeyword, bool> condition = null)
-        {
-            Func<Keyword, bool> keywordCondition = x => condition == null || condition(x);
-            return this.ReadKeywords(keywordCondition).ToList<IKeyword>();
-        }
-
-        /// <inheritdoc/>
-        public void UpdateUsers(Action<IUser> action, Func<IUser, bool> condition = null)
-        {
-            Action<User> userAction = x => action(x);
-            Func<User, bool> userCondition = x => condition == null || condition(x);
-            this.UpdateUsers(userAction, userCondition);
-        }
-
-        /// <inheritdoc/>
-        public void UpdateProgramSettings(Action<IProgramSetting> action, Func<IProgramSetting, bool> condition = null)
-        {
-            Action<ProgramSetting> programSettingAction = x => action(x);
-            Func<ProgramSetting, bool> programSettingCondition = x => condition == null || condition(x);
-            this.UpdateProgramSettings(programSettingAction, programSettingCondition);
-        }
-
-        /// <inheritdoc/>
-        public void UpdateTimeSettings(Action<ITimeSetting> action, Func<ITimeSetting, bool> condition = null)
-        {
-            Action<TimeSetting> timeSettingAction = x => action(x);
-            Func<TimeSetting, bool> timeSettingCondition = x => condition == null || condition(x);
-            this.UpdateTimeSettings(timeSettingAction, timeSettingCondition);
-        }
-
-        /// <inheritdoc/>
-        public void UpdateWebSettings(Action<IWebSetting> action, Func<IWebSetting, bool> condition = null)
-        {
-            Action<WebSetting> webSettingAction = x => action(x);
-            Func<WebSetting, bool> webSettingCondition = x => condition == null || condition(x);
-            this.UpdateWebSettings(webSettingAction, webSettingCondition);
-        }
-
-        /// <inheritdoc/>
-        public void UpdateKeywords(Action<IKeyword> action, Func<IKeyword, bool> condition = null)
-        {
-            Action<Keyword> keywordAction = x => action(x);
-            Func<Keyword, bool> keywordCondition = x => condition == null || condition(x);
-            this.UpdateKeywords(keywordAction, keywordCondition);
-        }
-
-        /// <inheritdoc/>
-        public void DeleteUsers(Func<IUser, bool> condition = null)
-        {
-            Func<User, bool> userCondition = x => condition == null || condition(x);
-            this.DeleteUsers(userCondition);
-        }
-
-        /// <inheritdoc/>
-        public void DeleteProgramSettings(Func<IProgramSetting, bool> condition = null)
-        {
-            Func<ProgramSetting, bool> programSettingCondition = x => condition == null || condition(x);
-            this.DeleteProgramSettings(programSettingCondition);
-        }
-
-        /// <inheritdoc/>
-        public void DeleteTimeSettings(Func<ITimeSetting, bool> condition = null)
-        {
-            Func<TimeSetting, bool> timeSettingCondition = x => condition == null || condition(x);
-            this.DeleteTimeSettings(timeSettingCondition);
-        }
-
-        /// <inheritdoc/>
-        public void DeleteWebSettings(Func<IWebSetting, bool> condition = null)
-        {
-            Func<WebSetting, bool> webSettingCondition = x => condition == null || condition(x);
-            this.DeleteWebSettings(webSettingCondition);
-        }
-
-        /// <inheritdoc/>
         public void DeleteKeywords(Func<IKeyword, bool> condition = null)
         {
-            Func<Keyword, bool> keywordCondition = x => condition == null || condition(x);
-            this.DeleteKeywords(keywordCondition);
+            this.DeleteKeywords(condition == null ? null : (Func<Keyword, bool>)condition);
         }
     }
 }

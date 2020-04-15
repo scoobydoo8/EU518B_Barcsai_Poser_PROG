@@ -21,69 +21,75 @@ namespace ParentalControl.Data.Database
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         private User()
         {
-            this.ProgramSettings = new HashSet<ProgramSetting>();
-            this.TimeSettings = new HashSet<TimeSetting>();
-            this.WebSettings = new HashSet<WebSetting>();
+            this.ProgramLimitations = new HashSet<ProgramLimitation>();
+            this.WebLimitations = new HashSet<WebLimitation>();
         }
 
-        internal User(string username, string password, string securityQuestion, string securityAnswer) : this()
+        /// <summary>
+        /// Initializes a new instance of the <see cref="User"/> class.
+        /// </summary>
+        /// <param name="username">Username.</param>
+        /// <param name="password">Password.</param>
+        /// <param name="securityQuestion">Security question.</param>
+        /// <param name="securityAnswer">Security answer.</param>
+        internal User(string username, string password, string securityQuestion, string securityAnswer)
+            : this()
         {
             this.Username = username;
             this.Password = password;
             this.SecurityQuestion = securityQuestion;
             this.SecurityAnswer = securityAnswer;
+            this.IsTimeLimitationActive = true;
+            this.Occasional = false;
+            this.Minutes = 0;
+            this.Orderly = false;
+            this.FromTime = default;
+            this.ToTime = default;
         }
 
-        /// <summary>
-        /// ID.
-        /// </summary>
+        /// <inheritdoc/>
         public int ID { get; set; }
 
-        /// <summary>
-        /// Username.
-        /// </summary>
+        /// <inheritdoc/>
         public string Username { get; set; }
 
-        /// <summary>
-        /// Password.
-        /// </summary>
+        /// <inheritdoc/>
         public string Password { get; set; }
 
-        /// <summary>
-        /// Security question.
-        /// </summary>
+        /// <inheritdoc/>
         public string SecurityQuestion { get; set; }
 
-        /// <summary>
-        /// Security answer.
-        /// </summary>
+        /// <inheritdoc/>
         public string SecurityAnswer { get; set; }
 
-        /// <summary>
-        /// Program settings.
-        /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ProgramSetting> ProgramSettings { get; set; }
+        /// <inheritdoc/>
+        public bool IsTimeLimitationActive { get; set; }
+
+        /// <inheritdoc/>
+        public bool Occasional { get; set; }
+
+        /// <inheritdoc/>
+        public int Minutes { get; set; }
+
+        /// <inheritdoc/>
+        public bool Orderly { get; set; }
+
+        /// <inheritdoc/>
+        public TimeSpan FromTime { get; set; }
+
+        /// <inheritdoc/>
+        public TimeSpan ToTime { get; set; }
 
         /// <summary>
-        /// Time settings.
+        /// Gets or sets program limitations.
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<TimeSetting> TimeSettings { get; set; }
+        public virtual ICollection<ProgramLimitation> ProgramLimitations { get; set; }
 
         /// <summary>
-        /// Web settings.
+        /// Gets or sets web limitations.
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<WebSetting> WebSettings { get; set; }
-
-        /// <summary>
-        /// To string.
-        /// </summary>
-        /// <returns>String.</returns>
-        public override string ToString()
-        {
-            return this.Username;
-        }
+        public virtual ICollection<WebLimitation> WebLimitations { get; set; }
     }
 }

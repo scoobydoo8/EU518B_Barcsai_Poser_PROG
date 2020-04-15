@@ -23,7 +23,7 @@ namespace ParentalControl.Interface.DatabaseManager
         void Transaction(Action action);
 
         /// <summary>
-        /// Create program setting.
+        /// Create program limitation.
         /// </summary>
         /// <param name="userID">UserID.</param>
         /// <param name="name">Name.</param>
@@ -36,31 +36,22 @@ namespace ParentalControl.Interface.DatabaseManager
         /// <param name="orderly">Orderly.</param>
         /// <param name="fromTime">From time.</param>
         /// <param name="toTime">To time.</param>
-        void CreateProgramSetting(int userID, string name, string path, bool occasional = default, int minutes = default, bool repeat = default, int pause = default, int quantity = default, bool orderly = default, TimeSpan fromTime = default, TimeSpan toTime = default);
+        /// <returns>Success.</returns>
+        bool CreateProgramLimitation(int userID, string name, string path, bool occasional = default, int minutes = default, bool repeat = default, int pause = default, int quantity = default, bool orderly = default, TimeSpan fromTime = default, TimeSpan toTime = default);
 
         /// <summary>
-        /// Create time setting.
-        /// </summary>
-        /// <param name="userID">UserID.</param>
-        /// <param name="occasional">Occasional.</param>
-        /// <param name="minutes">Minutes.</param>
-        /// <param name="orderly">Orderly.</param>
-        /// <param name="fromTime">From time.</param>
-        /// <param name="toTime">To time.</param>
-        void CreateTimeSetting(int userID, bool occasional = default, int minutes = default, bool orderly = default, TimeSpan fromTime = default, TimeSpan toTime = default);
-
-        /// <summary>
-        /// Create web setting.
+        /// Create web limitation.
         /// </summary>
         /// <param name="userID">UserID.</param>
         /// <param name="keywordID">KeywordID.</param>
-        void CreateWebSetting(int userID, int keywordID);
+        void CreateWebLimitation(int userID, int keywordID);
 
         /// <summary>
         /// Create keyword.
         /// </summary>
         /// <param name="name">Name.</param>
-        void CreateKeyword(string name);
+        /// <returns>Success.</returns>
+        bool CreateKeyword(string name);
 
         /// <summary>
         /// Read users.
@@ -70,25 +61,18 @@ namespace ParentalControl.Interface.DatabaseManager
         List<IUser> ReadUsers(Func<IUser, bool> condition = null);
 
         /// <summary>
-        /// Read program setting.
+        /// Read program limitation.
         /// </summary>
         /// <param name="condition">Condition.</param>
         /// <returns>List.</returns>
-        List<IProgramSetting> ReadProgramSettings(Func<IProgramSetting, bool> condition = null);
+        List<IProgramLimitation> ReadProgramLimitations(Func<IProgramLimitation, bool> condition = null);
 
         /// <summary>
-        /// Read time setting.
+        /// Read web limitation.
         /// </summary>
         /// <param name="condition">Condition.</param>
         /// <returns>List.</returns>
-        List<ITimeSetting> ReadTimeSettings(Func<ITimeSetting, bool> condition = null);
-
-        /// <summary>
-        /// Read web setting.
-        /// </summary>
-        /// <param name="condition">Condition.</param>
-        /// <returns>List.</returns>
-        List<IWebSetting> ReadWebSettings(Func<IWebSetting, bool> condition = null);
+        List<IWebLimitation> ReadWebLimitations(Func<IWebLimitation, bool> condition = null);
 
         /// <summary>
         /// Read keyword.
@@ -105,25 +89,11 @@ namespace ParentalControl.Interface.DatabaseManager
         void UpdateUsers(Action<IUser> action, Func<IUser, bool> condition = null);
 
         /// <summary>
-        /// Update program settings.
+        /// Update program limitation.
         /// </summary>
         /// <param name="action">Action.</param>
         /// <param name="condition">Condition.</param>
-        void UpdateProgramSettings(Action<IProgramSetting> action, Func<IProgramSetting, bool> condition = null);
-
-        /// <summary>
-        /// Update time settings.
-        /// </summary>
-        /// <param name="action">Action.</param>
-        /// <param name="condition">Condition.</param>
-        void UpdateTimeSettings(Action<ITimeSetting> action, Func<ITimeSetting, bool> condition = null);
-
-        /// <summary>
-        /// Update web settings.
-        /// </summary>
-        /// <param name="action">Action.</param>
-        /// <param name="condition">Condition.</param>
-        void UpdateWebSettings(Action<IWebSetting> action, Func<IWebSetting, bool> condition = null);
+        void UpdateProgramLimitations(Action<IProgramLimitation> action, Func<IProgramLimitation, bool> condition = null);
 
         /// <summary>
         /// Update keywords.
@@ -139,22 +109,16 @@ namespace ParentalControl.Interface.DatabaseManager
         void DeleteUsers(Func<IUser, bool> condition = null);
 
         /// <summary>
-        /// Delete program settings.
+        /// Delete program limitation.
         /// </summary>
         /// <param name="condition">Condition.</param>
-        void DeleteProgramSettings(Func<IProgramSetting, bool> condition = null);
+        void DeleteProgramLimitations(Func<IProgramLimitation, bool> condition = null);
 
         /// <summary>
-        /// Delete time settings.
+        /// Delete web limitation.
         /// </summary>
         /// <param name="condition">Condition.</param>
-        void DeleteTimeSettings(Func<ITimeSetting, bool> condition = null);
-
-        /// <summary>
-        /// Delete web settings.
-        /// </summary>
-        /// <param name="condition">Condition.</param>
-        void DeleteWebSettings(Func<IWebSetting, bool> condition = null);
+        void DeleteWebLimitations(Func<IWebLimitation, bool> condition = null);
 
         /// <summary>
         /// Delete keywords.

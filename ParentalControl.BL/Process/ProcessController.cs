@@ -19,7 +19,7 @@ namespace ParentalControl.BL.Process
     {
         private BusinessLogic businessLogic;
         private ManagementEventWatcher eventWatcher;
-        private List<ProgramSetting> programSettings;
+        private List<ProgramLimitation> programSettings;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ProcessController"/> class.
@@ -34,7 +34,7 @@ namespace ParentalControl.BL.Process
         /// Program limitation start.
         /// </summary>
         /// <param name="programSettings">Program settings.</param>
-        public void ProgramLimitationStart(List<ProgramSetting> programSettings)
+        public void ProgramLimitationStart(List<ProgramLimitation> programSettings)
         {
             this.businessLogic = BusinessLogic.Get();
             if (this.businessLogic.ActiveUser == null)
@@ -55,15 +55,13 @@ namespace ParentalControl.BL.Process
         /// <summary>
         /// Time limitation start.
         /// </summary>
-        /// <param name="timeSettings">Time settings.</param>
-        public void TimeLimitationStart(List<TimeSetting> timeSettings)
+        public void TimeLimitationStart()
         {
             this.businessLogic = BusinessLogic.Get();
             if (this.businessLogic.ActiveUser == null)
             {
                 throw new ArgumentNullException(nameof(this.businessLogic.ActiveUser));
             }
-
         }
 
         /// <summary>
@@ -76,7 +74,6 @@ namespace ParentalControl.BL.Process
         private void StartWatch_EventArrived(object sender, EventArrivedEventArgs e)
         {
             string processName = e.NewEvent.Properties["ProcessName"].Value.ToString();
-
         }
     }
 }

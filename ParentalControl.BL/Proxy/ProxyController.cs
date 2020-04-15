@@ -81,8 +81,8 @@ namespace ParentalControl.BL.Proxy
                 throw new ArgumentNullException(nameof(this.businessLogic.ActiveUser));
             }
 
-            Func<WebSetting, bool> condtition = x => x.UserID == this.businessLogic.ActiveUser.ID;
-            var webSettings = this.businessLogic.Database.ReadWebSettings(condtition);
+            Func<WebLimitation, bool> condtition = x => x.UserID == this.businessLogic.ActiveUser.ID;
+            var webSettings = this.businessLogic.Database.ReadWebLimitations(condtition);
             foreach (var webSetting in webSettings)
             {
                 Func<Keyword, bool> condition = x => x.ID == webSetting.KeywordID;

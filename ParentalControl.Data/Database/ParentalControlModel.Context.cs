@@ -14,7 +14,7 @@ namespace ParentalControl.Data.Database
     using System.Data.Entity.Infrastructure;
 
     /// <summary>
-    /// ParentalControlEntities class.
+    /// Parental control entities class.
     /// </summary>
     public partial class ParentalControlEntities : DbContext
     {
@@ -34,30 +34,25 @@ namespace ParentalControl.Data.Database
         {
             throw new UnintentionalCodeFirstException();
         }
-        
+
         /// <summary>
-        /// Keywords.
+        /// Gets or sets keywords.
         /// </summary>
         public virtual DbSet<Keyword> Keywords { get; set; }
 
         /// <summary>
-        /// Program settings.
+        /// Gets or sets program limitations.
         /// </summary>
-        public virtual DbSet<ProgramSetting> ProgramSettings { get; set; }
+        public virtual DbSet<ProgramLimitation> ProgramLimitations { get; set; }
 
         /// <summary>
-        /// Time settings.
-        /// </summary>
-        public virtual DbSet<TimeSetting> TimeSettings { get; set; }
-
-        /// <summary>
-        /// Users.
+        /// Gets or sets users.
         /// </summary>
         public virtual DbSet<User> Users { get; set; }
 
         /// <summary>
-        /// Web settings.
+        /// Gets or sets web limitations.
         /// </summary>
-        public virtual DbSet<WebSetting> WebSettings { get; set; }
+        public virtual DbSet<WebLimitation> WebLimitations { get; set; }
     }
 }

@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="ParentalControlModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="ParentalControlModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Keywords">
           <Key>
             <PropertyRef Name="ID" />
@@ -12,7 +12,7 @@
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="varchar" MaxLength="255" Nullable="false" />
         </EntityType>
-        <EntityType Name="ProgramSettings">
+        <EntityType Name="ProgramLimitations">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
@@ -29,29 +29,23 @@
           <Property Name="FromTime" Type="time" Precision="7" Nullable="false" />
           <Property Name="ToTime" Type="time" Precision="7" Nullable="false" />
         </EntityType>
-        <EntityType Name="TimeSettings">
+        <EntityType Name="Users">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="UserID" Type="int" Nullable="false" />
+          <Property Name="Username" Type="varchar" MaxLength="16" Nullable="false" />
+          <Property Name="Password" Type="char" MaxLength="64" Nullable="false" />
+          <Property Name="SecurityQuestion" Type="varchar" MaxLength="127" Nullable="false" />
+          <Property Name="SecurityAnswer" Type="char" MaxLength="64" Nullable="false" />
+          <Property Name="IsTimeLimitationActive" Type="bit" Nullable="false" />
           <Property Name="Occasional" Type="bit" Nullable="false" />
           <Property Name="Minutes" Type="int" Nullable="false" />
           <Property Name="Orderly" Type="bit" Nullable="false" />
           <Property Name="FromTime" Type="time" Precision="7" Nullable="false" />
           <Property Name="ToTime" Type="time" Precision="7" Nullable="false" />
         </EntityType>
-        <EntityType Name="Users">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Username" Type="varchar" MaxLength="127" Nullable="false" />
-          <Property Name="Password" Type="varchar" MaxLength="127" Nullable="false" />
-          <Property Name="SecurityQuestion" Type="varchar" MaxLength="127" Nullable="false" />
-          <Property Name="SecurityAnswer" Type="varchar" MaxLength="127" Nullable="false" />
-        </EntityType>
-        <EntityType Name="WebSettings">
+        <EntityType Name="WebLimitations">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
@@ -59,78 +53,62 @@
           <Property Name="UserID" Type="int" Nullable="false" />
           <Property Name="KeywordID" Type="int" Nullable="false" />
         </EntityType>
-        <Association Name="FK__ProgramSe__UserI__4BAC3F29">
+        <Association Name="FK__ProgramLi__UserI__25869641">
           <End Role="Users" Type="Self.Users" Multiplicity="1" />
-          <End Role="ProgramSettings" Type="Self.ProgramSettings" Multiplicity="*" />
+          <End Role="ProgramLimitations" Type="Self.ProgramLimitations" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Users">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="ProgramSettings">
+            <Dependent Role="ProgramLimitations">
               <PropertyRef Name="UserID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__TimeSetti__UserI__4E88ABD4">
-          <End Role="Users" Type="Self.Users" Multiplicity="1" />
-          <End Role="TimeSettings" Type="Self.TimeSettings" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Users">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="TimeSettings">
-              <PropertyRef Name="UserID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__WebSettin__Keywo__5441852A">
+        <Association Name="FK__WebLimita__Keywo__2B3F6F97">
           <End Role="Keywords" Type="Self.Keywords" Multiplicity="1" />
-          <End Role="WebSettings" Type="Self.WebSettings" Multiplicity="*" />
+          <End Role="WebLimitations" Type="Self.WebLimitations" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Keywords">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="WebSettings">
+            <Dependent Role="WebLimitations">
               <PropertyRef Name="KeywordID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__WebSettin__UserI__534D60F1">
+        <Association Name="FK__WebLimita__UserI__2A4B4B5E">
           <End Role="Users" Type="Self.Users" Multiplicity="1" />
-          <End Role="WebSettings" Type="Self.WebSettings" Multiplicity="*" />
+          <End Role="WebLimitations" Type="Self.WebLimitations" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Users">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="WebSettings">
+            <Dependent Role="WebLimitations">
               <PropertyRef Name="UserID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="ParentalControlModelStoreContainer">
           <EntitySet Name="Keywords" EntityType="Self.Keywords" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="ProgramSettings" EntityType="Self.ProgramSettings" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="TimeSettings" EntityType="Self.TimeSettings" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ProgramLimitations" EntityType="Self.ProgramLimitations" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="WebSettings" EntityType="Self.WebSettings" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK__ProgramSe__UserI__4BAC3F29" Association="Self.FK__ProgramSe__UserI__4BAC3F29">
+          <EntitySet Name="WebLimitations" EntityType="Self.WebLimitations" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__ProgramLi__UserI__25869641" Association="Self.FK__ProgramLi__UserI__25869641">
             <End Role="Users" EntitySet="Users" />
-            <End Role="ProgramSettings" EntitySet="ProgramSettings" />
+            <End Role="ProgramLimitations" EntitySet="ProgramLimitations" />
           </AssociationSet>
-          <AssociationSet Name="FK__TimeSetti__UserI__4E88ABD4" Association="Self.FK__TimeSetti__UserI__4E88ABD4">
-            <End Role="Users" EntitySet="Users" />
-            <End Role="TimeSettings" EntitySet="TimeSettings" />
-          </AssociationSet>
-          <AssociationSet Name="FK__WebSettin__Keywo__5441852A" Association="Self.FK__WebSettin__Keywo__5441852A">
+          <AssociationSet Name="FK__WebLimita__Keywo__2B3F6F97" Association="Self.FK__WebLimita__Keywo__2B3F6F97">
             <End Role="Keywords" EntitySet="Keywords" />
-            <End Role="WebSettings" EntitySet="WebSettings" />
+            <End Role="WebLimitations" EntitySet="WebLimitations" />
           </AssociationSet>
-          <AssociationSet Name="FK__WebSettin__UserI__534D60F1" Association="Self.FK__WebSettin__UserI__534D60F1">
+          <AssociationSet Name="FK__WebLimita__UserI__2A4B4B5E" Association="Self.FK__WebLimita__UserI__2A4B4B5E">
             <End Role="Users" EntitySet="Users" />
-            <End Role="WebSettings" EntitySet="WebSettings" />
+            <End Role="WebLimitations" EntitySet="WebLimitations" />
           </AssociationSet>
         </EntityContainer>
-      </Schema></edmx:StorageModels>
+      </Schema>
+    </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="ParentalControlModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -138,15 +116,15 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
-          <NavigationProperty Name="WebSettings" Relationship="Self.FK__WebSettin__Keywo__3B75D760" FromRole="Keywords" ToRole="WebSettings" />
+          <NavigationProperty Name="WebLimitations" Relationship="Self.FK__WebLimita__Keywo__2B3F6F97" FromRole="Keywords" ToRole="WebLimitations" />
         </EntityType>
-        <EntityType Name="ProgramSetting">
+        <EntityType Name="ProgramLimitation">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="UserID" Type="Int32" Nullable="false" />
           <Property Name="Name" Type="String" MaxLength="63" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Path" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
@@ -158,113 +136,88 @@
           <Property Name="Orderly" Type="Boolean" Nullable="false" />
           <Property Name="FromTime" Type="Time" Nullable="false" Precision="7" />
           <Property Name="ToTime" Type="Time" Nullable="false" Precision="7" />
-          <NavigationProperty Name="User" Relationship="Self.FK__ProgramSe__UserI__32E0915F" FromRole="ProgramSettings" ToRole="Users" />
-        </EntityType>
-        <EntityType Name="TimeSetting">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" />
-          <Property Name="UserID" Type="Int32" Nullable="false" />
-          <Property Name="Occasional" Type="Boolean" Nullable="false" />
-          <Property Name="Minutes" Type="Int32" Nullable="false" />
-          <Property Name="Orderly" Type="Boolean" Nullable="false" />
-          <Property Name="FromTime" Type="Time" Nullable="false" Precision="7" />
-          <Property Name="ToTime" Type="Time" Nullable="false" Precision="7" />
-          <NavigationProperty Name="User" Relationship="Self.FK__TimeSetti__UserI__35BCFE0A" FromRole="TimeSettings" ToRole="Users" />
+          <NavigationProperty Name="User" Relationship="Self.FK__ProgramLi__UserI__25869641" FromRole="ProgramLimitations" ToRole="Users" />
         </EntityType>
         <EntityType Name="User">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" />
-          <Property Name="Username" Type="String" MaxLength="127" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Password" Type="String" MaxLength="127" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Username" Type="String" MaxLength="16" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Password" Type="String" MaxLength="64" FixedLength="true" Unicode="false" Nullable="false" />
           <Property Name="SecurityQuestion" Type="String" MaxLength="127" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="SecurityAnswer" Type="String" MaxLength="127" FixedLength="false" Unicode="false" Nullable="false" />
-          <NavigationProperty Name="ProgramSettings" Relationship="Self.FK__ProgramSe__UserI__32E0915F" FromRole="Users" ToRole="ProgramSettings" />
-          <NavigationProperty Name="TimeSettings" Relationship="Self.FK__TimeSetti__UserI__35BCFE0A" FromRole="Users" ToRole="TimeSettings" />
-          <NavigationProperty Name="WebSettings" Relationship="Self.FK__WebSettin__UserI__3A81B327" FromRole="Users" ToRole="WebSettings" />
+          <Property Name="SecurityAnswer" Type="String" MaxLength="64" FixedLength="true" Unicode="false" Nullable="false" />
+          <Property Name="IsTimeLimitationActive" Type="Boolean" Nullable="false" />
+          <Property Name="Occasional" Type="Boolean" Nullable="false" />
+          <Property Name="Minutes" Type="Int32" Nullable="false" />
+          <Property Name="Orderly" Type="Boolean" Nullable="false" />
+          <Property Name="FromTime" Type="Time" Nullable="false" Precision="7" />
+          <Property Name="ToTime" Type="Time" Nullable="false" Precision="7" />
+          <NavigationProperty Name="ProgramLimitations" Relationship="Self.FK__ProgramLi__UserI__25869641" FromRole="Users" ToRole="ProgramLimitations" />
+          <NavigationProperty Name="WebLimitations" Relationship="Self.FK__WebLimita__UserI__2A4B4B5E" FromRole="Users" ToRole="WebLimitations" />
         </EntityType>
-        <EntityType Name="WebSetting">
+        <EntityType Name="WebLimitation">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="UserID" Type="Int32" Nullable="false" />
           <Property Name="KeywordID" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Keyword" Relationship="Self.FK__WebSettin__Keywo__3B75D760" FromRole="WebSettings" ToRole="Keywords" />
-          <NavigationProperty Name="User" Relationship="Self.FK__WebSettin__UserI__3A81B327" FromRole="WebSettings" ToRole="Users" />
+          <NavigationProperty Name="Keyword" Relationship="Self.FK__WebLimita__Keywo__2B3F6F97" FromRole="WebLimitations" ToRole="Keywords" />
+          <NavigationProperty Name="User" Relationship="Self.FK__WebLimita__UserI__2A4B4B5E" FromRole="WebLimitations" ToRole="Users" />
         </EntityType>
-        <Association Name="FK__WebSettin__Keywo__3B75D760">
+        <Association Name="FK__WebLimita__Keywo__2B3F6F97">
           <End Role="Keywords" Type="Self.Keyword" Multiplicity="1" />
-          <End Role="WebSettings" Type="Self.WebSetting" Multiplicity="*" />
+          <End Role="WebLimitations" Type="Self.WebLimitation" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Keywords">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="WebSettings">
+            <Dependent Role="WebLimitations">
               <PropertyRef Name="KeywordID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__ProgramSe__UserI__32E0915F">
+        <Association Name="FK__ProgramLi__UserI__25869641">
           <End Role="Users" Type="Self.User" Multiplicity="1" />
-          <End Role="ProgramSettings" Type="Self.ProgramSetting" Multiplicity="*" />
+          <End Role="ProgramLimitations" Type="Self.ProgramLimitation" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Users">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="ProgramSettings">
+            <Dependent Role="ProgramLimitations">
               <PropertyRef Name="UserID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__TimeSetti__UserI__35BCFE0A">
+        <Association Name="FK__WebLimita__UserI__2A4B4B5E">
           <End Role="Users" Type="Self.User" Multiplicity="1" />
-          <End Role="TimeSettings" Type="Self.TimeSetting" Multiplicity="*" />
+          <End Role="WebLimitations" Type="Self.WebLimitation" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Users">
               <PropertyRef Name="ID" />
             </Principal>
-            <Dependent Role="TimeSettings">
+            <Dependent Role="WebLimitations">
               <PropertyRef Name="UserID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__WebSettin__UserI__3A81B327">
-          <End Role="Users" Type="Self.User" Multiplicity="1" />
-          <End Role="WebSettings" Type="Self.WebSetting" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Users">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="WebSettings">
-              <PropertyRef Name="UserID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityContainer Name="ParentalControlEntities" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="ParentalControlDatabaseEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Keywords" EntityType="Self.Keyword" />
-          <EntitySet Name="ProgramSettings" EntityType="Self.ProgramSetting" />
-          <EntitySet Name="TimeSettings" EntityType="Self.TimeSetting" />
+          <EntitySet Name="ProgramLimitations" EntityType="Self.ProgramLimitation" />
           <EntitySet Name="Users" EntityType="Self.User" />
-          <EntitySet Name="WebSettings" EntityType="Self.WebSetting" />
-          <AssociationSet Name="FK__WebSettin__Keywo__3B75D760" Association="Self.FK__WebSettin__Keywo__3B75D760">
+          <EntitySet Name="WebLimitations" EntityType="Self.WebLimitation" />
+          <AssociationSet Name="FK__WebLimita__Keywo__2B3F6F97" Association="Self.FK__WebLimita__Keywo__2B3F6F97">
             <End Role="Keywords" EntitySet="Keywords" />
-            <End Role="WebSettings" EntitySet="WebSettings" />
+            <End Role="WebLimitations" EntitySet="WebLimitations" />
           </AssociationSet>
-          <AssociationSet Name="FK__ProgramSe__UserI__32E0915F" Association="Self.FK__ProgramSe__UserI__32E0915F">
+          <AssociationSet Name="FK__ProgramLi__UserI__25869641" Association="Self.FK__ProgramLi__UserI__25869641">
             <End Role="Users" EntitySet="Users" />
-            <End Role="ProgramSettings" EntitySet="ProgramSettings" />
+            <End Role="ProgramLimitations" EntitySet="ProgramLimitations" />
           </AssociationSet>
-          <AssociationSet Name="FK__TimeSetti__UserI__35BCFE0A" Association="Self.FK__TimeSetti__UserI__35BCFE0A">
+          <AssociationSet Name="FK__WebLimita__UserI__2A4B4B5E" Association="Self.FK__WebLimita__UserI__2A4B4B5E">
             <End Role="Users" EntitySet="Users" />
-            <End Role="TimeSettings" EntitySet="TimeSettings" />
-          </AssociationSet>
-          <AssociationSet Name="FK__WebSettin__UserI__3A81B327" Association="Self.FK__WebSettin__UserI__3A81B327">
-            <End Role="Users" EntitySet="Users" />
-            <End Role="WebSettings" EntitySet="WebSettings" />
+            <End Role="WebLimitations" EntitySet="WebLimitations" />
           </AssociationSet>
         </EntityContainer>
       </Schema>
@@ -272,7 +225,7 @@
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="ParentalControlModelStoreContainer" CdmEntityContainer="ParentalControlEntities">
+        <EntityContainerMapping StorageEntityContainer="ParentalControlModelStoreContainer" CdmEntityContainer="ParentalControlDatabaseEntities">
           <EntitySetMapping Name="Keywords">
             <EntityTypeMapping TypeName="ParentalControlModel.Keyword">
               <MappingFragment StoreEntitySet="Keywords">
@@ -281,9 +234,9 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="ProgramSettings">
-            <EntityTypeMapping TypeName="ParentalControlModel.ProgramSetting">
-              <MappingFragment StoreEntitySet="ProgramSettings">
+          <EntitySetMapping Name="ProgramLimitations">
+            <EntityTypeMapping TypeName="ParentalControlModel.ProgramLimitation">
+              <MappingFragment StoreEntitySet="ProgramLimitations">
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="UserID" ColumnName="UserID" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
@@ -299,19 +252,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="TimeSettings">
-            <EntityTypeMapping TypeName="ParentalControlModel.TimeSetting">
-              <MappingFragment StoreEntitySet="TimeSettings">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="UserID" ColumnName="UserID" />
-                <ScalarProperty Name="Occasional" ColumnName="Occasional" />
-                <ScalarProperty Name="Minutes" ColumnName="Minutes" />
-                <ScalarProperty Name="Orderly" ColumnName="Orderly" />
-                <ScalarProperty Name="FromTime" ColumnName="FromTime" />
-                <ScalarProperty Name="ToTime" ColumnName="ToTime" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Users">
             <EntityTypeMapping TypeName="ParentalControlModel.User">
               <MappingFragment StoreEntitySet="Users">
@@ -320,12 +260,18 @@
                 <ScalarProperty Name="Password" ColumnName="Password" />
                 <ScalarProperty Name="SecurityQuestion" ColumnName="SecurityQuestion" />
                 <ScalarProperty Name="SecurityAnswer" ColumnName="SecurityAnswer" />
+                <ScalarProperty Name="IsTimeLimitationActive" ColumnName="IsTimeLimitationActive" />
+                <ScalarProperty Name="Occasional" ColumnName="Occasional" />
+                <ScalarProperty Name="Minutes" ColumnName="Minutes" />
+                <ScalarProperty Name="Orderly" ColumnName="Orderly" />
+                <ScalarProperty Name="FromTime" ColumnName="FromTime" />
+                <ScalarProperty Name="ToTime" ColumnName="ToTime" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="WebSettings">
-            <EntityTypeMapping TypeName="ParentalControlModel.WebSetting">
-              <MappingFragment StoreEntitySet="WebSettings">
+          <EntitySetMapping Name="WebLimitations">
+            <EntityTypeMapping TypeName="ParentalControlModel.WebLimitation">
+              <MappingFragment StoreEntitySet="WebLimitations">
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="UserID" ColumnName="UserID" />
                 <ScalarProperty Name="KeywordID" ColumnName="KeywordID" />

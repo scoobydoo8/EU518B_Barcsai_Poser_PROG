@@ -11,7 +11,7 @@ namespace ParentalControl.Interface.Database
     using System.Threading.Tasks;
 
     /// <summary>
-    /// IKeyword interface.
+    /// Keyword interface.
     /// </summary>
     public interface IKeyword
     {

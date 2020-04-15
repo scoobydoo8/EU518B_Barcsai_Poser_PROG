@@ -11,7 +11,7 @@ namespace ParentalControl.Interface.Database
     using System.Threading.Tasks;
 
     /// <summary>
-    /// IUser interface.
+    /// User interface.
     /// </summary>
     public interface IUser
     {
@@ -29,5 +29,30 @@ namespace ParentalControl.Interface.Database
         /// Gets security question.
         /// </summary>
         string SecurityQuestion { get; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether occasional.
+        /// </summary>
+        bool Occasional { get; set; }
+
+        /// <summary>
+        /// Gets or sets minutes.
+        /// </summary>
+        int Minutes { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether orderly.
+        /// </summary>
+        bool Orderly { get; set; }
+
+        /// <summary>
+        /// Gets or sets from time.
+        /// </summary>
+        TimeSpan FromTime { get; set; }
+
+        /// <summary>
+        /// Gets or sets to time.
+        /// </summary>
+        TimeSpan ToTime { get; set; }
     }
 }

@@ -48,10 +48,9 @@
     <Compile Include="BusinessLogic\IBusinessLogic.cs" />
     <Compile Include="DatabaseManager\IDatabaseManager.cs" />
     <Compile Include="Database\IKeyword.cs" />
-    <Compile Include="Database\IProgramSetting.cs" />
-    <Compile Include="Database\ITimeSetting.cs" />
+    <Compile Include="Database\IProgramLimitation.cs" />
     <Compile Include="Database\IUser.cs" />
-    <Compile Include="Database\IWebSetting.cs" />
+    <Compile Include="Database\IWebLimitation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

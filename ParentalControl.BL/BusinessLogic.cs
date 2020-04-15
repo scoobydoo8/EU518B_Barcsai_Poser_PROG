@@ -75,11 +75,10 @@ namespace ParentalControl.BL
             {
                 if (this.ActiveUser.ID != 0)
                 {
-                    var programSettings = this.Database.ReadProgramSettings(x => x.UserID == this.ActiveUser.ID);
-                    var timeSettings = this.Database.ReadTimeSettings(x => x.UserID == this.ActiveUser.ID);
+                    var programSettings = this.Database.ReadProgramLimitations(x => x.UserID == this.ActiveUser.ID);
+                    var timeSettings = this.Database.ReadUsers(x => x.IsTimeLimitationActive);
                     if (programSettings.Any())
                     {
-
                     }
                 }
 
@@ -166,38 +165,39 @@ namespace ParentalControl.BL
             this.proxyController.Stop();
         }
 
+        /*
         /// <summary>
         /// Program limitation start.
         /// </summary>
-        /*public void ProgramLimitationStart()
+        public void ProgramLimitationStart()
         {
             this.processController.ProgramLimitationStart();
-        }*/
+        }
 
         /// <summary>
         /// Program limitation stop.
         /// </summary>
-        /*public void ProgramLimitationStop()
+        public void ProgramLimitationStop()
         {
             this.processController.ProgramLimitationStop();
-        }*/
+        }
 
         /// <summary>
         /// Time limitation start.
         /// </summary>
-        /*public void TimeLimitationStart()
+        public void TimeLimitationStart()
         {
             this.processController.TimeLimitationStart();
-        }*/
+        }
 
         /// <summary>
         /// Time limitation stop.
         /// </summary>
-        /*public void TimeLimitationStop()
+        public void TimeLimitationStop()
         {
             this.processController.TimeLimitationStop();
-        }*/
-
+        }
+        */
         private string GetHash(string rawstring)
         {
             this.CheckInput(rawstring);

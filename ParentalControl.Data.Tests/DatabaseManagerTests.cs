@@ -26,10 +26,9 @@ namespace ParentalControl.Data.Tests
         private DatabaseManager databaseManager;
         private Mock<ParentalControlEntities> mockParentalControlEntities;
         private Mock<DbSet<User>> usersDbSet;
-        private Mock<DbSet<ProgramSetting>> programSettingsDbSet;
-        private Mock<DbSet<TimeSetting>> timeSettingsDbSet;
+        private Mock<DbSet<ProgramLimitation>> programLimitationsDbSet;
         private Mock<DbSet<Keyword>> keywordsDbSet;
-        private Mock<DbSet<WebSetting>> webSettingsDbSet;
+        private Mock<DbSet<WebLimitation>> webLimitationsDbSet;
 
         /// <summary>
         /// Gets user create test cases.
@@ -40,62 +39,6 @@ namespace ParentalControl.Data.Tests
             {
                 yield return new object[] { "username1", "password1", "?", "!" };
                 yield return new object[] { "username2", "password2", "?", "!" };
-            }
-        }
-
-        /// <summary>
-        /// Gets program setting create test cases.
-        /// </summary>
-        public static IEnumerable<object[]> ProgramSettingCreateTestCases
-        {
-            get
-            {
-                yield return new object[] { 1, "Program1", "Path1", false, 0, false, 0, 0, false, default, default };
-                yield return new object[] { 2, "Program2", "Path2", true, 30, false, 0, 0, false, default, default };
-                yield return new object[] { 3, "Program3", "Path3", true, 30, true, 10, 2, false, default, default };
-                yield return new object[] { 4, "Program4", "Path4", false, 0, true, 10, 2, false, default, default };
-                yield return new object[] { 5, "Program5", "Path5", false, 0, false, 0, 0, true, TimeSpan.Parse("12:00"), TimeSpan.Parse("13:00") };
-                yield return new object[] { 6, "Program6", "Path6", true, 30, false, 0, 0, true, TimeSpan.Parse("12:00"), TimeSpan.Parse("13:00") };
-                yield return new object[] { 7, "Program7", "Path7", true, 30, true, 10, 2, true, TimeSpan.Parse("12:00"), TimeSpan.Parse("13:00") };
-                yield return new object[] { 8, "Program8", "Path8", false, 0, true, 10, 2, true, TimeSpan.Parse("12:00"), TimeSpan.Parse("13:00") };
-            }
-        }
-
-        /// <summary>
-        /// Gets time setting create test cases.
-        /// </summary>
-        public static IEnumerable<object[]> TimeSettingCreateTestCases
-        {
-            get
-            {
-                yield return new object[] { 1, false, 0, false, default, default };
-                yield return new object[] { 2, true, 30, false, default, default };
-                yield return new object[] { 3, false, 0, true, TimeSpan.Parse("12:00"), TimeSpan.Parse("13:00") };
-                yield return new object[] { 4, true, 30, true, TimeSpan.Parse("12:00"), TimeSpan.Parse("13:00") };
-            }
-        }
-
-        /// <summary>
-        /// Gets web setting create test cases.
-        /// </summary>
-        public static IEnumerable<object[]> WebSettingCreateTestCases
-        {
-            get
-            {
-                yield return new object[] { 1, 2 };
-                yield return new object[] { 2, 1 };
-            }
-        }
-
-        /// <summary>
-        /// Gets keyword create test cases.
-        /// </summary>
-        public static IEnumerable<object[]> KeywordCreateTestCases
-        {
-            get
-            {
-                yield return new object[] { "Keyword1" };
-                yield return new object[] { "Keyword2" };
             }
         }
 
@@ -112,72 +55,6 @@ namespace ParentalControl.Data.Tests
                 yield return new object[] { condition, 1 };
                 condition = x => x.SecurityQuestion == "?";
                 yield return new object[] { condition, 2 };
-            }
-        }
-
-        /// <summary>
-        /// Gets program setting read delete test cases.
-        /// </summary>
-        public static IEnumerable<object[]> ProgramSettingReadDeleteTestCases
-        {
-            get
-            {
-                Func<ProgramSetting, bool> condition = null;
-                yield return new object[] { condition, 8 };
-                condition = x => x.Orderly == true;
-                yield return new object[] { condition, 4 };
-                condition = x => x.Repeat == false;
-                yield return new object[] { condition, 4 };
-                condition = x => x.Pause == 0;
-                yield return new object[] { condition, 4 };
-            }
-        }
-
-        /// <summary>
-        /// Gets time setting read delete test cases.
-        /// </summary>
-        public static IEnumerable<object[]> TimeSettingReadDeleteTestCases
-        {
-            get
-            {
-                Func<TimeSetting, bool> condition = null;
-                yield return new object[] { condition, 4 };
-                condition = x => x.Occasional == true;
-                yield return new object[] { condition, 2 };
-                condition = x => x.Orderly == false;
-                yield return new object[] { condition, 2 };
-                condition = x => x.FromTime == default && x.ToTime == default;
-                yield return new object[] { condition, 2 };
-            }
-        }
-
-        /// <summary>
-        /// Gets web setting read delete test cases.
-        /// </summary>
-        public static IEnumerable<object[]> WebSettingReadDeleteTestCases
-        {
-            get
-            {
-                Func<WebSetting, bool> condition = null;
-                yield return new object[] { condition, 2 };
-                condition = x => x.UserID == 1;
-                yield return new object[] { condition, 1 };
-                condition = x => x.KeywordID == 2;
-                yield return new object[] { condition, 1 };
-            }
-        }
-
-        /// <summary>
-        /// Gets keyword read delete test cases.
-        /// </summary>
-        public static IEnumerable<object[]> KeywordReadDeleteTestCases
-        {
-            get
-            {
-                Func<Keyword, bool> condition = null;
-                yield return new object[] { condition, 2 };
-                condition = x => x.Name == "Keyword2";
-                yield return new object[] { condition, 1 };
             }
         }
 
@@ -200,15 +77,51 @@ namespace ParentalControl.Data.Tests
         }
 
         /// <summary>
-        /// Gets program setting update test cases.
+        /// Gets program limitation create test cases.
         /// </summary>
-        public static IEnumerable<object[]> ProgramSettingUpdateTestCases
+        public static IEnumerable<object[]> ProgramLimitationCreateTestCases
         {
             get
             {
-                Action<ProgramSetting> action = x => x.Path = "Path!";
-                Func<ProgramSetting, bool> condition = null;
-                Func<ProgramSetting, bool> expectation = x => x.Path == "Path!";
+                yield return new object[] { 1, "Program1", "Path1", false, 0, false, 0, 0, false, default, default };
+                yield return new object[] { 2, "Program2", "Path2", true, 30, false, 0, 0, false, default, default };
+                yield return new object[] { 1, "Program3", "Path3", true, 30, true, 10, 2, false, default, default };
+                yield return new object[] { 2, "Program4", "Path4", false, 0, true, 10, 2, false, default, default };
+                yield return new object[] { 1, "Program5", "Path5", false, 0, false, 0, 0, true, TimeSpan.Parse("12:00"), TimeSpan.Parse("13:00") };
+                yield return new object[] { 2, "Program6", "Path6", true, 30, false, 0, 0, true, TimeSpan.Parse("12:00"), TimeSpan.Parse("13:00") };
+                yield return new object[] { 1, "Program7", "Path7", true, 30, true, 10, 2, true, TimeSpan.Parse("12:00"), TimeSpan.Parse("13:00") };
+                yield return new object[] { 2, "Program8", "Path8", false, 0, true, 10, 2, true, TimeSpan.Parse("12:00"), TimeSpan.Parse("13:00") };
+            }
+        }
+
+        /// <summary>
+        /// Gets program limitation read delete test cases.
+        /// </summary>
+        public static IEnumerable<object[]> ProgramLimitationReadDeleteTestCases
+        {
+            get
+            {
+                Func<ProgramLimitation, bool> condition = null;
+                yield return new object[] { condition, 8 };
+                condition = x => x.Orderly == true;
+                yield return new object[] { condition, 4 };
+                condition = x => x.Repeat == false;
+                yield return new object[] { condition, 4 };
+                condition = x => x.Pause == 0;
+                yield return new object[] { condition, 4 };
+            }
+        }
+
+        /// <summary>
+        /// Gets program limitation update test cases.
+        /// </summary>
+        public static IEnumerable<object[]> ProgramLimitationUpdateTestCases
+        {
+            get
+            {
+                Action<ProgramLimitation> action = x => x.Path = "Path!";
+                Func<ProgramLimitation, bool> condition = null;
+                Func<ProgramLimitation, bool> expectation = x => x.Path == "Path!";
                 yield return new object[] { action, condition, expectation };
                 action = x => x.Path = "Path!";
                 condition = x => x.FromTime != default && x.ToTime != default;
@@ -218,15 +131,45 @@ namespace ParentalControl.Data.Tests
         }
 
         /// <summary>
-        /// Gets time setting update test cases.
+        /// Gets time limitation create test cases.
         /// </summary>
-        public static IEnumerable<object[]> TimeSettingUpdateTestCases
+        public static IEnumerable<object[]> TimeLimitationCreateTestCases
         {
             get
             {
-                Action<TimeSetting> action = x => x.Occasional = true;
-                Func<TimeSetting, bool> condition = null;
-                Func<TimeSetting, bool> expectation = x => x.Occasional == true;
+                yield return new object[] { 1, false, 0, false, default, default };
+                yield return new object[] { 2, true, 30, true, TimeSpan.Parse("12:00"), TimeSpan.Parse("13:00") };
+            }
+        }
+
+        /// <summary>
+        /// Gets time limitation read test cases.
+        /// </summary>
+        public static IEnumerable<object[]> TimeLimitationReadTestCases
+        {
+            get
+            {
+                Func<User, bool> condition = null;
+                yield return new object[] { condition, 2 };
+                condition = x => x.Occasional == true;
+                yield return new object[] { condition, 1 };
+                condition = x => x.Orderly == false;
+                yield return new object[] { condition, 1 };
+                condition = x => x.FromTime == default && x.ToTime == default;
+                yield return new object[] { condition, 1 };
+            }
+        }
+
+        /// <summary>
+        /// Gets time limitation update test cases.
+        /// </summary>
+        public static IEnumerable<object[]> TimeLimitationUpdateTestCases
+        {
+            get
+            {
+                Action<User> action = x => x.Occasional = true;
+                Func<User, bool> condition = null;
+                Func<User, bool> expectation = x => x.Occasional == true;
                 yield return new object[] { action, condition, expectation };
                 action = x => x.Occasional = true;
                 condition = x => x.FromTime != default && x.ToTime != default;
@@ -236,20 +179,56 @@ namespace ParentalControl.Data.Tests
         }
 
         /// <summary>
-        /// Gets web setting update test cases.
+        /// Gets web limitation create test cases.
         /// </summary>
-        public static IEnumerable<object[]> WebSettingUpdateTestCases
+        public static IEnumerable<object[]> WebLimitationCreateTestCases
         {
             get
             {
-                Action<WebSetting> action = x => x.KeywordID = 3;
-                Func<WebSetting, bool> condition = null;
-                Func<WebSetting, bool> expectation = x => x.KeywordID == 3;
-                yield return new object[] { action, condition, expectation };
-                action = x => x.KeywordID = 3;
+                yield return new object[] { 1, 2 };
+                yield return new object[] { 2, 1 };
+            }
+        }
+
+        /// <summary>
+        /// Gets web limitation read delete test cases.
+        /// </summary>
+        public static IEnumerable<object[]> WebLimitationReadDeleteTestCases
+        {
+            get
+            {
+                Func<WebLimitation, bool> condition = null;
+                yield return new object[] { condition, 2 };
                 condition = x => x.UserID == 1;
-                expectation = x => x.KeywordID == 3;
-                yield return new object[] { action, condition, expectation };
+                yield return new object[] { condition, 1 };
+                condition = x => x.KeywordID == 2;
+                yield return new object[] { condition, 1 };
+            }
+        }
+
+        /// <summary>
+        /// Gets keyword create test cases.
+        /// </summary>
+        public static IEnumerable<object[]> KeywordCreateTestCases
+        {
+            get
+            {
+                yield return new object[] { "Keyword1" };
+                yield return new object[] { "Keyword2" };
+            }
+        }
+
+        /// <summary>
+        /// Gets keyword read delete test cases.
+        /// </summary>
+        public static IEnumerable<object[]> KeywordReadDeleteTestCases
+        {
+            get
+            {
+                Func<Keyword, bool> condition = null;
+                yield return new object[] { condition, 2 };
+                condition = x => x.Name == "Keyword2";
+                yield return new object[] { condition, 1 };
             }
         }
 
@@ -278,20 +257,18 @@ namespace ParentalControl.Data.Tests
         public void OneTimeSetUp()
         {
             this.usersDbSet = CreateMockDbSet<User>();
-            this.programSettingsDbSet = CreateMockDbSet<ProgramSetting>();
-            this.timeSettingsDbSet = CreateMockDbSet<TimeSetting>();
+            this.programLimitationsDbSet = CreateMockDbSet<ProgramLimitation>();
             this.keywordsDbSet = CreateMockDbSet<Keyword>();
-            this.webSettingsDbSet = CreateMockDbSet<WebSetting>();
+            this.webLimitationsDbSet = CreateMockDbSet<WebLimitation>();
 
             this.mockParentalControlEntities = new Mock<ParentalControlEntities>();
             this.mockParentalControlEntities.SetupGet(m => m.Users).Returns(this.usersDbSet.Object);
-            this.mockParentalControlEntities.SetupGet(m => m.ProgramSettings).Returns(this.programSettingsDbSet.Object);
-            this.mockParentalControlEntities.SetupGet(m => m.TimeSettings).Returns(this.timeSettingsDbSet.Object);
+            this.mockParentalControlEntities.SetupGet(m => m.ProgramLimitations).Returns(this.programLimitationsDbSet.Object);
             this.mockParentalControlEntities.SetupGet(m => m.Keywords).Returns(this.keywordsDbSet.Object);
-            this.mockParentalControlEntities.SetupGet(m => m.WebSettings).Returns(this.webSettingsDbSet.Object);
+            this.mockParentalControlEntities.SetupGet(m => m.WebLimitations).Returns(this.webLimitationsDbSet.Object);
 
             this.databaseManager = Construct<DatabaseManager>();
-            this.databaseManager.GetType().GetField("entities", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(this.databaseManager, this.mockParentalControlEntities.Object);
+            this.databaseManager.GetType().GetField("entities", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(this.databaseManager, this.mockParentalControlEntities.Object);
         }
 
         /// <summary>
@@ -301,10 +278,9 @@ namespace ParentalControl.Data.Tests
         public void TearDown()
         {
             ClearMockDbSet(this.usersDbSet);
-            ClearMockDbSet(this.programSettingsDbSet);
-            ClearMockDbSet(this.timeSettingsDbSet);
+            ClearMockDbSet(this.programLimitationsDbSet);
             ClearMockDbSet(this.keywordsDbSet);
-            ClearMockDbSet(this.webSettingsDbSet);
+            ClearMockDbSet(this.webLimitationsDbSet);
         }
 
         /// <summary>
@@ -324,7 +300,7 @@ namespace ParentalControl.Data.Tests
         }
 
         /// <summary>
-        /// Create program setting test. It should throw nothing.
+        /// Create program limitation test. It should throw nothing.
         /// </summary>
         /// <param name="userID">UserID.</param>
         /// <param name="name">Name.</param>
@@ -337,44 +313,29 @@ namespace ParentalControl.Data.Tests
         /// <param name="orderly">Orderly.</param>
         /// <param name="fromTime">From time.</param>
         /// <param name="toTime">To time.</param>
-        [TestCaseSource(nameof(ProgramSettingCreateTestCases))]
-        public void CreateProgramSetting_Should_ThrowNothing(int userID, string name, string path, bool occasional, int minutes, bool repeat, int pause, int quantity, bool orderly, TimeSpan fromTime, TimeSpan toTime)
+        [TestCaseSource(nameof(ProgramLimitationCreateTestCases))]
+        public void CreateProgramLimitation_Should_ThrowNothing(int userID, string name, string path, bool occasional, int minutes, bool repeat, int pause, int quantity, bool orderly, TimeSpan fromTime, TimeSpan toTime)
         {
-            int countBefore = this.mockParentalControlEntities.Object.ProgramSettings.Count();
-            this.databaseManager.Transaction(() => this.databaseManager.CreateProgramSetting(userID, name, path, occasional, minutes, repeat, pause, quantity, orderly, fromTime, toTime));
-            int countAfter = this.mockParentalControlEntities.Object.ProgramSettings.Count();
+            this.CreateUsersHelper();
+            int countBefore = this.mockParentalControlEntities.Object.ProgramLimitations.Count();
+            this.databaseManager.Transaction(() => this.databaseManager.CreateProgramLimitation(userID, name, path, occasional, minutes, repeat, pause, quantity, orderly, fromTime, toTime));
+            int countAfter = this.mockParentalControlEntities.Object.ProgramLimitations.Count();
             Assert.That(countBefore + 1 == countAfter);
         }
 
         /// <summary>
-        /// Create time setting test. It should throw nothing.
-        /// </summary>
-        /// <param name="userID">UserID.</param>
-        /// <param name="occasional">Occasional.</param>
-        /// <param name="minutes">Minutes.</param>
-        /// <param name="orderly">Orderly.</param>
-        /// <param name="fromTime">From time.</param>
-        /// <param name="toTime">To time.</param>
-        [TestCaseSource(nameof(TimeSettingCreateTestCases))]
-        public void CreateTimeSetting_Should_ThrowNothing(int userID, bool occasional, int minutes, bool orderly, TimeSpan fromTime, TimeSpan toTime)
-        {
-            int countBefore = this.mockParentalControlEntities.Object.TimeSettings.Count();
-            this.databaseManager.Transaction(() => this.databaseManager.CreateTimeSetting(userID, occasional, minutes, orderly, fromTime, toTime));
-            int countAfter = this.mockParentalControlEntities.Object.TimeSettings.Count();
-            Assert.That(countBefore + 1 == countAfter);
-        }
-
-        /// <summary>
-        /// Create web setting test. It should throw nothing.
+        /// Create web limitation test. It should throw nothing.
         /// </summary>
         /// <param name="userID">UserID.</param>
         /// <param name="keywordID">KeywordID.</param>
-        [TestCaseSource(nameof(WebSettingCreateTestCases))]
-        public void CreateWebSetting_Should_ThrowNothing(int userID, int keywordID)
+        [TestCaseSource(nameof(WebLimitationCreateTestCases))]
+        public void CreateWebLimitation_Should_ThrowNothing(int userID, int keywordID)
         {
-            int countBefore = this.mockParentalControlEntities.Object.WebSettings.Count();
-            this.databaseManager.Transaction(() => this.databaseManager.CreateWebSetting(userID, keywordID));
-            int countAfter = this.mockParentalControlEntities.Object.WebSettings.Count();
+            this.CreateUsersHelper();
+            this.CreateKeywordsHelper();
+            int countBefore = this.mockParentalControlEntities.Object.WebLimitations.Count();
+            this.databaseManager.Transaction(() => this.databaseManager.CreateWebLimitation(userID, keywordID));
+            int countAfter = this.mockParentalControlEntities.Object.WebLimitations.Count();
             Assert.That(countBefore + 1 == countAfter);
         }
 
@@ -404,39 +365,39 @@ namespace ParentalControl.Data.Tests
         }
 
         /// <summary>
-        /// Read program settings test.
+        /// Read program limitation test.
         /// </summary>
         /// <param name="condition">Condition.</param>
         /// <param name="count">Count.</param>
-        [TestCaseSource(nameof(ProgramSettingReadDeleteTestCases))]
-        public void ReadProgramSettings_Should_ReturnCorrectCount_When_Condition(Func<ProgramSetting, bool> condition, int count)
+        [TestCaseSource(nameof(ProgramLimitationReadDeleteTestCases))]
+        public void ReadProgramLimitations_Should_ReturnCorrectCount_When_Condition(Func<ProgramLimitation, bool> condition, int count)
         {
-            this.CreateProgramSettingsHelper();
-            Assert.AreEqual(count, this.databaseManager.ReadProgramSettings(condition).Count);
+            this.CreateProgramLimitationsHelper();
+            Assert.AreEqual(count, this.databaseManager.ReadProgramLimitations(condition).Count);
         }
 
         /// <summary>
-        /// Read time settings test.
+        /// Read time limitations test.
         /// </summary>
         /// <param name="condition">Condition.</param>
         /// <param name="count">Count.</param>
-        [TestCaseSource(nameof(TimeSettingReadDeleteTestCases))]
-        public void ReadTimeSettings_Should_ReturnCorrectCount_When_Condition(Func<TimeSetting, bool> condition, int count)
+        [TestCaseSource(nameof(TimeLimitationReadTestCases))]
+        public void ReadTimeLimitations_Should_ReturnCorrectCount_When_Condition(Func<User, bool> condition, int count)
         {
-            this.CreateTimeSettingsHelper();
-            Assert.AreEqual(count, this.databaseManager.ReadTimeSettings(condition).Count);
+            this.CreateTimeLimitationsHelper();
+            Assert.AreEqual(count, this.databaseManager.ReadUsers(condition).Count);
         }
 
         /// <summary>
-        /// Read web settings test.
+        /// Read web limitation test.
         /// </summary>
         /// <param name="condition">Condition.</param>
         /// <param name="count">Count.</param>
-        [TestCaseSource(nameof(WebSettingReadDeleteTestCases))]
-        public void ReadWebSettings_Should_ReturnCorrectCount_When_Condition(Func<WebSetting, bool> condition, int count)
+        [TestCaseSource(nameof(WebLimitationReadDeleteTestCases))]
+        public void ReadWebLimitations_Should_ReturnCorrectCount_When_Condition(Func<WebLimitation, bool> condition, int count)
         {
-            this.CreateWebSettingsHelper();
-            Assert.AreEqual(count, this.databaseManager.ReadWebSettings(condition).Count);
+            this.CreateWebLimitationsHelper();
+            Assert.AreEqual(count, this.databaseManager.ReadWebLimitations(condition).Count);
         }
 
         /// <summary>
@@ -465,42 +426,29 @@ namespace ParentalControl.Data.Tests
         }
 
         /// <summary>
-        /// Delete program settings test.
+        /// Delete program limitations test.
         /// </summary>
         /// <param name="condition">Condition.</param>
         /// <param name="count">Count.</param>
-        [TestCaseSource(nameof(ProgramSettingReadDeleteTestCases))]
-        public void DeleteProgramSettings_Should_ThrowNothing(Func<ProgramSetting, bool> condition, int count)
+        [TestCaseSource(nameof(ProgramLimitationReadDeleteTestCases))]
+        public void DeleteProgramLimitations_Should_ThrowNothing(Func<ProgramLimitation, bool> condition, int count)
         {
-            this.CreateProgramSettingsHelper();
-            this.databaseManager.Transaction(() => this.databaseManager.DeleteProgramSettings(condition));
-            Assert.AreEqual(0, this.databaseManager.ReadProgramSettings(condition).Count);
+            this.CreateProgramLimitationsHelper();
+            this.databaseManager.Transaction(() => this.databaseManager.DeleteProgramLimitations(condition));
+            Assert.AreEqual(0, this.databaseManager.ReadProgramLimitations(condition).Count);
         }
 
         /// <summary>
-        /// Delete time settings test.
+        /// Delete web limitations test.
         /// </summary>
         /// <param name="condition">Condition.</param>
         /// <param name="count">Count.</param>
-        [TestCaseSource(nameof(TimeSettingReadDeleteTestCases))]
-        public void DeleteTimeSettings_Should_ThrowNothing(Func<TimeSetting, bool> condition, int count)
+        [TestCaseSource(nameof(WebLimitationReadDeleteTestCases))]
+        public void DeleteWebLimitations_Should_ThrowNothing(Func<WebLimitation, bool> condition, int count)
         {
-            this.CreateTimeSettingsHelper();
-            this.databaseManager.Transaction(() => this.databaseManager.DeleteTimeSettings(condition));
-            Assert.AreEqual(0, this.databaseManager.ReadTimeSettings(condition).Count);
-        }
-
-        /// <summary>
-        /// Delete web settings test.
-        /// </summary>
-        /// <param name="condition">Condition.</param>
-        /// <param name="count">Count.</param>
-        [TestCaseSource(nameof(WebSettingReadDeleteTestCases))]
-        public void DeleteWebSettings_Should_ThrowNothing(Func<WebSetting, bool> condition, int count)
-        {
-            this.CreateWebSettingsHelper();
-            this.databaseManager.Transaction(() => this.databaseManager.DeleteWebSettings(condition));
-            Assert.AreEqual(0, this.databaseManager.ReadWebSettings(condition).Count);
+            this.CreateWebLimitationsHelper();
+            this.databaseManager.Transaction(() => this.databaseManager.DeleteWebLimitations(condition));
+            Assert.AreEqual(0, this.databaseManager.ReadWebLimitations(condition).Count);
         }
 
         /// <summary>
@@ -532,48 +480,60 @@ namespace ParentalControl.Data.Tests
         }
 
         /// <summary>
-        /// Update program settings test.
+        /// Update users test. It should throw ArgumentNullException.
         /// </summary>
-        /// <param name="action">Action.</param>
-        /// <param name="condition">Condition.</param>
-        /// <param name="expection">Expection.</param>
-        [TestCaseSource(nameof(ProgramSettingUpdateTestCases))]
-        public void UpdateProgramSettings_Should_Update_When_Condition(Action<ProgramSetting> action, Func<ProgramSetting, bool> condition, Func<ProgramSetting, bool> expection)
+        [Test]
+        public void UpdateUsers_Should_ThrowArgumentNullException_When_ActionIsNull()
         {
-            this.CreateProgramSettingsHelper();
-            var programSettings = this.databaseManager.ReadProgramSettings(condition);
-            this.databaseManager.Transaction(() => this.databaseManager.UpdateProgramSettings(action, condition));
-            Assert.IsTrue(programSettings.All(expection));
+            Assert.Throws<ArgumentNullException>(() => this.databaseManager.UpdateUsers(null));
         }
 
         /// <summary>
-        /// Update time settings test.
+        /// Update program limitations test.
         /// </summary>
         /// <param name="action">Action.</param>
         /// <param name="condition">Condition.</param>
         /// <param name="expection">Expection.</param>
-        [TestCaseSource(nameof(TimeSettingUpdateTestCases))]
-        public void UpdateTimeSettings_Should_Update_When_Condition(Action<TimeSetting> action, Func<TimeSetting, bool> condition, Func<TimeSetting, bool> expection)
+        [TestCaseSource(nameof(ProgramLimitationUpdateTestCases))]
+        public void UpdateProgramLimitations_Should_Update_When_Condition(Action<ProgramLimitation> action, Func<ProgramLimitation, bool> condition, Func<ProgramLimitation, bool> expection)
         {
-            this.CreateTimeSettingsHelper();
-            var timeSetting = this.databaseManager.ReadTimeSettings(condition);
-            this.databaseManager.Transaction(() => this.databaseManager.UpdateTimeSettings(action, condition));
-            Assert.IsTrue(timeSetting.All(expection));
+            this.CreateProgramLimitationsHelper();
+            var programLimitations = this.databaseManager.ReadProgramLimitations(condition);
+            this.databaseManager.Transaction(() => this.databaseManager.UpdateProgramLimitations(action, condition));
+            Assert.IsTrue(programLimitations.All(expection));
         }
 
         /// <summary>
-        /// Update web settings test.
+        /// Update program limitations test. It should throw ArgumentNullException.
+        /// </summary>
+        [Test]
+        public void UpdateProgramLimitations_Should_ThrowArgumentNullException_When_ActionIsNull()
+        {
+            Assert.Throws<ArgumentNullException>(() => this.databaseManager.UpdateProgramLimitations(null));
+        }
+
+        /// <summary>
+        /// Update time limitations test.
         /// </summary>
         /// <param name="action">Action.</param>
         /// <param name="condition">Condition.</param>
         /// <param name="expection">Expection.</param>
-        [TestCaseSource(nameof(WebSettingUpdateTestCases))]
-        public void UpdateWebSettings_Should_Update_When_Condition(Action<WebSetting> action, Func<WebSetting, bool> condition, Func<WebSetting, bool> expection)
+        [TestCaseSource(nameof(TimeLimitationUpdateTestCases))]
+        public void UpdateTimeLimitations_Should_Update_When_Condition(Action<User> action, Func<User, bool> condition, Func<User, bool> expection)
         {
-            this.CreateWebSettingsHelper();
-            var webSetting = this.databaseManager.ReadWebSettings(condition);
-            this.databaseManager.Transaction(() => this.databaseManager.UpdateWebSettings(action, condition));
-            Assert.IsTrue(webSetting.All(expection));
+            this.CreateTimeLimitationsHelper();
+            var timeLimitations = this.databaseManager.ReadUsers(condition);
+            this.databaseManager.Transaction(() => this.databaseManager.UpdateUsers(action, condition));
+            Assert.IsTrue(timeLimitations.All(expection));
+        }
+
+        /// <summary>
+        /// Update time limitations test. It should throw ArgumentNullException.
+        /// </summary>
+        [Test]
+        public void UpdateTimeLimitations_Should_ThrowArgumentNullException_When_ActionIsNull()
+        {
+            Assert.Throws<ArgumentNullException>(() => this.databaseManager.UpdateUsers(null));
         }
 
         /// <summary>
@@ -586,45 +546,9 @@ namespace ParentalControl.Data.Tests
         public void UpdateKeywords_Should_Update_When_Condition(Action<Keyword> action, Func<Keyword, bool> condition, Func<Keyword, bool> expection)
         {
             this.CreateKeywordsHelper();
-            var keyword = this.databaseManager.ReadKeywords(condition);
+            var keywords = this.databaseManager.ReadKeywords(condition);
             this.databaseManager.Transaction(() => this.databaseManager.UpdateKeywords(action, condition));
-            Assert.IsTrue(keyword.All(expection));
-        }
-
-        /// <summary>
-        /// Update users test. It should throw ArgumentNullException.
-        /// </summary>
-        [Test]
-        public void UpdateUsers_Should_ThrowArgumentNullException_When_ActionIsNull()
-        {
-            Assert.Throws<ArgumentNullException>(() => this.databaseManager.UpdateUsers(null));
-        }
-
-        /// <summary>
-        /// Update program settings test. It should throw ArgumentNullException.
-        /// </summary>
-        [Test]
-        public void UpdateProgramSettings_Should_ThrowArgumentNullException_When_ActionIsNull()
-        {
-            Assert.Throws<ArgumentNullException>(() => this.databaseManager.UpdateProgramSettings(null));
-        }
-
-        /// <summary>
-        /// Update time settings test. It should throw ArgumentNullException.
-        /// </summary>
-        [Test]
-        public void UpdateTimeSettings_Should_ThrowArgumentNullException_When_ActionIsNull()
-        {
-            Assert.Throws<ArgumentNullException>(() => this.databaseManager.UpdateTimeSettings(null));
-        }
-
-        /// <summary>
-        /// Update web settings test. It should throw ArgumentNullException.
-        /// </summary>
-        [Test]
-        public void UpdateWebSettings_Should_ThrowArgumentNullException_When_ActionIsNull()
-        {
-            Assert.Throws<ArgumentNullException>(() => this.databaseManager.UpdateWebSettings(null));
+            Assert.IsTrue(keywords.All(expection));
         }
 
         /// <summary>
@@ -669,6 +593,7 @@ namespace ParentalControl.Data.Tests
 
         private void CreateUsersHelper()
         {
+            int count = 1;
             foreach (var userTestCase in UserCreateTestCases)
             {
                 this.databaseManager.Transaction(() => this.databaseManager.CreateUser(
@@ -676,58 +601,69 @@ namespace ParentalControl.Data.Tests
                     (string)userTestCase[1],
                     (string)userTestCase[2],
                     (string)userTestCase[3]));
+                this.databaseManager.Transaction(() => this.databaseManager.UpdateUsers(x => x.ID = count++, x => x.Username == (string)userTestCase[0]));
             }
         }
 
-        private void CreateProgramSettingsHelper()
+        private void CreateProgramLimitationsHelper()
         {
-            foreach (var programSettingTestCase in ProgramSettingCreateTestCases)
+            this.CreateUsersHelper();
+            foreach (var programLimitationTestCase in ProgramLimitationCreateTestCases)
             {
-                this.databaseManager.Transaction(() => this.databaseManager.CreateProgramSetting(
-                    (int)programSettingTestCase[0],
-                    (string)programSettingTestCase[1],
-                    (string)programSettingTestCase[2],
-                    (bool)programSettingTestCase[3],
-                    (int)programSettingTestCase[4],
-                    (bool)programSettingTestCase[5],
-                    (int)programSettingTestCase[6],
-                    (int)programSettingTestCase[7],
-                    (bool)programSettingTestCase[8],
-                    programSettingTestCase[9] == null ? default : (TimeSpan)programSettingTestCase[9],
-                    programSettingTestCase[10] == null ? default : (TimeSpan)programSettingTestCase[10]));
+                this.databaseManager.Transaction(() => this.databaseManager.CreateProgramLimitation(
+                    (int)programLimitationTestCase[0],
+                    (string)programLimitationTestCase[1],
+                    (string)programLimitationTestCase[2],
+                    (bool)programLimitationTestCase[3],
+                    (int)programLimitationTestCase[4],
+                    (bool)programLimitationTestCase[5],
+                    (int)programLimitationTestCase[6],
+                    (int)programLimitationTestCase[7],
+                    (bool)programLimitationTestCase[8],
+                    programLimitationTestCase[9] == null ? default : (TimeSpan)programLimitationTestCase[9],
+                    programLimitationTestCase[10] == null ? default : (TimeSpan)programLimitationTestCase[10]));
             }
         }
 
-        private void CreateTimeSettingsHelper()
+        private void CreateTimeLimitationsHelper()
         {
-            foreach (var timeSettingTestCase in TimeSettingCreateTestCases)
+            this.CreateUsersHelper();
+            foreach (var timeLimitationTestCase in TimeLimitationCreateTestCases)
             {
-                this.databaseManager.Transaction(() => this.databaseManager.CreateTimeSetting(
-                    (int)timeSettingTestCase[0],
-                    (bool)timeSettingTestCase[1],
-                    (int)timeSettingTestCase[2],
-                    (bool)timeSettingTestCase[3],
-                    timeSettingTestCase[4] == null ? default : (TimeSpan)timeSettingTestCase[4],
-                    timeSettingTestCase[5] == null ? default : (TimeSpan)timeSettingTestCase[5]));
+                this.databaseManager.UpdateUsers(
+                    x =>
+                    {
+                        x.IsTimeLimitationActive = true;
+                        x.Occasional = (bool)timeLimitationTestCase[1];
+                        x.Minutes = (int)timeLimitationTestCase[2];
+                        x.Orderly = (bool)timeLimitationTestCase[3];
+                        x.FromTime = timeLimitationTestCase[4] == null ? default : (TimeSpan)timeLimitationTestCase[4];
+                        x.ToTime = timeLimitationTestCase[5] == null ? default : (TimeSpan)timeLimitationTestCase[5];
+                    },
+                    x => x.ID == (int)timeLimitationTestCase[0]);
             }
         }
 
-        private void CreateWebSettingsHelper()
+        private void CreateWebLimitationsHelper()
         {
-            foreach (var webSettingTestCase in WebSettingCreateTestCases)
+            this.CreateUsersHelper();
+            this.CreateKeywordsHelper();
+            foreach (var webLimitationTestCase in WebLimitationCreateTestCases)
             {
-                this.databaseManager.Transaction(() => this.databaseManager.CreateWebSetting(
-                    (int)webSettingTestCase[0],
-                    (int)webSettingTestCase[1]));
+                this.databaseManager.Transaction(() => this.databaseManager.CreateWebLimitation(
+                    (int)webLimitationTestCase[0],
+                    (int)webLimitationTestCase[1]));
             }
         }
 
         private void CreateKeywordsHelper()
         {
+            int count = 1;
             foreach (var keywordTestCase in KeywordCreateTestCases)
             {
                 this.databaseManager.Transaction(() => this.databaseManager.CreateKeyword(
                     (string)keywordTestCase[0]));
+                this.databaseManager.Transaction(() => this.databaseManager.UpdateKeywords(x => x.ID = count++, x => x.Name == (string)keywordTestCase[0]));
             }
         }
     }
