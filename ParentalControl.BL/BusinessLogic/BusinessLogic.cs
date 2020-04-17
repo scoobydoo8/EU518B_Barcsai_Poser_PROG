@@ -11,15 +11,15 @@ namespace ParentalControl.BL
     using System.Security.Cryptography;
     using System.Text;
     using System.Threading.Tasks;
-    using ParentalControl.BL.Process;
-    using ParentalControl.BL.Proxy;
+    using ParentalControl.BL.ProcessControl;
+    using ParentalControl.BL.ProxyControl;
     using ParentalControl.Data;
     using ParentalControl.Data.Database;
 
     /// <summary>
     /// BusinessLogic class.
     /// </summary>
-    public class BusinessLogic : INotifyPropertyChanged
+    public class BusinessLogic
     {
         private static BusinessLogic businessLogic;
         private ProxyController proxyController;
@@ -30,12 +30,33 @@ namespace ParentalControl.BL
             this.Database = DatabaseManager.Get();
             this.proxyController = new ProxyController();
             this.processController = new ProcessController();
+            this.processController.AllProcessStop();
         }
 
         /// <summary>
-        /// PropertyChanged event.
+        /// User logged in with orderly active time interval event.
         /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event UserEventHandler UserLoggedInWithOrderlyActiveTimeInterval;
+
+        /// <summary>
+        /// User logged in with orderly inactive time interval event.
+        /// </summary>
+        public event UserEventHandler UserLoggedInWithOrderlyInactiveTimeInterval;
+
+        /// <summary>
+        /// User logged in with occassional permission event.
+        /// </summary>
+        public event UserEventHandler UserLoggedInWithOccassionalPermission;
+
+        /// <summary>
+        /// User logged in without permission event.
+        /// </summary>
+        public event UserEventHandler UserLoggedInWithoutPermission;
+
+        /// <summary>
+        /// Logged out event.
+        /// </summary>
+        public event UserEventHandler LoggedOut;
 
         /// <summary>
         /// Gets database.
@@ -62,12 +83,25 @@ namespace ParentalControl.BL
         }
 
         /// <summary>
+        /// Is orderly active.
+        /// </summary>
+        /// <param name="fromTime">From time.</param>
+        /// <param name="toTime">To time.</param>
+        /// <returns>Bool.</returns>
+        public static bool IsOrderlyActive(TimeSpan fromTime, TimeSpan toTime)
+        {
+            var now = DateTime.Now;
+            TimeSpan nowTimeSpan = new TimeSpan(now.Hour, now.Minute, 0);
+            return fromTime <= nowTimeSpan && nowTimeSpan < toTime;
+        }
+
+        /// <summary>
         /// Login.
         /// </summary>
         /// <param name="username">Username.</param>
         /// <param name="password">Password.</param>
-        /// <returns>Success.</returns>
-        public bool LogIn(string username, string password)
+        /// <returns>ActiveUser.</returns>
+        public User LogIn(string username, string password)
         {
             this.CheckInput(username, password);
             this.ActiveUser = this.Database.ReadUsers(x => x.Username == username && this.ValidateHash(password, x.Password)).FirstOrDefault();
@@ -75,18 +109,40 @@ namespace ParentalControl.BL
             {
                 if (this.ActiveUser.ID != 0)
                 {
-                    var programSettings = this.Database.ReadProgramLimitations(x => x.UserID == this.ActiveUser.ID);
-                    var timeSettings = this.Database.ReadUsers(x => x.IsTimeLimitationActive);
-                    if (programSettings.Any())
+                    Func<ProgramLimitation, bool> condition = x => x.UserID == this.ActiveUser.ID;
+                    var programLimitations = this.Database.ReadProgramLimitations(condition);
+                    if (programLimitations.Any())
                     {
+                        this.processController.ProgramStop(programLimitations);
+                    }
+
+                    if (this.ActiveUser.IsTimeLimitationActive)
+                    {
+                        bool isOrderlyActive = this.ActiveUser.Orderly && IsOrderlyActive(this.ActiveUser.FromTime, this.ActiveUser.ToTime);
+                        if (isOrderlyActive)
+                        {
+                            this.processController.AllProcessStart();
+                            this.UserLoggedInWithOrderlyActiveTimeInterval?.Invoke(this, null);
+                        }
+                        else if (!isOrderlyActive && this.ActiveUser.Occasional)
+                        {
+                            this.UserLoggedInWithOccassionalPermission?.Invoke(this, null);
+                        }
+                        else if (this.ActiveUser.Orderly && !isOrderlyActive && !this.ActiveUser.Occasional)
+                        {
+                            this.UserLoggedInWithOrderlyInactiveTimeInterval?.Invoke(this, new UserEventArgs() { FromTime = this.ActiveUser.FromTime });
+                            this.LogOut();
+                        }
+                        else
+                        {
+                            this.UserLoggedInWithoutPermission?.Invoke(this, null);
+                            this.LogOut();
+                        }
                     }
                 }
-
-                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.ActiveUser)));
-                return true;
             }
 
-            return false;
+            return this.ActiveUser;
         }
 
         /// <summary>
@@ -95,7 +151,7 @@ namespace ParentalControl.BL
         public void LogOut()
         {
             this.ActiveUser = default;
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.ActiveUser)));
+            this.LoggedOut?.Invoke(this, null);
         }
 
         /// <summary>

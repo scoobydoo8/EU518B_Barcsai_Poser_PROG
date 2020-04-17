@@ -7,7 +7,7 @@ using System.Threading;
 using System.Runtime.InteropServices;
 using Microsoft.Win32;
 
-namespace ParentalControl.BL.Proxy
+namespace ParentalControl.BL.ProxyControl
 {
 	/// <summary>
 	/// <b>RegistryMonitor</b> allows you to monitor specific registry key.
