@@ -26,6 +26,7 @@ namespace ParentalControl.BL.ProxyControl
         private BusinessLogic businessLogic;
         private ExplicitProxyEndPoint proxyEndPoint;
         private RegistryMonitor registryMonitor;
+        private List<string> keywords;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ProxyController"/> class.
@@ -56,9 +57,11 @@ namespace ParentalControl.BL.ProxyControl
         /// <summary>
         /// Start proxy.
         /// </summary>
-        public void Start()
+        /// <param name="keywords">Keywords.</param>
+        public void Start(List<string> keywords)
         {
             this.businessLogic = BusinessLogic.Get();
+            this.keywords = keywords;
             this.proxyServer.BeforeRequest += this.ProxyServer_BeforeRequest;
             this.proxyServer.Start();
             this.proxyServer.SetAsSystemProxy(this.proxyEndPoint, ProxyProtocolType.AllHttp);
@@ -81,24 +84,17 @@ namespace ParentalControl.BL.ProxyControl
                 throw new ArgumentNullException(nameof(this.businessLogic.ActiveUser));
             }
 
-            Func<WebLimitation, bool> condtition = x => x.UserID == this.businessLogic.ActiveUser.ID;
-            var webSettings = this.businessLogic.Database.ReadWebLimitations(condtition);
-            foreach (var webSetting in webSettings)
+            var absoluteUri = e.HttpClient.Request.RequestUri.AbsoluteUri;
+            if (this.keywords.Where(x => absoluteUri.Contains(x)).Any() ||
+                this.keywords.Where(x => absoluteUri.Contains(HttpUtility.HtmlEncode(x))).Any())
             {
-                Func<Keyword, bool> condition = x => x.ID == webSetting.KeywordID;
-                var keywords = this.businessLogic.Database.ReadKeywords(condition);
-                var absoluteUri = e.HttpClient.Request.RequestUri.AbsoluteUri;
-                if (keywords.Where(x => absoluteUri.Contains(x.Name)).Any() ||
-                    keywords.Where(x => absoluteUri.Contains(HttpUtility.HtmlEncode(x.Name))).Any())
-                {
-                    e.Ok("<!DOCTYPE html>" +
-                          "<html><body><h1>" +
-                          "Website Blocked" +
-                          "</h1>" +
-                          "<p>Blocked by titanium web proxy.</p>" +
-                          "</body>" +
-                          "</html>");
-                }
+                e.Ok("<!DOCTYPE html>" +
+                      "<html><body><h1>" +
+                      "Weboldal blokkolva!" +
+                      "</h1>" +
+                      "<p>A megadott oldal tiltott!</p>" +
+                      "</body>" +
+                      "</html>");
             }
 
             return Task.CompletedTask;

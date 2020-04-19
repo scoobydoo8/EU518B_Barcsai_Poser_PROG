@@ -170,11 +170,11 @@ namespace ParentalControl.BL.ProcessControl
                                 this.ProgramStartedWithOrderlyActiveTimeInterval?.Invoke(this, new ProcessEventArgs() { ID = process.Id, ProcessName = process.ProcessName });
                                 this.ranProcessesWhileTime.Add(new RanProcessInfo(process));
                             }
-                            else if (!isOrderlyActive && program.Occasional)
+                            else if (program.Occasional)
                             {
                                 this.ProgramStartedWithOccassionalPermission?.Invoke(this, new ProcessEventArgs() { ID = process.Id, ProcessName = process.ProcessName });
                             }
-                            else if (program.Orderly && !isOrderlyActive && !program.Occasional)
+                            else if (program.Orderly && !program.Occasional)
                             {
                                 this.ProgramStartedWithOrderlyInactiveTimeInterval?.Invoke(this, new ProcessEventArgs() { ProcessName = process.ProcessName, FromTime = program.FromTime });
                                 process?.Kill();

@@ -109,11 +109,25 @@ namespace ParentalControl.BL
             {
                 if (this.ActiveUser.ID != 0)
                 {
-                    Func<ProgramLimitation, bool> condition = x => x.UserID == this.ActiveUser.ID;
-                    var programLimitations = this.Database.ReadProgramLimitations(condition);
+                    Func<ProgramLimitation, bool> programLimitationCondition = x => x.UserID == this.ActiveUser.ID;
+                    var programLimitations = this.Database.ReadProgramLimitations(programLimitationCondition);
                     if (programLimitations.Any())
                     {
                         this.processController.ProgramStop(programLimitations);
+                    }
+
+                    var keywords = new List<string>();
+                    Func<WebLimitation, bool> webLimitationCondition = x => x.UserID == this.ActiveUser.ID;
+                    var webLimitations = this.Database.ReadWebLimitations(webLimitationCondition);
+                    foreach (var webLimitation in webLimitations)
+                    {
+                        Func<Keyword, bool> keywordCondition = x => x.ID == webLimitation.KeywordID;
+                        keywords.Add(this.Database.ReadKeywords(keywordCondition).FirstOrDefault()?.Name);
+                    }
+
+                    if (keywords.Count != 0)
+                    {
+                        this.proxyController.Start(keywords);
                     }
 
                     if (this.ActiveUser.IsTimeLimitationActive)
@@ -124,11 +138,11 @@ namespace ParentalControl.BL
                             this.processController.AllProcessStart();
                             this.UserLoggedInWithOrderlyActiveTimeInterval?.Invoke(this, null);
                         }
-                        else if (!isOrderlyActive && this.ActiveUser.Occasional)
+                        else if (this.ActiveUser.Occasional)
                         {
                             this.UserLoggedInWithOccassionalPermission?.Invoke(this, null);
                         }
-                        else if (this.ActiveUser.Orderly && !isOrderlyActive && !this.ActiveUser.Occasional)
+                        else if (this.ActiveUser.Orderly && !this.ActiveUser.Occasional)
                         {
                             this.UserLoggedInWithOrderlyInactiveTimeInterval?.Invoke(this, new UserEventArgs() { FromTime = this.ActiveUser.FromTime });
                             this.LogOut();
@@ -138,6 +152,10 @@ namespace ParentalControl.BL
                             this.UserLoggedInWithoutPermission?.Invoke(this, null);
                             this.LogOut();
                         }
+                    }
+                    else
+                    {
+                        this.processController.AllProcessStart();
                     }
                 }
             }
@@ -161,12 +179,11 @@ namespace ParentalControl.BL
         /// <param name="password">Password.</param>
         /// <param name="securityQuestion">Security question.</param>
         /// <param name="securityAnswer">Security answer.</param>
-        public void Registration(string username, string password, string securityQuestion, string securityAnswer)
+        /// <returns>Success.</returns>
+        public bool Registration(string username, string password, string securityQuestion, string securityAnswer)
         {
             this.CheckInput(username, password, securityQuestion, securityAnswer);
-            this.Database.CreateUser(username, this.GetHash(password), securityQuestion, this.GetHash(securityAnswer));
-
-            // TODO Event!
+            return this.Database.CreateUser(username, this.GetHash(password), securityQuestion, this.GetHash(securityAnswer));
         }
 
         /// <summary>
@@ -221,39 +238,6 @@ namespace ParentalControl.BL
             this.proxyController.Stop();
         }
 
-        /*
-        /// <summary>
-        /// Program limitation start.
-        /// </summary>
-        public void ProgramLimitationStart()
-        {
-            this.processController.ProgramLimitationStart();
-        }
-
-        /// <summary>
-        /// Program limitation stop.
-        /// </summary>
-        public void ProgramLimitationStop()
-        {
-            this.processController.ProgramLimitationStop();
-        }
-
-        /// <summary>
-        /// Time limitation start.
-        /// </summary>
-        public void TimeLimitationStart()
-        {
-            this.processController.TimeLimitationStart();
-        }
-
-        /// <summary>
-        /// Time limitation stop.
-        /// </summary>
-        public void TimeLimitationStop()
-        {
-            this.processController.TimeLimitationStop();
-        }
-        */
         private string GetHash(string rawstring)
         {
             this.CheckInput(rawstring);
