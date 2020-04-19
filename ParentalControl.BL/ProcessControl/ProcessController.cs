@@ -135,10 +135,10 @@ namespace ParentalControl.BL.ProcessControl
                 var process = Process.GetProcessById(id);
                 var fileName = process.MainModule.FileName;
 
-                this.logger.LogStartProcess(this.businessLogic.ActiveUser.Username, process.ProcessName);
                 process?.Suspend();
                 if (this.businessLogic != null && this.businessLogic.ActiveUser != null)
                 {
+                    this.logger.LogStartProcess(this.businessLogic.ActiveUser.Username, process.ProcessName);
                     if (this.businessLogic.ActiveUser.ID != 0 && this.programLimitations != null)
                     {
                         if (process.ProcessName.ToLower() == "cmd" || process.ProcessName.ToLower() == "powershell" || process.ProcessName.ToLower() == "taskmgr")
@@ -196,7 +196,10 @@ namespace ParentalControl.BL.ProcessControl
             var id = int.Parse(e.NewEvent.Properties["ProcessID"].Value.ToString());
             try
             {
-                this.logger.LogStopProcess(this.businessLogic.ActiveUser.Username, Process.GetProcessById(id).ProcessName);
+                if (this.businessLogic != null && this.businessLogic.ActiveUser != null)
+                {
+                    this.logger.LogStopProcess(this.businessLogic.ActiveUser.Username, Process.GetProcessById(id).ProcessName);
+                }
             }
             catch (Exception)
             {

@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParentalControl.BL", "Paren
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParentalControl.Service", "ParentalControl.Service\ParentalControl.Service.csproj", "{CDAB5390-C75D-4A7C-8AD9-7666806F9F4B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParentalControl.VM", "ParentalControl.VM\ParentalControl.VM.csproj", "{7C1F26A6-5E7A-4513-91DE-CF86D6FA54CB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{CDAB5390-C75D-4A7C-8AD9-7666806F9F4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CDAB5390-C75D-4A7C-8AD9-7666806F9F4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CDAB5390-C75D-4A7C-8AD9-7666806F9F4B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C1F26A6-5E7A-4513-91DE-CF86D6FA54CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C1F26A6-5E7A-4513-91DE-CF86D6FA54CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C1F26A6-5E7A-4513-91DE-CF86D6FA54CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C1F26A6-5E7A-4513-91DE-CF86D6FA54CB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

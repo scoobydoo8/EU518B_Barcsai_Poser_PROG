@@ -16,7 +16,7 @@
     <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x64</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -28,7 +28,7 @@
     <CodeAnalysisRuleSet>..\oenik.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x64</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -111,6 +111,10 @@
     <ProjectReference Include="..\ParentalControl.Interface\ParentalControl.Interface.csproj">
       <Project>{11520837-c058-45d8-ba21-c87678e2f6f7}</Project>
       <Name>ParentalControl.Interface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ParentalControl.VM\ParentalControl.VM.csproj">
+      <Project>{7c1f26a6-5e7a-4513-91de-cf86d6fa54cb}</Project>
+      <Name>ParentalControl.VM</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
