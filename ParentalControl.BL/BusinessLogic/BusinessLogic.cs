@@ -29,9 +29,11 @@ namespace ParentalControl.BL
         private DatabaseManager database;
         private ProxyController proxyController;
         private ProcessController processController;
+        private Logger logger;
 
         private BusinessLogic()
         {
+            this.logger = Logger.Get();
             this.database = DatabaseManager.Get();
             this.proxyController = new ProxyController();
             this.processController = new ProcessController();
@@ -53,16 +55,13 @@ namespace ParentalControl.BL
         /// <inheritdoc/>
         public IDatabaseManager Database { get => this.database; }
 
-        /// <summary>
-        /// Gets activeUser.
-        /// </summary>
-        public User User { get; private set; }
-
-        /// <inheritdoc/>
-        public IUser LoggedInUser { get => this.User; }
-
         /// <inheritdoc/>
         public IProcessController ProcessController { get => this.processController; }
+
+        /// <summary>
+        /// Gets active user.
+        /// </summary>
+        internal User ActiveUser { get; private set; }
 
         /// <summary>
         /// Singleton.
@@ -95,19 +94,20 @@ namespace ParentalControl.BL
         public IUser LogIn(string username, string password)
         {
             this.CheckInput(username, password);
-            this.User = this.database.ReadUsers(x => x.Username == username && this.ValidateHash(password, x.Password)).FirstOrDefault();
-            if (this.User != null)
+            this.ActiveUser = this.database.ReadUsers(x => x.Username == username && this.ValidateHash(password, x.Password)).FirstOrDefault();
+            if (this.ActiveUser != null)
             {
-                if (this.User.ID != 0)
+                if (this.ActiveUser.ID != 0)
                 {
-                    if (!this.User.IsTimeLimitInactive)
+                    if (!this.ActiveUser.IsTimeLimitInactive)
                     {
-                        bool isOrderly = this.User.IsTimeLimitOrderly && IsOrderlyActive(this.User.TimeLimitFromTime, this.User.TimeLimitToTime);
+                        bool isOrderly = this.ActiveUser.IsTimeLimitOrderly && IsOrderlyActive(this.ActiveUser.TimeLimitFromTime, this.ActiveUser.TimeLimitToTime);
                         if (isOrderly)
                         {
                             this.processController.AllProcessLimitStop();
                             this.proxyController.Start();
                             this.UserLoggedInOrderly?.Invoke(this, EventArgs.Empty);
+                            this.logger.LogLogin(this.ActiveUser.Username);
                         }
                         else
                         {
@@ -119,17 +119,18 @@ namespace ParentalControl.BL
                         this.processController.AllProcessLimitStop();
                         this.proxyController.Start();
                         this.UserLoggedInFull?.Invoke(this, EventArgs.Empty);
+                        this.logger.LogLogin(this.ActiveUser.Username);
                     }
                 }
             }
 
-            return this.LoggedInUser;
+            return this.ActiveUser;
         }
 
         /// <inheritdoc/>
         public void LogOut()
         {
-            this.User = default;
+            this.ActiveUser = default;
             this.processController.AllProcessLimitStart();
             this.UserLoggedOut?.Invoke(this, EventArgs.Empty);
         }
@@ -139,12 +140,6 @@ namespace ParentalControl.BL
         {
             this.CheckInput(username, password, securityQuestion, securityAnswer);
             return this.database.CreateUser(username, this.GetHash(password), securityQuestion, this.GetHash(securityAnswer));
-        }
-
-        /// <inheritdoc/>
-        public bool IsValidUsername(string username)
-        {
-            return this.database.ReadUsers(x => x.Username == username).Any();
         }
 
         /// <inheritdoc/>
@@ -164,6 +159,22 @@ namespace ParentalControl.BL
                 return true;
             }
 
+            return false;
+        }
+
+        /// <inheritdoc/>
+        public bool IsOccassionalPermission(string adminUsername, string adminPassword)
+        {
+            this.logger.LogLogin(this.ActiveUser.Username);
+            var admin = this.database.ReadUsers(x => x.ID == 0).FirstOrDefault() as User;
+            if (admin.Username == adminUsername && this.ValidateHash(adminPassword, admin.Password))
+            {
+                this.processController.AllProcessLimitStop();
+                this.proxyController.Start();
+                return true;
+            }
+
+            this.LogOut();
             return false;
         }
 

@@ -22,17 +22,19 @@ namespace ParentalControl.BL.ProcessControl
     {
         private BusinessLogic businessLogic;
         private List<IProgramLimitation> programLimitations;
-        private List<RanProcessInfo> ranProcessesWhileTime;
+        private List<Process> ranProcessesWhileTime;
         private ManagementEventWatcher processStartedEventWatcher;
         private ManagementEventWatcher processStoppedEventWatcher;
         private bool eventWatchersStarted;
+        private Logger logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ProcessController"/> class.
         /// </summary>
         public ProcessController()
         {
-            this.ranProcessesWhileTime = new List<RanProcessInfo>();
+            this.logger = Logger.Get();
+            this.ranProcessesWhileTime = new List<Process>();
             this.processStartedEventWatcher = new ManagementEventWatcher("SELECT * FROM Win32_ProcessStartTrace");
             this.processStartedEventWatcher.EventArrived += this.ProcessStartedEventWatcher_EventArrived;
             this.processStoppedEventWatcher = new ManagementEventWatcher("SELECT * FROM Win32_ProcessStopTrace");
@@ -53,7 +55,7 @@ namespace ParentalControl.BL.ProcessControl
         {
             var process = Process.GetProcessById(processID);
             process?.Resume();
-            this.ranProcessesWhileTime.Add(new RanProcessInfo(process));
+            this.ranProcessesWhileTime.Add(process);
         }
 
         /// <inheritdoc/>
@@ -70,12 +72,10 @@ namespace ParentalControl.BL.ProcessControl
         {
             foreach (var ranProcess in this.ranProcessesWhileTime)
             {
-                ranProcess.Process?.Suspend();
-
-                // ranProcess.To = DateTime.Now;
-
-                // TODO Logger
+                ranProcess?.Kill();
             }
+
+            this.ranProcessesWhileTime = new List<Process>();
 
             /*var explorerProcesses = Process.GetProcessesByName("explorer");
             foreach (var explorer in explorerProcesses)
@@ -106,25 +106,18 @@ namespace ParentalControl.BL.ProcessControl
         public void AllProcessLimitStop()
         {
             this.businessLogic = BusinessLogic.Get();
-            if (this.businessLogic.User == null)
+            if (this.businessLogic.ActiveUser == null)
             {
-                throw new ArgumentNullException(nameof(this.businessLogic.User));
+                throw new ArgumentNullException(nameof(this.businessLogic.ActiveUser));
             }
 
-            if (this.businessLogic.User.ID != 0)
+            if (this.businessLogic.ActiveUser.ID != 0)
             {
-                this.programLimitations = this.businessLogic.Database.ReadProgramLimitations(x => x.UserID == this.businessLogic.User.ID);
+                this.programLimitations = this.businessLogic.Database.ReadProgramLimitations(x => x.UserID == this.businessLogic.ActiveUser.ID);
                 if (!this.programLimitations.Any())
                 {
                     this.programLimitations = null;
                 }
-            }
-
-            foreach (var ranProcess in this.ranProcessesWhileTime)
-            {
-                ranProcess.Process?.Resume();
-
-                // TODO Logger
             }
 
             /*var explorerProcesses = Process.GetProcessesByName("explorer");
@@ -141,10 +134,12 @@ namespace ParentalControl.BL.ProcessControl
             {
                 var process = Process.GetProcessById(id);
                 var fileName = process.MainModule.FileName;
+
+                this.logger.LogStartProcess(this.businessLogic.ActiveUser.Username, process.ProcessName);
                 process?.Suspend();
-                if (this.businessLogic != null && this.businessLogic.User != null)
+                if (this.businessLogic != null && this.businessLogic.ActiveUser != null)
                 {
-                    if (this.businessLogic.User.ID != 0 && this.programLimitations != null)
+                    if (this.businessLogic.ActiveUser.ID != 0 && this.programLimitations != null)
                     {
                         if (process.ProcessName.ToLower() == "cmd" || process.ProcessName.ToLower() == "powershell" || process.ProcessName.ToLower() == "taskmgr")
                         {
@@ -162,11 +157,11 @@ namespace ParentalControl.BL.ProcessControl
                                 return;
                             }
 
-                            bool isOrderly = this.businessLogic.User.IsProgramLimitOrderly && BusinessLogic.IsOrderlyActive(this.businessLogic.User.ProgramLimitFromTime, this.businessLogic.User.ProgramLimitToTime);
+                            bool isOrderly = this.businessLogic.ActiveUser.IsProgramLimitOrderly && BusinessLogic.IsOrderlyActive(this.businessLogic.ActiveUser.ProgramLimitFromTime, this.businessLogic.ActiveUser.ProgramLimitToTime);
                             if (isOrderly)
                             {
                                 process?.Resume();
-                                this.ranProcessesWhileTime.Add(new RanProcessInfo(process));
+                                this.ranProcessesWhileTime.Add(process);
                                 this.ProgramStartedOrderly?.Invoke(this, new ProcessEventArgs() { ID = process.Id, ProcessName = process.ProcessName });
                             }
                             else
@@ -177,13 +172,13 @@ namespace ParentalControl.BL.ProcessControl
                         else
                         {
                             process?.Resume();
-                            this.ranProcessesWhileTime.Add(new RanProcessInfo(process));
+                            this.ranProcessesWhileTime.Add(process);
                         }
                     }
                     else
                     {
                         process?.Resume();
-                        this.ranProcessesWhileTime.Add(new RanProcessInfo(process));
+                        this.ranProcessesWhileTime.Add(process);
                     }
                 }
                 else
@@ -199,15 +194,15 @@ namespace ParentalControl.BL.ProcessControl
         private void ProcessStoppedEventWatcher_EventArrived(object sender, EventArrivedEventArgs e)
         {
             var id = int.Parse(e.NewEvent.Properties["ProcessID"].Value.ToString());
-            var process = this.ranProcessesWhileTime.Where(x => x.Process.Id == id).FirstOrDefault();
-            if (process != null)
+            try
             {
-                process.To = DateTime.Now;
-
-                // TODO Logger
+                this.logger.LogStopProcess(this.businessLogic.ActiveUser.Username, Process.GetProcessById(id).ProcessName);
+            }
+            catch (Exception)
+            {
             }
 
-            this.ranProcessesWhileTime.Remove(process);
+            this.ranProcessesWhileTime.Remove(this.ranProcessesWhileTime.Where(x => x.Id == id).FirstOrDefault());
         }
 
         private List<Process[]> GetAllToBeKilledProcesses(params string[] processNames)

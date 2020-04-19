@@ -44,11 +44,6 @@ namespace ParentalControl.Interface.BusinessLogic
         IDatabaseManager Database { get; }
 
         /// <summary>
-        /// Gets activeUser.
-        /// </summary>
-        IUser LoggedInUser { get; }
-
-        /// <summary>
         /// Gets process controller.
         /// </summary>
         IProcessController ProcessController { get; }
@@ -77,13 +72,6 @@ namespace ParentalControl.Interface.BusinessLogic
         bool Registration(string username, string password, string securityQuestion, string securityAnswer);
 
         /// <summary>
-        /// Check valid username.
-        /// </summary>
-        /// <param name="username">Username.</param>
-        /// <returns>Valid.</returns>
-        bool IsValidUsername(string username);
-
-        /// <summary>
         /// Password recovery.
         /// </summary>
         /// <param name="username">Username.</param>
@@ -91,5 +79,13 @@ namespace ParentalControl.Interface.BusinessLogic
         /// <param name="newPassword">New password.</param>
         /// <returns>Success.</returns>
         bool PasswordRecovery(string username, string securityAnswer, string newPassword);
+
+        /// <summary>
+        /// Is occassional permission.
+        /// </summary>
+        /// <param name="adminUsername">Admin username.</param>
+        /// <param name="adminPassword">Admin password.</param>
+        /// <returns>Valid.</returns>
+        bool IsOccassionalPermission(string adminUsername, string adminPassword);
     }
 }

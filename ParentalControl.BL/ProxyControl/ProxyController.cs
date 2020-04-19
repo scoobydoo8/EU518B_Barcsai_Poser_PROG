@@ -27,23 +27,25 @@ namespace ParentalControl.BL.ProxyControl
         private ExplicitProxyEndPoint proxyEndPoint;
         private RegistryMonitor registryMonitor;
         private List<string> keywords;
+        private Logger logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ProxyController"/> class.
         /// </summary>
         public ProxyController()
         {
+            this.logger = Logger.Get();
             this.proxyServer = new ProxyServer()
             {
                 ExceptionFunc = exception =>
                 {
                     if (exception is ProxyHttpException phex)
                     {
-                        // TODO LOGGER (exception.Message + ": " + phex.InnerException?.Message);
+                        this.logger.LogException("ProxyHttpException:" + exception.Message + ":" + phex.InnerException?.Message);
                     }
                     else
                     {
-                        // TODO LOGGER (exception.Message);
+                        this.logger.LogException(exception.GetType().Name + ":" + exception.Message);
                     }
                 },
             };
@@ -60,13 +62,13 @@ namespace ParentalControl.BL.ProxyControl
         public void Start()
         {
             this.businessLogic = BusinessLogic.Get();
-            if (this.businessLogic.User == null)
+            if (this.businessLogic.ActiveUser == null)
             {
-                throw new ArgumentNullException(nameof(this.businessLogic.User));
+                throw new ArgumentNullException(nameof(this.businessLogic.ActiveUser));
             }
 
             this.keywords = new List<string>();
-            var webLimitations = this.businessLogic.Database.ReadWebLimitations(x => x.UserID == this.businessLogic.User.ID);
+            var webLimitations = this.businessLogic.Database.ReadWebLimitations(x => x.UserID == this.businessLogic.ActiveUser.ID);
             foreach (var webLimitation in webLimitations)
             {
                 this.keywords.Add(this.businessLogic.Database.ReadKeywords(x => x.ID == webLimitation.KeywordID).FirstOrDefault()?.Name);
@@ -93,10 +95,10 @@ namespace ParentalControl.BL.ProxyControl
 
         private Task ProxyServer_BeforeRequest(object sender, SessionEventArgs e)
         {
-            // TODO LOGGER (e.HttpClient.Request.Url);
-            if (this.businessLogic.User == null)
+            this.logger.LogHttpUrl(this.businessLogic.ActiveUser.Username, e.HttpClient.Request.Url);
+            if (this.businessLogic.ActiveUser == null)
             {
-                throw new ArgumentNullException(nameof(this.businessLogic.User));
+                throw new ArgumentNullException(nameof(this.businessLogic.ActiveUser));
             }
 
             var absoluteUri = e.HttpClient.Request.RequestUri.AbsoluteUri;
