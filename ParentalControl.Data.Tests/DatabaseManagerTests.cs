@@ -18,7 +18,7 @@ namespace ParentalControl.Data.Tests
     using ParentalControl.Data.Database;
 
     /// <summary>
-    /// DatabaseManagerTests class.
+    /// Database manager tests class.
     /// </summary>
     [TestFixture]
     public class DatabaseManagerTests
@@ -83,14 +83,10 @@ namespace ParentalControl.Data.Tests
         {
             get
             {
-                yield return new object[] { 1, "Program1", "Path1", false, 0, false, 0, 0, false, default, default };
-                yield return new object[] { 2, "Program2", "Path2", true, 30, false, 0, 0, false, default, default };
-                yield return new object[] { 1, "Program3", "Path3", true, 30, true, 10, 2, false, default, default };
-                yield return new object[] { 2, "Program4", "Path4", false, 0, true, 10, 2, false, default, default };
-                yield return new object[] { 1, "Program5", "Path5", false, 0, false, 0, 0, true, TimeSpan.Parse("12:00"), TimeSpan.Parse("13:00") };
-                yield return new object[] { 2, "Program6", "Path6", true, 30, false, 0, 0, true, TimeSpan.Parse("12:00"), TimeSpan.Parse("13:00") };
-                yield return new object[] { 1, "Program7", "Path7", true, 30, true, 10, 2, true, TimeSpan.Parse("12:00"), TimeSpan.Parse("13:00") };
-                yield return new object[] { 2, "Program8", "Path8", false, 0, true, 10, 2, true, TimeSpan.Parse("12:00"), TimeSpan.Parse("13:00") };
+                yield return new object[] { 1, "Program1", "Path1", false };
+                yield return new object[] { 2, "Program2", "Path2", true };
+                yield return new object[] { 1, "Program3", "Path3", true };
+                yield return new object[] { 2, "Program4", "Path4", false };
             }
         }
 
@@ -102,13 +98,13 @@ namespace ParentalControl.Data.Tests
             get
             {
                 Func<ProgramLimitation, bool> condition = null;
-                yield return new object[] { condition, 8 };
-                condition = x => x.Orderly == true;
                 yield return new object[] { condition, 4 };
-                condition = x => x.Repeat == false;
-                yield return new object[] { condition, 4 };
-                condition = x => x.Pause == 0;
-                yield return new object[] { condition, 4 };
+                condition = x => x.IsFullLimit == true;
+                yield return new object[] { condition, 2 };
+                condition = x => x.IsFullLimit == false;
+                yield return new object[] { condition, 2 };
+                condition = x => x.UserID == 0;
+                yield return new object[] { condition, 0 };
             }
         }
 
@@ -124,7 +120,7 @@ namespace ParentalControl.Data.Tests
                 Func<ProgramLimitation, bool> expectation = x => x.Path == "Path!";
                 yield return new object[] { action, condition, expectation };
                 action = x => x.Path = "Path!";
-                condition = x => x.FromTime != default && x.ToTime != default;
+                condition = x => x.UserID == 1;
                 expectation = x => x.Path == "Path!";
                 yield return new object[] { action, condition, expectation };
             }
@@ -137,8 +133,8 @@ namespace ParentalControl.Data.Tests
         {
             get
             {
-                yield return new object[] { 1, false, 0, false, default, default };
-                yield return new object[] { 2, true, 30, true, TimeSpan.Parse("12:00"), TimeSpan.Parse("13:00") };
+                yield return new object[] { 1, false, default, default, 0 };
+                yield return new object[] { 2, true, TimeSpan.Parse("12:00"), TimeSpan.Parse("13:00"), 30 };
             }
         }
 
@@ -151,11 +147,11 @@ namespace ParentalControl.Data.Tests
             {
                 Func<User, bool> condition = null;
                 yield return new object[] { condition, 2 };
-                condition = x => x.Occasional == true;
+                condition = x => x.IsTimeLimitOrderly == true;
                 yield return new object[] { condition, 1 };
-                condition = x => x.Orderly == false;
+                condition = x => x.IsTimeLimitOrderly == false;
                 yield return new object[] { condition, 1 };
-                condition = x => x.FromTime == default && x.ToTime == default;
+                condition = x => x.TimeLimitFromTime == default && x.TimeLimitToTime == default;
                 yield return new object[] { condition, 1 };
             }
         }
@@ -167,13 +163,13 @@ namespace ParentalControl.Data.Tests
         {
             get
             {
-                Action<User> action = x => x.Occasional = true;
+                Action<User> action = x => x.IsTimeLimitInactive = true;
                 Func<User, bool> condition = null;
-                Func<User, bool> expectation = x => x.Occasional == true;
+                Func<User, bool> expectation = x => x.IsTimeLimitInactive == true;
                 yield return new object[] { action, condition, expectation };
-                action = x => x.Occasional = true;
-                condition = x => x.FromTime != default && x.ToTime != default;
-                expectation = x => x.Occasional == true;
+                action = x => x.IsTimeLimitInactive = true;
+                condition = x => x.TimeLimitFromTime != default && x.TimeLimitToTime != default;
+                expectation = x => x.IsTimeLimitInactive == true;
                 yield return new object[] { action, condition, expectation };
             }
         }
@@ -305,20 +301,13 @@ namespace ParentalControl.Data.Tests
         /// <param name="userID">UserID.</param>
         /// <param name="name">Name.</param>
         /// <param name="path">Path.</param>
-        /// <param name="occasional">Occasional.</param>
-        /// <param name="minutes">Minutes.</param>
-        /// <param name="repeat">Repeat.</param>
-        /// <param name="pause">Puase.</param>
-        /// <param name="quantity">Quantity.</param>
-        /// <param name="orderly">Orderly.</param>
-        /// <param name="fromTime">From time.</param>
-        /// <param name="toTime">To time.</param>
+        /// <param name="isFullLimit">Is full limit.</param>
         [TestCaseSource(nameof(ProgramLimitationCreateTestCases))]
-        public void CreateProgramLimitation_Should_ThrowNothing(int userID, string name, string path, bool occasional, int minutes, bool repeat, int pause, int quantity, bool orderly, TimeSpan fromTime, TimeSpan toTime)
+        public void CreateProgramLimitation_Should_ThrowNothing(int userID, string name, string path, bool isFullLimit)
         {
             this.CreateUsersHelper();
             int countBefore = this.mockParentalControlEntities.Object.ProgramLimitations.Count();
-            this.databaseManager.Transaction(() => this.databaseManager.CreateProgramLimitation(userID, name, path, occasional, minutes, repeat, pause, quantity, orderly, fromTime, toTime));
+            this.databaseManager.Transaction(() => this.databaseManager.CreateProgramLimitation(userID, name, path, isFullLimit));
             int countAfter = this.mockParentalControlEntities.Object.ProgramLimitations.Count();
             Assert.That(countBefore + 1 == countAfter);
         }
@@ -614,14 +603,7 @@ namespace ParentalControl.Data.Tests
                     (int)programLimitationTestCase[0],
                     (string)programLimitationTestCase[1],
                     (string)programLimitationTestCase[2],
-                    (bool)programLimitationTestCase[3],
-                    (int)programLimitationTestCase[4],
-                    (bool)programLimitationTestCase[5],
-                    (int)programLimitationTestCase[6],
-                    (int)programLimitationTestCase[7],
-                    (bool)programLimitationTestCase[8],
-                    programLimitationTestCase[9] == null ? default : (TimeSpan)programLimitationTestCase[9],
-                    programLimitationTestCase[10] == null ? default : (TimeSpan)programLimitationTestCase[10]));
+                    (bool)programLimitationTestCase[3]));
             }
         }
 
@@ -633,12 +615,11 @@ namespace ParentalControl.Data.Tests
                 this.databaseManager.UpdateUsers(
                     x =>
                     {
-                        x.IsTimeLimitationActive = true;
-                        x.Occasional = (bool)timeLimitationTestCase[1];
-                        x.Minutes = (int)timeLimitationTestCase[2];
-                        x.Orderly = (bool)timeLimitationTestCase[3];
-                        x.FromTime = timeLimitationTestCase[4] == null ? default : (TimeSpan)timeLimitationTestCase[4];
-                        x.ToTime = timeLimitationTestCase[5] == null ? default : (TimeSpan)timeLimitationTestCase[5];
+                        x.IsTimeLimitInactive = false;
+                        x.IsTimeLimitOrderly = (bool)timeLimitationTestCase[1];
+                        x.TimeLimitFromTime = timeLimitationTestCase[2] == null ? default : (TimeSpan)timeLimitationTestCase[2];
+                        x.TimeLimitToTime = timeLimitationTestCase[3] == null ? default : (TimeSpan)timeLimitationTestCase[3];
+                        x.TimeLimitOccasionalMinutes = (int)timeLimitationTestCase[4];
                     },
                     x => x.ID == (int)timeLimitationTestCase[0]);
             }

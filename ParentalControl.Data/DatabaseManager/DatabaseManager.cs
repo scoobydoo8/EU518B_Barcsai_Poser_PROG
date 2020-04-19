@@ -15,7 +15,7 @@ namespace ParentalControl.Data
     using ParentalControl.Interface.DatabaseManager;
 
     /// <summary>
-    /// DatabaseManager class.
+    /// Database manager class.
     /// </summary>
     public class DatabaseManager : IDatabaseManager
     {
@@ -85,25 +85,12 @@ namespace ParentalControl.Data
         }
 
         /// <inheritdoc/>
-        public bool CreateProgramLimitation(int userID, string name, string path, bool occasional = default, int minutes = default, bool repeat = default, int pause = default, int quantity = default, bool orderly = default, TimeSpan fromTime = default, TimeSpan toTime = default)
+        public bool CreateProgramLimitation(int userID, string name, string path, bool isFullLimit = true)
         {
             var user = this.ReadUsers(x => x.ID == userID).FirstOrDefault();
             if (user != null && !this.ReadProgramLimitations(x => x.Path == path).Any())
             {
-                if (user.Orderly && orderly)
-                {
-                    if (user.FromTime > fromTime)
-                    {
-                        fromTime = user.FromTime;
-                    }
-
-                    if (user.ToTime < toTime)
-                    {
-                        toTime = user.ToTime;
-                    }
-                }
-
-                this.entities.ProgramLimitations.Create(new ProgramLimitation(userID, name, path, occasional, minutes, repeat, pause, quantity, orderly, fromTime, toTime));
+                this.entities.ProgramLimitations.Create(new ProgramLimitation(userID, name, path, isFullLimit));
                 return true;
             }
 
@@ -111,12 +98,15 @@ namespace ParentalControl.Data
         }
 
         /// <inheritdoc/>
-        public void CreateWebLimitation(int userID, int keywordID)
+        public bool CreateWebLimitation(int userID, int keywordID)
         {
             if (this.ReadUsers(x => x.ID == userID).Any() && this.ReadKeywords(x => x.ID == keywordID).Any())
             {
                 this.entities.WebLimitations.Create(new WebLimitation(userID, keywordID));
+                return true;
             }
+
+            return false;
         }
 
         /// <inheritdoc/>

@@ -16,7 +16,7 @@ namespace ParentalControl.Service
     using ParentalControl.View;
 
     /// <summary>
-    /// ParentalControlService class.
+    /// Parental control service class.
     /// </summary>
     public partial class ParentalControlService : ServiceBase
     {
@@ -34,7 +34,7 @@ namespace ParentalControl.Service
         }
 
         /// <summary>
-        /// OnStart.
+        /// On start.
         /// </summary>
         /// <param name="args">Args.</param>
         protected override void OnStart(string[] args)
@@ -43,7 +43,7 @@ namespace ParentalControl.Service
         }
 
         /// <summary>
-        /// OnStop.
+        /// On stop.
         /// </summary>
         protected override void OnStop()
         {

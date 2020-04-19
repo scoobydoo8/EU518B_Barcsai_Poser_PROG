@@ -9,11 +9,87 @@ namespace ParentalControl.Interface.BusinessLogic
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
+    using ParentalControl.Interface.Database;
+    using ParentalControl.Interface.DatabaseManager;
+    using ParentalControl.Interface.ProcessControl;
 
     /// <summary>
-    /// IBusinessLogic interface.
+    /// Business logic interface.
     /// </summary>
     public interface IBusinessLogic
     {
+        /// <summary>
+        /// User logged in with orderly permission event.
+        /// </summary>
+        event EventHandler UserLoggedInOrderly;
+
+        /// <summary>
+        /// User logged in with occassional permission event.
+        /// </summary>
+        event EventHandler UserLoggedInOccassional;
+
+        /// <summary>
+        /// User logged in with full permission event.
+        /// </summary>
+        event EventHandler UserLoggedInFull;
+
+        /// <summary>
+        /// User logged out event.
+        /// </summary>
+        event EventHandler UserLoggedOut;
+
+        /// <summary>
+        /// Gets database.
+        /// </summary>
+        IDatabaseManager Database { get; }
+
+        /// <summary>
+        /// Gets activeUser.
+        /// </summary>
+        IUser LoggedInUser { get; }
+
+        /// <summary>
+        /// Gets process controller.
+        /// </summary>
+        IProcessController ProcessController { get; }
+
+        /// <summary>
+        /// Login.
+        /// </summary>
+        /// <param name="username">Username.</param>
+        /// <param name="password">Password.</param>
+        /// <returns>ActiveUser.</returns>
+        IUser LogIn(string username, string password);
+
+        /// <summary>
+        /// Logout.
+        /// </summary>
+        void LogOut();
+
+        /// <summary>
+        /// Registration.
+        /// </summary>
+        /// <param name="username">Username.</param>
+        /// <param name="password">Password.</param>
+        /// <param name="securityQuestion">Security question.</param>
+        /// <param name="securityAnswer">Security answer.</param>
+        /// <returns>Success.</returns>
+        bool Registration(string username, string password, string securityQuestion, string securityAnswer);
+
+        /// <summary>
+        /// Check valid username.
+        /// </summary>
+        /// <param name="username">Username.</param>
+        /// <returns>Valid.</returns>
+        bool IsValidUsername(string username);
+
+        /// <summary>
+        /// Password recovery.
+        /// </summary>
+        /// <param name="username">Username.</param>
+        /// <param name="securityAnswer">Security answer.</param>
+        /// <param name="newPassword">New password.</param>
+        /// <returns>Success.</returns>
+        bool PasswordRecovery(string username, string securityAnswer, string newPassword);
     }
 }

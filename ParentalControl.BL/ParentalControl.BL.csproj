@@ -82,7 +82,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BusinessLogic\BusinessLogic.cs" />
-    <Compile Include="BusinessLogic\UserEventArgs.cs" />
+    <Compile Include="Log\Logger.cs" />
     <Compile Include="ProcessControl\ProcessEventArgs.cs" />
     <Compile Include="ProcessControl\ProcessExtension.cs" />
     <Compile Include="ProcessControl\RanProcessInfo.cs" />

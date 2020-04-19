@@ -39,12 +39,15 @@ namespace ParentalControl.Data.Database
             this.Password = password;
             this.SecurityQuestion = securityQuestion;
             this.SecurityAnswer = securityAnswer;
-            this.IsTimeLimitationActive = true;
-            this.Occasional = false;
-            this.Minutes = 0;
-            this.Orderly = false;
-            this.FromTime = default;
-            this.ToTime = default;
+            this.IsTimeLimitInactive = false;
+            this.IsTimeLimitOrderly = false;
+            this.TimeLimitFromTime = default;
+            this.TimeLimitToTime = default;
+            this.TimeLimitOccasionalMinutes = 60;
+            this.IsProgramLimitOrderly = false;
+            this.ProgramLimitFromTime = default;
+            this.ProgramLimitToTime = default;
+            this.ProgramLimitOccasionalMinutes = 30;
         }
 
         /// <inheritdoc/>
@@ -63,22 +66,31 @@ namespace ParentalControl.Data.Database
         public string SecurityAnswer { get; set; }
 
         /// <inheritdoc/>
-        public bool IsTimeLimitationActive { get; set; }
+        public bool IsTimeLimitInactive { get; set; }
 
         /// <inheritdoc/>
-        public bool Occasional { get; set; }
+        public bool IsTimeLimitOrderly { get; set; }
 
         /// <inheritdoc/>
-        public int Minutes { get; set; }
+        public TimeSpan TimeLimitFromTime { get; set; }
 
         /// <inheritdoc/>
-        public bool Orderly { get; set; }
+        public TimeSpan TimeLimitToTime { get; set; }
 
         /// <inheritdoc/>
-        public TimeSpan FromTime { get; set; }
+        public int TimeLimitOccasionalMinutes { get; set; }
 
         /// <inheritdoc/>
-        public TimeSpan ToTime { get; set; }
+        public bool IsProgramLimitOrderly { get; set; }
+
+        /// <inheritdoc/>
+        public TimeSpan ProgramLimitFromTime { get; set; }
+
+        /// <inheritdoc/>
+        public TimeSpan ProgramLimitToTime { get; set; }
+
+        /// <inheritdoc/>
+        public int ProgramLimitOccasionalMinutes { get; set; }
 
         /// <summary>
         /// Gets or sets program limitations.

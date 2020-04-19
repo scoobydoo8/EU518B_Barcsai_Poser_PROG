@@ -159,13 +159,13 @@ namespace ParentalControl.Service
             public uint dwThreadId;
         }
 
-        enum TOKEN_TYPE : int
+        private enum TOKEN_TYPE : int
         {
             TokenPrimary = 1,
             TokenImpersonation = 2
         }
 
-        enum SECURITY_IMPERSONATION_LEVEL : int
+        private enum SECURITY_IMPERSONATION_LEVEL : int
         {
             SecurityAnonymous = 0,
             SecurityIdentification = 1,

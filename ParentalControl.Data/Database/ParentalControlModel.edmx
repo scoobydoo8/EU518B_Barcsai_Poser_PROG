@@ -20,14 +20,7 @@
           <Property Name="UserID" Type="int" Nullable="false" />
           <Property Name="Name" Type="varchar" MaxLength="63" Nullable="false" />
           <Property Name="Path" Type="varchar" MaxLength="255" Nullable="false" />
-          <Property Name="Occasional" Type="bit" Nullable="false" />
-          <Property Name="Minutes" Type="int" Nullable="false" />
-          <Property Name="Repeat" Type="bit" Nullable="false" />
-          <Property Name="Pause" Type="int" Nullable="false" />
-          <Property Name="Quantity" Type="int" Nullable="false" />
-          <Property Name="Orderly" Type="bit" Nullable="false" />
-          <Property Name="FromTime" Type="time" Precision="7" Nullable="false" />
-          <Property Name="ToTime" Type="time" Precision="7" Nullable="false" />
+          <Property Name="IsFullLimit" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="Users">
           <Key>
@@ -38,12 +31,15 @@
           <Property Name="Password" Type="char" MaxLength="64" Nullable="false" />
           <Property Name="SecurityQuestion" Type="varchar" MaxLength="127" Nullable="false" />
           <Property Name="SecurityAnswer" Type="char" MaxLength="64" Nullable="false" />
-          <Property Name="IsTimeLimitationActive" Type="bit" Nullable="false" />
-          <Property Name="Occasional" Type="bit" Nullable="false" />
-          <Property Name="Minutes" Type="int" Nullable="false" />
-          <Property Name="Orderly" Type="bit" Nullable="false" />
-          <Property Name="FromTime" Type="time" Precision="7" Nullable="false" />
-          <Property Name="ToTime" Type="time" Precision="7" Nullable="false" />
+          <Property Name="IsTimeLimitInactive" Type="bit" Nullable="false" />
+          <Property Name="IsTimeLimitOrderly" Type="bit" Nullable="false" />
+          <Property Name="TimeLimitFromTime" Type="time" Precision="7" Nullable="false" />
+          <Property Name="TimeLimitToTime" Type="time" Precision="7" Nullable="false" />
+          <Property Name="TimeLimitOccasionalMinutes" Type="int" Nullable="false" />
+          <Property Name="IsProgramLimitOrderly" Type="bit" Nullable="false" />
+          <Property Name="ProgramLimitFromTime" Type="time" Precision="7" Nullable="false" />
+          <Property Name="ProgramLimitToTime" Type="time" Precision="7" Nullable="false" />
+          <Property Name="ProgramLimitOccasionalMinutes" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="WebLimitations">
           <Key>
@@ -128,14 +124,7 @@
           <Property Name="UserID" Type="Int32" Nullable="false" />
           <Property Name="Name" Type="String" MaxLength="63" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Path" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Occasional" Type="Boolean" Nullable="false" />
-          <Property Name="Minutes" Type="Int32" Nullable="false" />
-          <Property Name="Repeat" Type="Boolean" Nullable="false" />
-          <Property Name="Pause" Type="Int32" Nullable="false" />
-          <Property Name="Quantity" Type="Int32" Nullable="false" />
-          <Property Name="Orderly" Type="Boolean" Nullable="false" />
-          <Property Name="FromTime" Type="Time" Nullable="false" Precision="7" />
-          <Property Name="ToTime" Type="Time" Nullable="false" Precision="7" />
+          <Property Name="IsFullLimit" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="User" Relationship="Self.FK__ProgramLi__UserI__25869641" FromRole="ProgramLimitations" ToRole="Users" />
         </EntityType>
         <EntityType Name="User">
@@ -147,12 +136,15 @@
           <Property Name="Password" Type="String" MaxLength="64" FixedLength="true" Unicode="false" Nullable="false" />
           <Property Name="SecurityQuestion" Type="String" MaxLength="127" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="SecurityAnswer" Type="String" MaxLength="64" FixedLength="true" Unicode="false" Nullable="false" />
-          <Property Name="IsTimeLimitationActive" Type="Boolean" Nullable="false" />
-          <Property Name="Occasional" Type="Boolean" Nullable="false" />
-          <Property Name="Minutes" Type="Int32" Nullable="false" />
-          <Property Name="Orderly" Type="Boolean" Nullable="false" />
-          <Property Name="FromTime" Type="Time" Nullable="false" Precision="7" />
-          <Property Name="ToTime" Type="Time" Nullable="false" Precision="7" />
+          <Property Name="IsTimeLimitInactive" Type="Boolean" Nullable="false" />
+          <Property Name="IsTimeLimitOrderly" Type="Boolean" Nullable="false" />
+          <Property Name="TimeLimitFromTime" Type="Time" Nullable="false" Precision="7" />
+          <Property Name="TimeLimitToTime" Type="Time" Nullable="false" Precision="7" />
+          <Property Name="TimeLimitOccasionalMinutes" Type="Int32" Nullable="false" />
+          <Property Name="IsProgramLimitOrderly" Type="Boolean" Nullable="false" />
+          <Property Name="ProgramLimitFromTime" Type="Time" Nullable="false" Precision="7" />
+          <Property Name="ProgramLimitToTime" Type="Time" Nullable="false" Precision="7" />
+          <Property Name="ProgramLimitOccasionalMinutes" Type="Int32" Nullable="false" />
           <NavigationProperty Name="ProgramLimitations" Relationship="Self.FK__ProgramLi__UserI__25869641" FromRole="Users" ToRole="ProgramLimitations" />
           <NavigationProperty Name="WebLimitations" Relationship="Self.FK__WebLimita__UserI__2A4B4B5E" FromRole="Users" ToRole="WebLimitations" />
         </EntityType>
@@ -202,7 +194,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="ParentalControlDatabaseEntities" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="ParentalControlEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Keywords" EntityType="Self.Keyword" />
           <EntitySet Name="ProgramLimitations" EntityType="Self.ProgramLimitation" />
           <EntitySet Name="Users" EntityType="Self.User" />
@@ -225,7 +217,7 @@
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="ParentalControlModelStoreContainer" CdmEntityContainer="ParentalControlDatabaseEntities">
+        <EntityContainerMapping StorageEntityContainer="ParentalControlModelStoreContainer" CdmEntityContainer="ParentalControlEntities">
           <EntitySetMapping Name="Keywords">
             <EntityTypeMapping TypeName="ParentalControlModel.Keyword">
               <MappingFragment StoreEntitySet="Keywords">
@@ -241,14 +233,7 @@
                 <ScalarProperty Name="UserID" ColumnName="UserID" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Path" ColumnName="Path" />
-                <ScalarProperty Name="Occasional" ColumnName="Occasional" />
-                <ScalarProperty Name="Minutes" ColumnName="Minutes" />
-                <ScalarProperty Name="Repeat" ColumnName="Repeat" />
-                <ScalarProperty Name="Pause" ColumnName="Pause" />
-                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
-                <ScalarProperty Name="Orderly" ColumnName="Orderly" />
-                <ScalarProperty Name="FromTime" ColumnName="FromTime" />
-                <ScalarProperty Name="ToTime" ColumnName="ToTime" />
+                <ScalarProperty Name="IsFullLimit" ColumnName="IsFullLimit" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -260,12 +245,15 @@
                 <ScalarProperty Name="Password" ColumnName="Password" />
                 <ScalarProperty Name="SecurityQuestion" ColumnName="SecurityQuestion" />
                 <ScalarProperty Name="SecurityAnswer" ColumnName="SecurityAnswer" />
-                <ScalarProperty Name="IsTimeLimitationActive" ColumnName="IsTimeLimitationActive" />
-                <ScalarProperty Name="Occasional" ColumnName="Occasional" />
-                <ScalarProperty Name="Minutes" ColumnName="Minutes" />
-                <ScalarProperty Name="Orderly" ColumnName="Orderly" />
-                <ScalarProperty Name="FromTime" ColumnName="FromTime" />
-                <ScalarProperty Name="ToTime" ColumnName="ToTime" />
+                <ScalarProperty Name="IsTimeLimitInactive" ColumnName="IsTimeLimitInactive" />
+                <ScalarProperty Name="IsTimeLimitOrderly" ColumnName="IsTimeLimitOrderly" />
+                <ScalarProperty Name="TimeLimitFromTime" ColumnName="TimeLimitFromTime" />
+                <ScalarProperty Name="TimeLimitToTime" ColumnName="TimeLimitToTime" />
+                <ScalarProperty Name="TimeLimitOccasionalMinutes" ColumnName="TimeLimitOccasionalMinutes" />
+                <ScalarProperty Name="IsProgramLimitOrderly" ColumnName="IsProgramLimitOrderly" />
+                <ScalarProperty Name="ProgramLimitFromTime" ColumnName="ProgramLimitFromTime" />
+                <ScalarProperty Name="ProgramLimitToTime" ColumnName="ProgramLimitToTime" />
+                <ScalarProperty Name="ProgramLimitOccasionalMinutes" ColumnName="ProgramLimitOccasionalMinutes" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

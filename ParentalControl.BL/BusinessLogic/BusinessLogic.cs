@@ -15,58 +15,54 @@ namespace ParentalControl.BL
     using ParentalControl.BL.ProxyControl;
     using ParentalControl.Data;
     using ParentalControl.Data.Database;
+    using ParentalControl.Interface.BusinessLogic;
+    using ParentalControl.Interface.Database;
+    using ParentalControl.Interface.DatabaseManager;
+    using ParentalControl.Interface.ProcessControl;
 
     /// <summary>
-    /// BusinessLogic class.
+    /// Business logic class.
     /// </summary>
-    public class BusinessLogic
+    public class BusinessLogic : IBusinessLogic
     {
         private static BusinessLogic businessLogic;
+        private DatabaseManager database;
         private ProxyController proxyController;
         private ProcessController processController;
 
         private BusinessLogic()
         {
-            this.Database = DatabaseManager.Get();
+            this.database = DatabaseManager.Get();
             this.proxyController = new ProxyController();
             this.processController = new ProcessController();
-            this.processController.AllProcessStop();
+            this.processController.AllProcessLimitStart();
         }
 
-        /// <summary>
-        /// User logged in with orderly active time interval event.
-        /// </summary>
-        public event UserEventHandler UserLoggedInWithOrderlyActiveTimeInterval;
+        /// <inheritdoc/>
+        public event EventHandler UserLoggedInOrderly;
 
-        /// <summary>
-        /// User logged in with orderly inactive time interval event.
-        /// </summary>
-        public event UserEventHandler UserLoggedInWithOrderlyInactiveTimeInterval;
+        /// <inheritdoc/>
+        public event EventHandler UserLoggedInOccassional;
 
-        /// <summary>
-        /// User logged in with occassional permission event.
-        /// </summary>
-        public event UserEventHandler UserLoggedInWithOccassionalPermission;
+        /// <inheritdoc/>
+        public event EventHandler UserLoggedInFull;
 
-        /// <summary>
-        /// User logged in without permission event.
-        /// </summary>
-        public event UserEventHandler UserLoggedInWithoutPermission;
+        /// <inheritdoc/>
+        public event EventHandler UserLoggedOut;
 
-        /// <summary>
-        /// Logged out event.
-        /// </summary>
-        public event UserEventHandler LoggedOut;
-
-        /// <summary>
-        /// Gets database.
-        /// </summary>
-        public DatabaseManager Database { get; private set; }
+        /// <inheritdoc/>
+        public IDatabaseManager Database { get => this.database; }
 
         /// <summary>
         /// Gets activeUser.
         /// </summary>
-        public User ActiveUser { get; private set; }
+        public User User { get; private set; }
+
+        /// <inheritdoc/>
+        public IUser LoggedInUser { get => this.User; }
+
+        /// <inheritdoc/>
+        public IProcessController ProcessController { get => this.processController; }
 
         /// <summary>
         /// Singleton.
@@ -95,119 +91,68 @@ namespace ParentalControl.BL
             return fromTime <= nowTimeSpan && nowTimeSpan < toTime;
         }
 
-        /// <summary>
-        /// Login.
-        /// </summary>
-        /// <param name="username">Username.</param>
-        /// <param name="password">Password.</param>
-        /// <returns>ActiveUser.</returns>
-        public User LogIn(string username, string password)
+        /// <inheritdoc/>
+        public IUser LogIn(string username, string password)
         {
             this.CheckInput(username, password);
-            this.ActiveUser = this.Database.ReadUsers(x => x.Username == username && this.ValidateHash(password, x.Password)).FirstOrDefault();
-            if (this.ActiveUser != null)
+            this.User = this.database.ReadUsers(x => x.Username == username && this.ValidateHash(password, x.Password)).FirstOrDefault();
+            if (this.User != null)
             {
-                if (this.ActiveUser.ID != 0)
+                if (this.User.ID != 0)
                 {
-                    Func<ProgramLimitation, bool> programLimitationCondition = x => x.UserID == this.ActiveUser.ID;
-                    var programLimitations = this.Database.ReadProgramLimitations(programLimitationCondition);
-                    if (programLimitations.Any())
+                    if (!this.User.IsTimeLimitInactive)
                     {
-                        this.processController.ProgramStop(programLimitations);
-                    }
-
-                    var keywords = new List<string>();
-                    Func<WebLimitation, bool> webLimitationCondition = x => x.UserID == this.ActiveUser.ID;
-                    var webLimitations = this.Database.ReadWebLimitations(webLimitationCondition);
-                    foreach (var webLimitation in webLimitations)
-                    {
-                        Func<Keyword, bool> keywordCondition = x => x.ID == webLimitation.KeywordID;
-                        keywords.Add(this.Database.ReadKeywords(keywordCondition).FirstOrDefault()?.Name);
-                    }
-
-                    if (keywords.Count != 0)
-                    {
-                        this.proxyController.Start(keywords);
-                    }
-
-                    if (this.ActiveUser.IsTimeLimitationActive)
-                    {
-                        bool isOrderlyActive = this.ActiveUser.Orderly && IsOrderlyActive(this.ActiveUser.FromTime, this.ActiveUser.ToTime);
-                        if (isOrderlyActive)
+                        bool isOrderly = this.User.IsTimeLimitOrderly && IsOrderlyActive(this.User.TimeLimitFromTime, this.User.TimeLimitToTime);
+                        if (isOrderly)
                         {
-                            this.processController.AllProcessStart();
-                            this.UserLoggedInWithOrderlyActiveTimeInterval?.Invoke(this, null);
-                        }
-                        else if (this.ActiveUser.Occasional)
-                        {
-                            this.UserLoggedInWithOccassionalPermission?.Invoke(this, null);
-                        }
-                        else if (this.ActiveUser.Orderly && !this.ActiveUser.Occasional)
-                        {
-                            this.UserLoggedInWithOrderlyInactiveTimeInterval?.Invoke(this, new UserEventArgs() { FromTime = this.ActiveUser.FromTime });
-                            this.LogOut();
+                            this.processController.AllProcessLimitStop();
+                            this.proxyController.Start();
+                            this.UserLoggedInOrderly?.Invoke(this, EventArgs.Empty);
                         }
                         else
                         {
-                            this.UserLoggedInWithoutPermission?.Invoke(this, null);
-                            this.LogOut();
+                            this.UserLoggedInOccassional?.Invoke(this, EventArgs.Empty);
                         }
                     }
                     else
                     {
-                        this.processController.AllProcessStart();
+                        this.processController.AllProcessLimitStop();
+                        this.proxyController.Start();
+                        this.UserLoggedInFull?.Invoke(this, EventArgs.Empty);
                     }
                 }
             }
 
-            return this.ActiveUser;
+            return this.LoggedInUser;
         }
 
-        /// <summary>
-        /// Logout.
-        /// </summary>
+        /// <inheritdoc/>
         public void LogOut()
         {
-            this.ActiveUser = default;
-            this.LoggedOut?.Invoke(this, null);
+            this.User = default;
+            this.processController.AllProcessLimitStart();
+            this.UserLoggedOut?.Invoke(this, EventArgs.Empty);
         }
 
-        /// <summary>
-        /// Registration.
-        /// </summary>
-        /// <param name="username">Username.</param>
-        /// <param name="password">Password.</param>
-        /// <param name="securityQuestion">Security question.</param>
-        /// <param name="securityAnswer">Security answer.</param>
-        /// <returns>Success.</returns>
+        /// <inheritdoc/>
         public bool Registration(string username, string password, string securityQuestion, string securityAnswer)
         {
             this.CheckInput(username, password, securityQuestion, securityAnswer);
-            return this.Database.CreateUser(username, this.GetHash(password), securityQuestion, this.GetHash(securityAnswer));
+            return this.database.CreateUser(username, this.GetHash(password), securityQuestion, this.GetHash(securityAnswer));
         }
 
-        /// <summary>
-        /// Check valid username.
-        /// </summary>
-        /// <param name="username">Username.</param>
-        /// <returns>Valid.</returns>
+        /// <inheritdoc/>
         public bool IsValidUsername(string username)
         {
-            return this.Database.ReadUsers(x => x.Username == username).Any();
+            return this.database.ReadUsers(x => x.Username == username).Any();
         }
 
-        /// <summary>
-        /// Password recovery.
-        /// </summary>
-        /// <param name="username">Username.</param>
-        /// <param name="securityAnswer">Security answer.</param>
-        /// <param name="newPassword">New password.</param>
-        /// <returns>Success.</returns>
+        /// <inheritdoc/>
         public bool PasswordRecovery(string username, string securityAnswer, string newPassword)
         {
             this.CheckInput(username, securityAnswer, newPassword);
             Func<User, bool> condition = x => x.Username == username;
-            var user = this.Database.ReadUsers(condition).FirstOrDefault();
+            var user = this.database.ReadUsers(condition).FirstOrDefault();
             if (user == null)
             {
                 throw new ArgumentException("Nem létezik ilyen felhasználó!", nameof(username));
@@ -215,27 +160,11 @@ namespace ParentalControl.BL
 
             if (this.ValidateHash(securityAnswer, user.SecurityAnswer))
             {
-                this.Database.UpdateUsers(x => x.Password = this.GetHash(newPassword), x => x.Username == username);
+                this.database.UpdateUsers(x => x.Password = this.GetHash(newPassword), x => x.Username == username);
                 return true;
             }
 
             return false;
-        }
-
-        /// <summary>
-        /// Content filtering start.
-        /// </summary>
-        public void ContentFilteringStart()
-        {
-            this.proxyController.Start();
-        }
-
-        /// <summary>
-        /// Content filtering stop.
-        /// </summary>
-        public void ContentFilteringStop()
-        {
-            this.proxyController.Stop();
         }
 
         private string GetHash(string rawstring)

@@ -12,7 +12,7 @@ namespace ParentalControl.Interface.DatabaseManager
     using ParentalControl.Interface.Database;
 
     /// <summary>
-    /// IDatabaseManager interface.
+    /// Database manager interface.
     /// </summary>
     public interface IDatabaseManager
     {
@@ -28,23 +28,17 @@ namespace ParentalControl.Interface.DatabaseManager
         /// <param name="userID">UserID.</param>
         /// <param name="name">Name.</param>
         /// <param name="path">Path.</param>
-        /// <param name="occasional">Occasional.</param>
-        /// <param name="minutes">Minutes.</param>
-        /// <param name="repeat">Repeat.</param>
-        /// <param name="pause">Puase.</param>
-        /// <param name="quantity">Quantity.</param>
-        /// <param name="orderly">Orderly.</param>
-        /// <param name="fromTime">From time.</param>
-        /// <param name="toTime">To time.</param>
+        /// <param name="isFullLimit">isOrderly.</param>
         /// <returns>Success.</returns>
-        bool CreateProgramLimitation(int userID, string name, string path, bool occasional = default, int minutes = default, bool repeat = default, int pause = default, int quantity = default, bool orderly = default, TimeSpan fromTime = default, TimeSpan toTime = default);
+        bool CreateProgramLimitation(int userID, string name, string path, bool isFullLimit = true);
 
         /// <summary>
         /// Create web limitation.
         /// </summary>
         /// <param name="userID">UserID.</param>
         /// <param name="keywordID">KeywordID.</param>
-        void CreateWebLimitation(int userID, int keywordID);
+        /// <returns>Success.</returns>
+        bool CreateWebLimitation(int userID, int keywordID);
 
         /// <summary>
         /// Create keyword.

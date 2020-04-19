@@ -12,15 +12,16 @@ namespace ParentalControl.BL.ProcessControl
     using System.Text;
     using System.Threading.Tasks;
     using ParentalControl.Data.Database;
+    using ParentalControl.Interface.Database;
+    using ParentalControl.Interface.ProcessControl;
 
     /// <summary>
     /// Process controller class.
     /// </summary>
-    internal class ProcessController
+    public class ProcessController : IProcessController
     {
         private BusinessLogic businessLogic;
-        private List<ProgramLimitation> programLimitations;
-        private bool canRunProcess = false;
+        private List<IProgramLimitation> programLimitations;
         private List<RanProcessInfo> ranProcessesWhileTime;
         private ManagementEventWatcher processStartedEventWatcher;
         private ManagementEventWatcher processStoppedEventWatcher;
@@ -38,56 +39,34 @@ namespace ParentalControl.BL.ProcessControl
             this.processStoppedEventWatcher.EventArrived += this.ProcessStoppedEventWatcher_EventArrived;
         }
 
-        /// <summary>
-        /// Program started with orderly active time interval event.
-        /// </summary>
-        public event ProcessEventHandler ProgramStartedWithOrderlyActiveTimeInterval;
+        /// <inheritdoc/>
+        public event EventHandler<IProcessEventArgs> ProgramStartedOrderly;
 
-        /// <summary>
-        /// Program started with orderly inactive time interval event.
-        /// </summary>
-        public event ProcessEventHandler ProgramStartedWithOrderlyInactiveTimeInterval;
+        /// <inheritdoc/>
+        public event EventHandler<IProcessEventArgs> ProgramStartedOccassional;
 
-        /// <summary>
-        /// Program started with occassional permission event.
-        /// </summary>
-        public event ProcessEventHandler ProgramStartedWithOccassionalPermission;
+        /// <inheritdoc/>
+        public event EventHandler<IProcessEventArgs> ProgramStartedFullLimit;
 
-        /// <summary>
-        /// Program started without permission event.
-        /// </summary>
-        public event ProcessEventHandler ProgramStartedWithoutPermission;
-
-        /// <summary>
-        /// Program stop.
-        /// </summary>
-        /// <param name="programLimitations">Program limitations.</param>
-        public void ProgramStop(List<ProgramLimitation> programLimitations)
-        {
-            this.businessLogic = BusinessLogic.Get();
-            if (this.businessLogic.ActiveUser == null)
-            {
-                throw new ArgumentNullException(nameof(this.businessLogic.ActiveUser));
-            }
-
-            this.programLimitations = programLimitations;
-        }
-
-        /// <summary>
-        /// Program start.
-        /// </summary>
-        /// <param name="processID">Process ID.</param>
-        public void ProgramStart(int processID)
+        /// <inheritdoc/>
+        public void ProgramResume(int processID)
         {
             var process = Process.GetProcessById(processID);
             process?.Resume();
             this.ranProcessesWhileTime.Add(new RanProcessInfo(process));
         }
 
+        /// <inheritdoc/>
+        public void ProgramKill(int processID)
+        {
+            var process = Process.GetProcessById(processID);
+            process?.Kill();
+        }
+
         /// <summary>
-        /// All process stop.
+        /// All process limitation start.
         /// </summary>
-        public void AllProcessStop()
+        public void AllProcessLimitStart()
         {
             foreach (var ranProcess in this.ranProcessesWhileTime)
             {
@@ -113,8 +92,6 @@ namespace ParentalControl.BL.ProcessControl
                 }
             }
 
-            this.canRunProcess = false;
-
             if (!this.eventWatchersStarted)
             {
                 this.processStartedEventWatcher.Start();
@@ -124,10 +101,25 @@ namespace ParentalControl.BL.ProcessControl
         }
 
         /// <summary>
-        /// All process start.
+        /// All process limitation stop.
         /// </summary>
-        public void AllProcessStart()
+        public void AllProcessLimitStop()
         {
+            this.businessLogic = BusinessLogic.Get();
+            if (this.businessLogic.User == null)
+            {
+                throw new ArgumentNullException(nameof(this.businessLogic.User));
+            }
+
+            if (this.businessLogic.User.ID != 0)
+            {
+                this.programLimitations = this.businessLogic.Database.ReadProgramLimitations(x => x.UserID == this.businessLogic.User.ID);
+                if (!this.programLimitations.Any())
+                {
+                    this.programLimitations = null;
+                }
+            }
+
             foreach (var ranProcess in this.ranProcessesWhileTime)
             {
                 ranProcess.Process?.Resume();
@@ -140,8 +132,6 @@ namespace ParentalControl.BL.ProcessControl
             {
                 explorer?.Resume();
             }*/
-
-            this.canRunProcess = true;
         }
 
         private void ProcessStartedEventWatcher_EventArrived(object sender, EventArrivedEventArgs e)
@@ -152,47 +142,52 @@ namespace ParentalControl.BL.ProcessControl
                 var process = Process.GetProcessById(id);
                 var fileName = process.MainModule.FileName;
                 process?.Suspend();
-                if (this.canRunProcess)
+                if (this.businessLogic != null && this.businessLogic.User != null)
                 {
-                    if (this.businessLogic.ActiveUser.ID != 0)
+                    if (this.businessLogic.User.ID != 0 && this.programLimitations != null)
                     {
-                        var program = this.programLimitations.Where(x => x.Path == fileName).FirstOrDefault();
                         if (process.ProcessName.ToLower() == "cmd" || process.ProcessName.ToLower() == "powershell" || process.ProcessName.ToLower() == "taskmgr")
                         {
                             process?.Kill();
+                            return;
                         }
-                        else if (program != null)
+
+                        var program = this.programLimitations.Where(x => x.Path == fileName).FirstOrDefault();
+                        if (program != null)
                         {
-                            bool isOrderlyActive = program.Orderly && BusinessLogic.IsOrderlyActive(program.FromTime, program.ToTime);
-                            if (isOrderlyActive)
+                            if (program.IsFullLimit)
+                            {
+                                process?.Kill();
+                                this.ProgramStartedFullLimit?.Invoke(this, new ProcessEventArgs() { ProcessName = process.ProcessName });
+                                return;
+                            }
+
+                            bool isOrderly = this.businessLogic.User.IsProgramLimitOrderly && BusinessLogic.IsOrderlyActive(this.businessLogic.User.ProgramLimitFromTime, this.businessLogic.User.ProgramLimitToTime);
+                            if (isOrderly)
                             {
                                 process?.Resume();
-                                this.ProgramStartedWithOrderlyActiveTimeInterval?.Invoke(this, new ProcessEventArgs() { ID = process.Id, ProcessName = process.ProcessName });
                                 this.ranProcessesWhileTime.Add(new RanProcessInfo(process));
+                                this.ProgramStartedOrderly?.Invoke(this, new ProcessEventArgs() { ID = process.Id, ProcessName = process.ProcessName });
                             }
-                            else if (program.Occasional)
+                            else
                             {
-                                this.ProgramStartedWithOccassionalPermission?.Invoke(this, new ProcessEventArgs() { ID = process.Id, ProcessName = process.ProcessName });
-                            }
-                            else if (program.Orderly && !program.Occasional)
-                            {
-                                this.ProgramStartedWithOrderlyInactiveTimeInterval?.Invoke(this, new ProcessEventArgs() { ProcessName = process.ProcessName, FromTime = program.FromTime });
-                                process?.Kill();
+                                this.ProgramStartedOccassional?.Invoke(this, new ProcessEventArgs() { ID = process.Id, ProcessName = process.ProcessName });
                             }
                         }
-                        else if (program == null)
+                        else
                         {
                             process?.Resume();
+                            this.ranProcessesWhileTime.Add(new RanProcessInfo(process));
                         }
                     }
                     else
                     {
                         process?.Resume();
+                        this.ranProcessesWhileTime.Add(new RanProcessInfo(process));
                     }
                 }
                 else
                 {
-                    this.ProgramStartedWithoutPermission?.Invoke(this, new ProcessEventArgs() { ProcessName = process.ProcessName });
                     process?.Kill();
                 }
             }

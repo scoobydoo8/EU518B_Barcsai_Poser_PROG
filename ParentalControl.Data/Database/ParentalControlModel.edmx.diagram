@@ -4,11 +4,11 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="cf210b53593e4d70bf43cf85aa98d939" Name="ParentalControlDiagram">
-        <EntityTypeShape EntityType="ParentalControlModel.Keyword" Width="1.5" PointX="3" PointY="8" IsExpanded="true" />
-        <EntityTypeShape EntityType="ParentalControlModel.ProgramLimitation" Width="1.5" PointX="3" PointY="3.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ParentalControlModel.User" Width="1.5" PointX="0.75" PointY="3.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ParentalControlModel.WebLimitation" Width="1.5" PointX="0.75" PointY="8" IsExpanded="true" />
+      <Diagram DiagramId="6e4438d792c84a0eb215b7cbac571fd1" Name="Diagram">
+        <EntityTypeShape EntityType="ParentalControlModel.Keyword" Width="1.5" PointX="2.75" PointY="7.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="ParentalControlModel.ProgramLimitation" Width="1.5" PointX="2.75" PointY="2.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ParentalControlModel.User" Width="1.5" PointX="0.75" PointY="2.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ParentalControlModel.WebLimitation" Width="1.5" PointX="0.75" PointY="7.25" IsExpanded="true" />
         <AssociationConnector Association="ParentalControlModel.FK__WebLimita__Keywo__2B3F6F97" ManuallyRouted="false" />
         <AssociationConnector Association="ParentalControlModel.FK__ProgramLi__UserI__25869641" ManuallyRouted="false" />
         <AssociationConnector Association="ParentalControlModel.FK__WebLimita__UserI__2A4B4B5E" ManuallyRouted="false" />

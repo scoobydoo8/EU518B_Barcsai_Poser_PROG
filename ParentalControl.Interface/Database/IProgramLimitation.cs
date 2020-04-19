@@ -36,43 +36,8 @@ namespace ParentalControl.Interface.Database
         string Path { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether occasional.
+        /// Gets or sets a value indicating whether full limit.
         /// </summary>
-        bool Occasional { get; set; }
-
-        /// <summary>
-        /// Gets or sets minutes.
-        /// </summary>
-        int Minutes { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether repeat.
-        /// </summary>
-        bool Repeat { get; set; }
-
-        /// <summary>
-        /// Gets or sets pause.
-        /// </summary>
-        int Pause { get; set; }
-
-        /// <summary>
-        /// Gets or sets quantity.
-        /// </summary>
-        int Quantity { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether orderly.
-        /// </summary>
-        bool Orderly { get; set; }
-
-        /// <summary>
-        /// Gets or sets from time.
-        /// </summary>
-        TimeSpan FromTime { get; set; }
-
-        /// <summary>
-        /// Gets or sets to time.
-        /// </summary>
-        TimeSpan ToTime { get; set; }
+        bool IsFullLimit { get; set; }
     }
 }

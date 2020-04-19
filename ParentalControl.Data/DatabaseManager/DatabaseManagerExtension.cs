@@ -13,7 +13,7 @@ namespace ParentalControl.Data
     using ParentalControl.Data.Database;
 
     /// <summary>
-    /// Database Extension class.
+    /// Database extension class.
     /// </summary>
     internal static class DatabaseManagerExtension
     {

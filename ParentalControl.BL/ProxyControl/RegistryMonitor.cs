@@ -10,7 +10,7 @@ using Microsoft.Win32;
 namespace ParentalControl.BL.ProxyControl
 {
 	/// <summary>
-	/// <b>RegistryMonitor</b> allows you to monitor specific registry key.
+	/// <b>Registry monitor</b> allows you to monitor specific registry key.
 	/// </summary>
 	public class RegistryMonitor : IDisposable
 	{

@@ -31,28 +31,48 @@ namespace ParentalControl.Interface.Database
         string SecurityQuestion { get; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether occasional.
+        /// Gets or sets a value indicating whether time limitation is inactive.
         /// </summary>
-        bool Occasional { get; set; }
+        bool IsTimeLimitInactive { get; set; }
 
         /// <summary>
-        /// Gets or sets minutes.
+        /// Gets or sets a value indicating whether time limitation is orderly.
         /// </summary>
-        int Minutes { get; set; }
+        bool IsTimeLimitOrderly { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether orderly.
+        /// Gets or sets time limitation from time.
         /// </summary>
-        bool Orderly { get; set; }
+        TimeSpan TimeLimitFromTime { get; set; }
 
         /// <summary>
-        /// Gets or sets from time.
+        /// Gets or sets time limitation to time.
         /// </summary>
-        TimeSpan FromTime { get; set; }
+        TimeSpan TimeLimitToTime { get; set; }
 
         /// <summary>
-        /// Gets or sets to time.
+        /// Gets or sets time limitation occasional minutes.
         /// </summary>
-        TimeSpan ToTime { get; set; }
+        int TimeLimitOccasionalMinutes { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether program limitation is orderly.
+        /// </summary>
+        bool IsProgramLimitOrderly { get; set; }
+
+        /// <summary>
+        /// Gets or sets program limitation from time.
+        /// </summary>
+        TimeSpan ProgramLimitFromTime { get; set; }
+
+        /// <summary>
+        /// Gets or sets program limitation to time.
+        /// </summary>
+        TimeSpan ProgramLimitToTime { get; set; }
+
+        /// <summary>
+        /// Gets or sets program limitation occasional minutes.
+        /// </summary>
+        int ProgramLimitOccasionalMinutes { get; set; }
     }
 }

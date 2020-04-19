@@ -24,27 +24,13 @@ namespace ParentalControl.Data.Database
         /// <param name="userID">UserID.</param>
         /// <param name="name">Name.</param>
         /// <param name="path">Path.</param>
-        /// <param name="occasional">Occasional.</param>
-        /// <param name="minutes">Minutes.</param>
-        /// <param name="repeat">Repeat.</param>
-        /// <param name="pause">Pause.</param>
-        /// <param name="quantity">Quantity.</param>
-        /// <param name="orderly">Orderly.</param>
-        /// <param name="fromTime">From time.</param>
-        /// <param name="toTime">To time.</param>
-        internal ProgramLimitation(int userID, string name, string path, bool occasional, int minutes, bool repeat, int pause, int quantity, bool orderly, TimeSpan fromTime, TimeSpan toTime)
+        /// <param name="isFullLimit">Is full limit.</param>
+        public ProgramLimitation(int userID, string name, string path, bool isFullLimit)
         {
             this.UserID = userID;
             this.Name = name;
             this.Path = path;
-            this.Occasional = occasional;
-            this.Minutes = minutes;
-            this.Repeat = repeat;
-            this.Pause = pause;
-            this.Quantity = quantity;
-            this.Orderly = orderly;
-            this.FromTime = fromTime;
-            this.ToTime = toTime;
+            this.IsFullLimit = isFullLimit;
         }
 
 
@@ -61,28 +47,7 @@ namespace ParentalControl.Data.Database
         public string Path { get; set; }
 
         /// <inheritdoc/>
-        public bool Occasional { get; set; }
-
-        /// <inheritdoc/>
-        public int Minutes { get; set; }
-
-        /// <inheritdoc/>
-        public bool Repeat { get; set; }
-
-        /// <inheritdoc/>
-        public int Pause { get; set; }
-
-        /// <inheritdoc/>
-        public int Quantity { get; set; }
-
-        /// <inheritdoc/>
-        public bool Orderly { get; set; }
-
-        /// <inheritdoc/>
-        public TimeSpan FromTime { get; set; }
-
-        /// <inheritdoc/>
-        public TimeSpan ToTime { get; set; }
+        public bool IsFullLimit { get; set; }
 
         /// <summary>
         /// Gets or sets user.

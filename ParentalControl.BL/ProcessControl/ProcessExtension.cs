@@ -11,7 +11,7 @@ namespace ParentalControl.BL.ProcessControl
     using System.Threading.Tasks;
 
     /// <summary>
-    /// ProcessExtension class.
+    /// Process extension class.
     /// </summary>
     internal static class ProcessExtension
     {

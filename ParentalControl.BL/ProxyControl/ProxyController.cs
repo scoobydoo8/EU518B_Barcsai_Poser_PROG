@@ -57,11 +57,26 @@ namespace ParentalControl.BL.ProxyControl
         /// <summary>
         /// Start proxy.
         /// </summary>
-        /// <param name="keywords">Keywords.</param>
-        public void Start(List<string> keywords)
+        public void Start()
         {
             this.businessLogic = BusinessLogic.Get();
-            this.keywords = keywords;
+            if (this.businessLogic.User == null)
+            {
+                throw new ArgumentNullException(nameof(this.businessLogic.User));
+            }
+
+            this.keywords = new List<string>();
+            var webLimitations = this.businessLogic.Database.ReadWebLimitations(x => x.UserID == this.businessLogic.User.ID);
+            foreach (var webLimitation in webLimitations)
+            {
+                this.keywords.Add(this.businessLogic.Database.ReadKeywords(x => x.ID == webLimitation.KeywordID).FirstOrDefault()?.Name);
+            }
+
+            if (this.keywords.Count == 0)
+            {
+                return;
+            }
+
             this.proxyServer.BeforeRequest += this.ProxyServer_BeforeRequest;
             this.proxyServer.Start();
             this.proxyServer.SetAsSystemProxy(this.proxyEndPoint, ProxyProtocolType.AllHttp);
@@ -79,9 +94,9 @@ namespace ParentalControl.BL.ProxyControl
         private Task ProxyServer_BeforeRequest(object sender, SessionEventArgs e)
         {
             // TODO LOGGER (e.HttpClient.Request.Url);
-            if (this.businessLogic.ActiveUser == null)
+            if (this.businessLogic.User == null)
             {
-                throw new ArgumentNullException(nameof(this.businessLogic.ActiveUser));
+                throw new ArgumentNullException(nameof(this.businessLogic.User));
             }
 
             var absoluteUri = e.HttpClient.Request.RequestUri.AbsoluteUri;

@@ -14,7 +14,7 @@ namespace ParentalControl.Service
     using System.Threading.Tasks;
 
     /// <summary>
-    /// ParentalControlServiceInstaller class.
+    /// Parental control service installer class.
     /// </summary>
     [RunInstaller(true)]
     public partial class ParentalControlServiceInstaller : Installer

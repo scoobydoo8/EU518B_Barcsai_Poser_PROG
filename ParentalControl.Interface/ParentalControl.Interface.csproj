@@ -51,6 +51,8 @@
     <Compile Include="Database\IProgramLimitation.cs" />
     <Compile Include="Database\IUser.cs" />
     <Compile Include="Database\IWebLimitation.cs" />
+    <Compile Include="ProcessControl\IProcessController.cs" />
+    <Compile Include="ProcessControl\IProcessEventArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
