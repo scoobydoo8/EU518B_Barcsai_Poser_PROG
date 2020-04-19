@@ -138,10 +138,6 @@
       <Project>{11520837-c058-45d8-ba21-c87678e2f6f7}</Project>
       <Name>ParentalControl.Interface</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ParentalControl.Logger\ParentalControl.Logger.csproj">
-      <Project>{487e4d88-2434-40a3-9699-8bf190d60310}</Project>
-      <Name>ParentalControl.Logger</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Database\ParentalControlModel.Context.tt">
