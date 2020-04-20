@@ -63,8 +63,8 @@ namespace ParentalControl.Interface.BusinessLogic
         /// </summary>
         /// <param name="username">Username.</param>
         /// <param name="password">Password.</param>
-        /// <returns>ActiveUser.</returns>
-        IUser LogIn(string username, string password);
+        /// <returns>Success.</returns>
+        bool LogIn(string username, string password);
 
         /// <summary>
         /// Logout.

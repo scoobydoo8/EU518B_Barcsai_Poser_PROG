@@ -165,7 +165,7 @@ namespace ParentalControl.BL
         }
 
         /// <inheritdoc/>
-        public IUser LogIn(string username, string password)
+        public bool LogIn(string username, string password)
         {
             CheckInput(username, password);
             this.ActiveUser = this.database.ReadUsers(x => x.Username == username && ValidateHash(password, x.Password)).FirstOrDefault();
@@ -199,9 +199,11 @@ namespace ParentalControl.BL
                         this.logger.LogLogin(this.ActiveUser.Username);
                     }
                 }
+
+                return true;
             }
 
-            return this.ActiveUser;
+            return false;
         }
 
         /// <inheritdoc/>
