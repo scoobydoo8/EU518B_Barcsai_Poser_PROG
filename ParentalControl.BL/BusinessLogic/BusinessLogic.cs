@@ -171,7 +171,7 @@ namespace ParentalControl.BL
             this.ActiveUser = this.database.ReadUsers(x => x.Username == username && ValidateHash(password, x.Password)).FirstOrDefault();
             if (this.ActiveUser != null)
             {
-                if (this.ActiveUser.ID != 0)
+                if (this.ActiveUser.ID != this.database.AdminID)
                 {
                     if (!this.ActiveUser.IsTimeLimitInactive)
                     {
@@ -247,7 +247,7 @@ namespace ParentalControl.BL
         public bool IsOccassionalPermission(string adminUsername, string adminPassword, int minutes)
         {
             this.logger.LogLogin(this.ActiveUser.Username);
-            var admin = this.database.ReadUsers(x => x.ID == 0).FirstOrDefault() as User;
+            var admin = this.database.ReadUsers(x => x.ID == this.database.AdminID).FirstOrDefault() as User;
             if (admin.Username == adminUsername && ValidateHash(adminPassword, admin.Password))
             {
                 this.TimeRemainingTime = new TimeSpan(0, minutes, 0);

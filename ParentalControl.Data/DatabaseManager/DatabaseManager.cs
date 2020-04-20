@@ -28,10 +28,15 @@ namespace ParentalControl.Data
         private DatabaseManager()
         {
             this.entities = new ParentalControlEntities();
+            var admin = this.entities.Users.FirstOrDefault();
+            this.AdminID = admin == null ? 0 : admin.ID;
         }
 
         /// <inheritdoc/>
         public event EventHandler<string> DatabaseChanged;
+
+        /// <inheritdoc/>
+        public int AdminID { get; private set; }
 
         /// <summary>
         /// Singleton.

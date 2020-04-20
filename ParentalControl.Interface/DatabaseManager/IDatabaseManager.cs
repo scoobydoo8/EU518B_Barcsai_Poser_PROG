@@ -22,6 +22,11 @@ namespace ParentalControl.Interface.DatabaseManager
         event EventHandler<string> DatabaseChanged;
 
         /// <summary>
+        /// Gets adminID.
+        /// </summary>
+        int AdminID { get; }
+
+        /// <summary>
         /// This must be used for create, update and delete transacions.
         /// </summary>
         /// <param name="action">Transaction action.</param>

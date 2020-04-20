@@ -48,7 +48,8 @@ namespace ParentalControl.Data
         internal static List<T> Read<T>(this DbSet<T> table, Func<T, bool> condition)
             where T : class
         {
-            return table.Where(x => condition == null || condition(x)).ToList();
+            var tableWithCondition = condition == null ? table : table.Where(condition);
+            return tableWithCondition.ToList();
         }
 
         /// <summary>
@@ -64,7 +65,8 @@ namespace ParentalControl.Data
         {
             if (action != null)
             {
-                foreach (T record in table.Where(x => condition == null || condition(x)))
+                var tableWithCondition = condition == null ? table : table.Where(condition);
+                foreach (T record in tableWithCondition)
                 {
                     action(record);
                 }
@@ -87,7 +89,8 @@ namespace ParentalControl.Data
         internal static void Delete<T>(this DbSet<T> table, Func<T, bool> condition)
             where T : class
         {
-            table.RemoveRange(table.Where(x => condition == null || condition(x)));
+            var tableWithCondition = condition == null ? table : table.Where(condition);
+            table.RemoveRange(tableWithCondition);
         }
     }
 }

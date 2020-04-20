@@ -6,6 +6,7 @@ namespace ParentalControl.BL.ProcessControl
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Diagnostics;
     using System.Linq;
     using System.Management;
@@ -61,7 +62,7 @@ namespace ParentalControl.BL.ProcessControl
         public bool IsOccassionalPermission(string adminUsername, string adminPassword, int minutes, int processID)
         {
             var process = Process.GetProcessById(processID);
-            var admin = this.businessLogic.Database.ReadUsers(x => x.ID == 0).FirstOrDefault() as User;
+            var admin = this.businessLogic.Database.ReadUsers(x => x.ID == this.businessLogic.Database.AdminID).FirstOrDefault() as User;
             if (admin.Username == adminUsername && BusinessLogic.ValidateHash(adminPassword, admin.Password))
             {
                 this.businessLogic.ProgramRemainingTime = new TimeSpan(0, minutes, 0);
@@ -87,12 +88,6 @@ namespace ParentalControl.BL.ProcessControl
 
             this.ranProcessesWhileTime = new List<Process>();
             this.enabledProcesses = new List<Process>();
-
-            /*var explorerProcesses = Process.GetProcessesByName("explorer");
-            foreach (var explorer in explorerProcesses)
-            {
-                explorer?.Resume();
-            }*/
 
             var toBeKilledProcessesList = this.GetAllToBeKilledProcesses("taskmgr", "cmd", "powershell");
             foreach (var toBeKilledProcesses in toBeKilledProcessesList)
@@ -123,7 +118,7 @@ namespace ParentalControl.BL.ProcessControl
             }
 
             this.timer.Start();
-            if (this.businessLogic.ActiveUser.ID != 0)
+            if (this.businessLogic.ActiveUser.ID != this.businessLogic.Database.AdminID)
             {
                 this.programLimitations = this.businessLogic.Database.ReadProgramLimitations(x => x.UserID == this.businessLogic.ActiveUser.ID);
                 if (!this.programLimitations.Any())
@@ -131,12 +126,6 @@ namespace ParentalControl.BL.ProcessControl
                     this.programLimitations = null;
                 }
             }
-
-            /*var explorerProcesses = Process.GetProcessesByName("explorer");
-            foreach (var explorer in explorerProcesses)
-            {
-                explorer?.Resume();
-            }*/
         }
 
         private void ProcessStartedEventWatcher_EventArrived(object sender, EventArrivedEventArgs e)
@@ -151,7 +140,7 @@ namespace ParentalControl.BL.ProcessControl
                 if (this.businessLogic != null && this.businessLogic.ActiveUser != null)
                 {
                     this.logger.LogStartProcess(this.businessLogic.ActiveUser.Username, process.ProcessName);
-                    if (this.businessLogic.ActiveUser.ID != 0 && this.programLimitations != null)
+                    if (this.businessLogic.ActiveUser.ID != this.businessLogic.Database.AdminID && this.programLimitations != null)
                     {
                         if (process.ProcessName.ToLower() == "cmd" || process.ProcessName.ToLower() == "powershell" || process.ProcessName.ToLower() == "taskmgr")
                         {
@@ -202,7 +191,11 @@ namespace ParentalControl.BL.ProcessControl
                     process?.Kill();
                 }
             }
-            catch (ArgumentException)
+            catch (Win32Exception)
+            {
+                Process.GetProcessById(id)?.Kill();
+            }
+            catch (Exception)
             {
             }
         }

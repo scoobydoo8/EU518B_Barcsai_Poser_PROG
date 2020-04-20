@@ -73,11 +73,11 @@ namespace ParentalControl.VM
 
         private void Database_DatabaseChanged(object sender, string e)
         {
-            if (this.ActiveUser != null && this.ActiveUser.ID == 0)
+            if (this.ActiveUser != null && this.ActiveUser.ID == this.businessLogic.Database.AdminID)
             {
                 if (e == "Users")
                 {
-                    this.ManagedUsers = this.businessLogic.Database.ReadUsers(x => x.ID != 0);
+                    this.ManagedUsers = this.businessLogic.Database.ReadUsers(x => x.ID != this.businessLogic.Database.AdminID);
                     this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.ManagedUsers)));
                 }
                 else if (e == "ProgramLimitations")
@@ -102,9 +102,9 @@ namespace ParentalControl.VM
         {
             this.ActiveUser = this.businessLogic.ActiveUser;
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.ActiveUser)));
-            if (this.ActiveUser.ID == 0)
+            if (this.ActiveUser.ID == this.businessLogic.Database.AdminID)
             {
-                this.ManagedUsers = this.businessLogic.Database.ReadUsers(x => x.ID != 0);
+                this.ManagedUsers = this.businessLogic.Database.ReadUsers(x => x.ID != this.businessLogic.Database.AdminID);
                 this.ManagedProgramLimitations = this.businessLogic.Database.ReadProgramLimitations();
                 this.ManagedWebLimitations = this.businessLogic.Database.ReadWebLimitations();
                 this.ManagedKeywords = this.businessLogic.Database.ReadKeywords();
