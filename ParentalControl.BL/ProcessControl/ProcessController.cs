@@ -39,7 +39,6 @@ namespace ParentalControl.BL.ProcessControl
             this.timer = new Timer(1000);
             this.timer.Elapsed += this.Timer_Elapsed;
             this.timer.AutoReset = true;
-            this.timer.Start();
             this.logger = Logger.Get();
             this.ranProcessesWhileTime = new List<Process>();
             this.enabledProcesses = new List<Process>();
@@ -123,6 +122,7 @@ namespace ParentalControl.BL.ProcessControl
                 throw new ArgumentNullException(nameof(this.businessLogic.ActiveUser));
             }
 
+            this.timer.Start();
             if (this.businessLogic.ActiveUser.ID != 0)
             {
                 this.programLimitations = this.businessLogic.Database.ReadProgramLimitations(x => x.UserID == this.businessLogic.ActiveUser.ID);
