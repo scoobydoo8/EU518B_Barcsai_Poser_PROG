@@ -17,6 +17,11 @@ namespace ParentalControl.Interface.DatabaseManager
     public interface IDatabaseManager
     {
         /// <summary>
+        /// Database changed event.
+        /// </summary>
+        event EventHandler<string> DatabaseChanged;
+
+        /// <summary>
         /// This must be used for create, update and delete transacions.
         /// </summary>
         /// <param name="action">Transaction action.</param>

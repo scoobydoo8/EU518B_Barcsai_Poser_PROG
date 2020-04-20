@@ -11,6 +11,7 @@ namespace ParentalControl.BL.ProcessControl
     using System.Management;
     using System.Text;
     using System.Threading.Tasks;
+    using System.Timers;
     using ParentalControl.Data.Database;
     using ParentalControl.Interface.Database;
     using ParentalControl.Interface.ProcessControl;
@@ -23,18 +24,25 @@ namespace ParentalControl.BL.ProcessControl
         private BusinessLogic businessLogic;
         private List<IProgramLimitation> programLimitations;
         private List<Process> ranProcessesWhileTime;
+        private List<Process> enabledProcesses;
         private ManagementEventWatcher processStartedEventWatcher;
         private ManagementEventWatcher processStoppedEventWatcher;
         private bool eventWatchersStarted;
         private Logger logger;
+        private Timer timer;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ProcessController"/> class.
         /// </summary>
         public ProcessController()
         {
+            this.timer = new Timer(1000);
+            this.timer.Elapsed += this.Timer_Elapsed;
+            this.timer.AutoReset = true;
+            this.timer.Start();
             this.logger = Logger.Get();
             this.ranProcessesWhileTime = new List<Process>();
+            this.enabledProcesses = new List<Process>();
             this.processStartedEventWatcher = new ManagementEventWatcher("SELECT * FROM Win32_ProcessStartTrace");
             this.processStartedEventWatcher.EventArrived += this.ProcessStartedEventWatcher_EventArrived;
             this.processStoppedEventWatcher = new ManagementEventWatcher("SELECT * FROM Win32_ProcessStopTrace");
@@ -51,18 +59,21 @@ namespace ParentalControl.BL.ProcessControl
         public event EventHandler<IProcessEventArgs> ProgramStartedFullLimit;
 
         /// <inheritdoc/>
-        public void ProgramResume(int processID)
+        public bool IsOccassionalPermission(string adminUsername, string adminPassword, int minutes, int processID)
         {
             var process = Process.GetProcessById(processID);
-            process?.Resume();
-            this.ranProcessesWhileTime.Add(process);
-        }
+            var admin = this.businessLogic.Database.ReadUsers(x => x.ID == 0).FirstOrDefault() as User;
+            if (admin.Username == adminUsername && BusinessLogic.ValidateHash(adminPassword, admin.Password))
+            {
+                this.businessLogic.ProgramRemainingTime = new TimeSpan(0, minutes, 0);
+                process?.Resume();
+                this.ranProcessesWhileTime.Add(process);
+                this.enabledProcesses.Add(process);
+                return true;
+            }
 
-        /// <inheritdoc/>
-        public void ProgramKill(int processID)
-        {
-            var process = Process.GetProcessById(processID);
             process?.Kill();
+            return false;
         }
 
         /// <summary>
@@ -76,6 +87,7 @@ namespace ParentalControl.BL.ProcessControl
             }
 
             this.ranProcessesWhileTime = new List<Process>();
+            this.enabledProcesses = new List<Process>();
 
             /*var explorerProcesses = Process.GetProcessesByName("explorer");
             foreach (var explorer in explorerProcesses)
@@ -160,8 +172,12 @@ namespace ParentalControl.BL.ProcessControl
                             bool isOrderly = this.businessLogic.ActiveUser.IsProgramLimitOrderly && BusinessLogic.IsOrderlyActive(this.businessLogic.ActiveUser.ProgramLimitFromTime, this.businessLogic.ActiveUser.ProgramLimitToTime);
                             if (isOrderly)
                             {
+                                var now = DateTime.Now;
+                                TimeSpan time = this.businessLogic.ActiveUser.ProgramLimitToTime - new TimeSpan(now.Hour, now.Minute, 0);
+                                this.businessLogic.ProgramRemainingTime = time;
                                 process?.Resume();
                                 this.ranProcessesWhileTime.Add(process);
+                                this.enabledProcesses.Add(process);
                                 this.ProgramStartedOrderly?.Invoke(this, new ProcessEventArgs() { ID = process.Id, ProcessName = process.ProcessName });
                             }
                             else
@@ -217,6 +233,25 @@ namespace ParentalControl.BL.ProcessControl
             }
 
             return processes;
+        }
+
+        private void Timer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            var sub = new TimeSpan(0, 0, 1);
+            if (this.businessLogic.ProgramRemainingTime != default && this.businessLogic.ProgramRemainingTime.TotalSeconds > 0)
+            {
+                this.businessLogic.ProgramRemainingTime.Subtract(sub);
+            }
+            else if (this.businessLogic.ProgramRemainingTime != default && this.businessLogic.ProgramRemainingTime.TotalSeconds <= 0)
+            {
+                this.ranProcessesWhileTime = this.ranProcessesWhileTime.Except(this.enabledProcesses).ToList();
+                foreach (var process in this.enabledProcesses)
+                {
+                    process?.Kill();
+                }
+
+                this.enabledProcesses = new List<Process>();
+            }
         }
     }
 }

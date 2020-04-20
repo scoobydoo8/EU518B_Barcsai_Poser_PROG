@@ -30,6 +30,9 @@ namespace ParentalControl.Data
             this.entities = new ParentalControlEntities();
         }
 
+        /// <inheritdoc/>
+        public event EventHandler<string> DatabaseChanged;
+
         /// <summary>
         /// Singleton.
         /// </summary>
@@ -78,6 +81,7 @@ namespace ParentalControl.Data
             if (!this.ReadUsers(x => x.Username == username).Any())
             {
                 this.entities.Users.Create(new User(username, password, securityQuestion, securityAnswer));
+                this.DatabaseChanged?.Invoke(this, nameof(this.entities.Users));
                 return true;
             }
 
@@ -91,6 +95,7 @@ namespace ParentalControl.Data
             if (user != null && !this.ReadProgramLimitations(x => x.Path == path).Any())
             {
                 this.entities.ProgramLimitations.Create(new ProgramLimitation(userID, name, path, isFullLimit));
+                this.DatabaseChanged?.Invoke(this, nameof(this.entities.ProgramLimitations));
                 return true;
             }
 
@@ -103,6 +108,7 @@ namespace ParentalControl.Data
             if (this.ReadUsers(x => x.ID == userID).Any() && this.ReadKeywords(x => x.ID == keywordID).Any())
             {
                 this.entities.WebLimitations.Create(new WebLimitation(userID, keywordID));
+                this.DatabaseChanged?.Invoke(this, nameof(this.entities.WebLimitations));
                 return true;
             }
 
@@ -115,6 +121,7 @@ namespace ParentalControl.Data
             if (!this.ReadKeywords(x => x.Name == name).Any())
             {
                 this.entities.Keywords.Create(new Keyword(name));
+                this.DatabaseChanged?.Invoke(this, nameof(this.entities.Keywords));
                 return true;
             }
 
@@ -193,6 +200,7 @@ namespace ParentalControl.Data
         public void UpdateUsers(Action<User> action, Func<User, bool> condition = null)
         {
             this.entities.Users.Update(action, condition);
+            this.DatabaseChanged?.Invoke(this, nameof(this.entities.Users));
         }
 
         /// <inheritdoc/>
@@ -209,6 +217,7 @@ namespace ParentalControl.Data
         public void UpdateProgramLimitations(Action<ProgramLimitation> action, Func<ProgramLimitation, bool> condition = null)
         {
             this.entities.ProgramLimitations.Update(action, condition);
+            this.DatabaseChanged?.Invoke(this, nameof(this.entities.ProgramLimitations));
         }
 
         /// <inheritdoc/>
@@ -225,6 +234,7 @@ namespace ParentalControl.Data
         public void UpdateKeywords(Action<Keyword> action, Func<Keyword, bool> condition = null)
         {
             this.entities.Keywords.Update(action, condition);
+            this.DatabaseChanged?.Invoke(this, nameof(this.entities.Keywords));
         }
 
         /// <inheritdoc/>
@@ -247,6 +257,7 @@ namespace ParentalControl.Data
             }
 
             this.entities.Users.Delete(condition);
+            this.DatabaseChanged?.Invoke(this, nameof(this.entities.Users));
         }
 
         /// <inheritdoc/>
@@ -262,6 +273,7 @@ namespace ParentalControl.Data
         public void DeleteProgramLimitations(Func<ProgramLimitation, bool> condition = null)
         {
             this.entities.ProgramLimitations.Delete(condition);
+            this.DatabaseChanged?.Invoke(this, nameof(this.entities.ProgramLimitations));
         }
 
         /// <inheritdoc/>
@@ -277,6 +289,7 @@ namespace ParentalControl.Data
         public void DeleteWebLimitations(Func<WebLimitation, bool> condition = null)
         {
             this.entities.WebLimitations.Delete(condition);
+            this.DatabaseChanged?.Invoke(this, nameof(this.entities.WebLimitations));
         }
 
         /// <inheritdoc/>
@@ -298,6 +311,7 @@ namespace ParentalControl.Data
             }
 
             this.entities.Keywords.Delete(condition);
+            this.DatabaseChanged?.Invoke(this, nameof(this.entities.Keywords));
         }
 
         /// <inheritdoc/>

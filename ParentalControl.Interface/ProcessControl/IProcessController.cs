@@ -31,15 +31,13 @@ namespace ParentalControl.Interface.ProcessControl
         event EventHandler<IProcessEventArgs> ProgramStartedFullLimit;
 
         /// <summary>
-        /// Program resume.
+        /// Is occassional permission.
         /// </summary>
+        /// <param name="adminUsername">Admin username.</param>
+        /// <param name="adminPassword">Admin password.</param>
+        /// <param name="minutes">Minutes.</param>
         /// <param name="processID">Process ID.</param>
-        void ProgramResume(int processID);
-
-        /// <summary>
-        /// Program kill.
-        /// </summary>
-        /// <param name="processID">Process ID.</param>
-        void ProgramKill(int processID);
+        /// <returns>Valid.</returns>
+        bool IsOccassionalPermission(string adminUsername, string adminPassword, int minutes, int processID);
     }
 }

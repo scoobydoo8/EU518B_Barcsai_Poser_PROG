@@ -11,6 +11,7 @@ namespace ParentalControl.BL
     using System.Security.Cryptography;
     using System.Text;
     using System.Threading.Tasks;
+    using System.Timers;
     using ParentalControl.BL.ProcessControl;
     using ParentalControl.BL.ProxyControl;
     using ParentalControl.Data;
@@ -30,9 +31,16 @@ namespace ParentalControl.BL
         private ProxyController proxyController;
         private ProcessController processController;
         private Logger logger;
+        private Timer timer;
 
         private BusinessLogic()
         {
+            this.TimeRemainingTime = default;
+            this.ProgramRemainingTime = default;
+            this.timer = new Timer(1000);
+            this.timer.Elapsed += this.Timer_Elapsed;
+            this.timer.AutoReset = true;
+            this.timer.Start();
             this.logger = Logger.Get();
             this.database = DatabaseManager.Get();
             this.proxyController = new ProxyController();
@@ -52,16 +60,27 @@ namespace ParentalControl.BL
         /// <inheritdoc/>
         public event EventHandler UserLoggedOut;
 
+        /// <summary>
+        /// Timer tick event.
+        /// </summary>
+        public event ElapsedEventHandler TimerTick { add => this.timer.Elapsed += value; remove => this.timer.Elapsed -= value; }
+
         /// <inheritdoc/>
         public IDatabaseManager Database { get => this.database; }
 
         /// <inheritdoc/>
         public IProcessController ProcessController { get => this.processController; }
 
+        /// <inheritdoc/>
+        public TimeSpan TimeRemainingTime { get; internal set; }
+
+        /// <inheritdoc/>
+        public TimeSpan ProgramRemainingTime { get; internal set; }
+
         /// <summary>
         /// Gets active user.
         /// </summary>
-        internal User ActiveUser { get; private set; }
+        public IUser ActiveUser { get; private set; }
 
         /// <summary>
         /// Singleton.
@@ -75,6 +94,61 @@ namespace ParentalControl.BL
             }
 
             return businessLogic;
+        }
+
+        /// <summary>
+        /// Check input.
+        /// </summary>
+        /// <param name="inputs">Inputs.</param>
+        public static void CheckInput(params string[] inputs)
+        {
+            foreach (var input in inputs)
+            {
+                if (input == null)
+                {
+                    throw new ArgumentNullException();
+                }
+
+                if (input == string.Empty)
+                {
+                    throw new ArgumentOutOfRangeException();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Get hash.
+        /// </summary>
+        /// <param name="rawstring">Raw string.</param>
+        /// <returns>Hash.</returns>
+        public static string GetHash(string rawstring)
+        {
+            CheckInput(rawstring);
+            using (SHA256 sha256Hash = SHA256.Create())
+            {
+                byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(rawstring));
+
+                StringBuilder builder = new StringBuilder();
+                for (int i = 0; i < bytes.Length; i++)
+                {
+                    builder.Append(bytes[i].ToString("x2"));
+                }
+
+                return builder.ToString();
+            }
+        }
+
+        /// <summary>
+        /// Validate hash.
+        /// </summary>
+        /// <param name="rawstring">Raw string.</param>
+        /// <param name="hash">Hash.</param>
+        /// <returns>Valid.</returns>
+        public static bool ValidateHash(string rawstring, string hash)
+        {
+            CheckInput(rawstring, hash);
+            string hashedString = GetHash(rawstring);
+            return hashedString == hash;
         }
 
         /// <summary>
@@ -93,8 +167,8 @@ namespace ParentalControl.BL
         /// <inheritdoc/>
         public IUser LogIn(string username, string password)
         {
-            this.CheckInput(username, password);
-            this.ActiveUser = this.database.ReadUsers(x => x.Username == username && this.ValidateHash(password, x.Password)).FirstOrDefault();
+            CheckInput(username, password);
+            this.ActiveUser = this.database.ReadUsers(x => x.Username == username && ValidateHash(password, x.Password)).FirstOrDefault();
             if (this.ActiveUser != null)
             {
                 if (this.ActiveUser.ID != 0)
@@ -104,6 +178,9 @@ namespace ParentalControl.BL
                         bool isOrderly = this.ActiveUser.IsTimeLimitOrderly && IsOrderlyActive(this.ActiveUser.TimeLimitFromTime, this.ActiveUser.TimeLimitToTime);
                         if (isOrderly)
                         {
+                            var now = DateTime.Now;
+                            TimeSpan time = this.ActiveUser.TimeLimitToTime - new TimeSpan(now.Hour, now.Minute, 0);
+                            this.TimeRemainingTime = time;
                             this.processController.AllProcessLimitStop();
                             this.proxyController.Start();
                             this.UserLoggedInOrderly?.Invoke(this, EventArgs.Empty);
@@ -130,6 +207,8 @@ namespace ParentalControl.BL
         /// <inheritdoc/>
         public void LogOut()
         {
+            this.TimeRemainingTime = default;
+            this.ProgramRemainingTime = default;
             this.ActiveUser = default;
             this.processController.AllProcessLimitStart();
             this.UserLoggedOut?.Invoke(this, EventArgs.Empty);
@@ -138,14 +217,14 @@ namespace ParentalControl.BL
         /// <inheritdoc/>
         public bool Registration(string username, string password, string securityQuestion, string securityAnswer)
         {
-            this.CheckInput(username, password, securityQuestion, securityAnswer);
-            return this.database.CreateUser(username, this.GetHash(password), securityQuestion, this.GetHash(securityAnswer));
+            CheckInput(username, password, securityQuestion, securityAnswer);
+            return this.database.CreateUser(username, GetHash(password), securityQuestion, GetHash(securityAnswer));
         }
 
         /// <inheritdoc/>
         public bool PasswordRecovery(string username, string securityAnswer, string newPassword)
         {
-            this.CheckInput(username, securityAnswer, newPassword);
+            CheckInput(username, securityAnswer, newPassword);
             Func<User, bool> condition = x => x.Username == username;
             var user = this.database.ReadUsers(condition).FirstOrDefault();
             if (user == null)
@@ -153,9 +232,9 @@ namespace ParentalControl.BL
                 throw new ArgumentException("Nem létezik ilyen felhasználó!", nameof(username));
             }
 
-            if (this.ValidateHash(securityAnswer, user.SecurityAnswer))
+            if (ValidateHash(securityAnswer, user.SecurityAnswer))
             {
-                this.database.UpdateUsers(x => x.Password = this.GetHash(newPassword), x => x.Username == username);
+                this.database.UpdateUsers(x => x.Password = GetHash(newPassword), x => x.Username == username);
                 return true;
             }
 
@@ -163,12 +242,13 @@ namespace ParentalControl.BL
         }
 
         /// <inheritdoc/>
-        public bool IsOccassionalPermission(string adminUsername, string adminPassword)
+        public bool IsOccassionalPermission(string adminUsername, string adminPassword, int minutes)
         {
             this.logger.LogLogin(this.ActiveUser.Username);
             var admin = this.database.ReadUsers(x => x.ID == 0).FirstOrDefault() as User;
-            if (admin.Username == adminUsername && this.ValidateHash(adminPassword, admin.Password))
+            if (admin.Username == adminUsername && ValidateHash(adminPassword, admin.Password))
             {
+                this.TimeRemainingTime = new TimeSpan(0, minutes, 0);
                 this.processController.AllProcessLimitStop();
                 this.proxyController.Start();
                 return true;
@@ -178,43 +258,16 @@ namespace ParentalControl.BL
             return false;
         }
 
-        private string GetHash(string rawstring)
+        private void Timer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            this.CheckInput(rawstring);
-            using (SHA256 sha256Hash = SHA256.Create())
+            var sub = new TimeSpan(0, 0, 1);
+            if (this.TimeRemainingTime != default && this.TimeRemainingTime.TotalSeconds > 0)
             {
-                byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(rawstring));
-
-                StringBuilder builder = new StringBuilder();
-                for (int i = 0; i < bytes.Length; i++)
-                {
-                    builder.Append(bytes[i].ToString("x2"));
-                }
-
-                return builder.ToString();
+                this.TimeRemainingTime.Subtract(sub);
             }
-        }
-
-        private bool ValidateHash(string rawstring, string hash)
-        {
-            this.CheckInput(rawstring, hash);
-            string hashedString = this.GetHash(rawstring);
-            return hashedString == hash;
-        }
-
-        private void CheckInput(params string[] inputs)
-        {
-            foreach (var input in inputs)
+            else if (this.TimeRemainingTime != default && this.TimeRemainingTime.TotalSeconds <= 0)
             {
-                if (input == null)
-                {
-                    throw new ArgumentNullException();
-                }
-
-                if (input == string.Empty)
-                {
-                    throw new ArgumentOutOfRangeException();
-                }
+                this.LogOut();
             }
         }
     }

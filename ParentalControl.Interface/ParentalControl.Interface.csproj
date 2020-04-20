@@ -56,6 +56,8 @@
     <Compile Include="ProcessControl\IProcessController.cs" />
     <Compile Include="ProcessControl\IProcessEventArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModel\IAdminViewModel.cs" />
+    <Compile Include="ViewModel\IViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

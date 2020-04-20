@@ -49,6 +49,16 @@ namespace ParentalControl.Interface.BusinessLogic
         IProcessController ProcessController { get; }
 
         /// <summary>
+        /// Gets time limitation remaining time.
+        /// </summary>
+        TimeSpan TimeRemainingTime { get; }
+
+        /// <summary>
+        /// Gets program limitation remining time.
+        /// </summary>
+        TimeSpan ProgramRemainingTime { get; }
+
+        /// <summary>
         /// Login.
         /// </summary>
         /// <param name="username">Username.</param>
@@ -85,7 +95,8 @@ namespace ParentalControl.Interface.BusinessLogic
         /// </summary>
         /// <param name="adminUsername">Admin username.</param>
         /// <param name="adminPassword">Admin password.</param>
+        /// <param name="minutes">Minutes.</param>
         /// <returns>Valid.</returns>
-        bool IsOccassionalPermission(string adminUsername, string adminPassword);
+        bool IsOccassionalPermission(string adminUsername, string adminPassword, int minutes);
     }
 }
