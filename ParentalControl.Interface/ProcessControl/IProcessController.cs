@@ -16,9 +16,9 @@ namespace ParentalControl.Interface.ProcessControl
     public interface IProcessController
     {
         /// <summary>
-        /// Program started with orderly permission event.
+        /// Program started with orderly or active occasional permission event.
         /// </summary>
-        event EventHandler<IProcessEventArgs> ProgramStartedOrderly;
+        event EventHandler<IProcessEventArgs> ProgramStartedOrderlyOrActiveOccasional;
 
         /// <summary>
         /// Program started with occassional permission event.

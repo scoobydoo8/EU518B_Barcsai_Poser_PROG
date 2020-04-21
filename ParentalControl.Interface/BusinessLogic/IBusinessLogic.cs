@@ -19,9 +19,9 @@ namespace ParentalControl.Interface.BusinessLogic
     public interface IBusinessLogic
     {
         /// <summary>
-        /// User logged in with orderly permission event.
+        /// User logged in with orderly or active occasional permission event.
         /// </summary>
-        event EventHandler UserLoggedInOrderly;
+        event EventHandler UserLoggedInOrderlyOrActiveOccasional;
 
         /// <summary>
         /// User logged in with occassional permission event.

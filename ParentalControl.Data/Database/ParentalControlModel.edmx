@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="ParentalControlModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="ParentalControlModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Keywords">
           <Key>
             <PropertyRef Name="ID" />
@@ -36,10 +36,12 @@
           <Property Name="TimeLimitFromTime" Type="time" Precision="7" Nullable="false" />
           <Property Name="TimeLimitToTime" Type="time" Precision="7" Nullable="false" />
           <Property Name="TimeLimitOccasionalMinutes" Type="int" Nullable="false" />
+          <Property Name="TimeLimitOccasionalDateTime" Type="datetime" Nullable="false" />
           <Property Name="IsProgramLimitOrderly" Type="bit" Nullable="false" />
           <Property Name="ProgramLimitFromTime" Type="time" Precision="7" Nullable="false" />
           <Property Name="ProgramLimitToTime" Type="time" Precision="7" Nullable="false" />
           <Property Name="ProgramLimitOccasionalMinutes" Type="int" Nullable="false" />
+          <Property Name="ProgramLimitOccasionalDateTime" Type="datetime" Nullable="false" />
         </EntityType>
         <EntityType Name="WebLimitations">
           <Key>
@@ -49,7 +51,7 @@
           <Property Name="UserID" Type="int" Nullable="false" />
           <Property Name="KeywordID" Type="int" Nullable="false" />
         </EntityType>
-        <Association Name="FK__ProgramLi__UserI__25869641">
+        <Association Name="FK__ProgramLi__UserI__38996AB5">
           <End Role="Users" Type="Self.Users" Multiplicity="1" />
           <End Role="ProgramLimitations" Type="Self.ProgramLimitations" Multiplicity="*" />
           <ReferentialConstraint>
@@ -61,7 +63,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__WebLimita__Keywo__2B3F6F97">
+        <Association Name="FK__WebLimita__Keywo__3E52440B">
           <End Role="Keywords" Type="Self.Keywords" Multiplicity="1" />
           <End Role="WebLimitations" Type="Self.WebLimitations" Multiplicity="*" />
           <ReferentialConstraint>
@@ -73,7 +75,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__WebLimita__UserI__2A4B4B5E">
+        <Association Name="FK__WebLimita__UserI__3D5E1FD2">
           <End Role="Users" Type="Self.Users" Multiplicity="1" />
           <End Role="WebLimitations" Type="Self.WebLimitations" Multiplicity="*" />
           <ReferentialConstraint>
@@ -90,21 +92,20 @@
           <EntitySet Name="ProgramLimitations" EntityType="Self.ProgramLimitations" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="WebLimitations" EntityType="Self.WebLimitations" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK__ProgramLi__UserI__25869641" Association="Self.FK__ProgramLi__UserI__25869641">
+          <AssociationSet Name="FK__ProgramLi__UserI__38996AB5" Association="Self.FK__ProgramLi__UserI__38996AB5">
             <End Role="Users" EntitySet="Users" />
             <End Role="ProgramLimitations" EntitySet="ProgramLimitations" />
           </AssociationSet>
-          <AssociationSet Name="FK__WebLimita__Keywo__2B3F6F97" Association="Self.FK__WebLimita__Keywo__2B3F6F97">
+          <AssociationSet Name="FK__WebLimita__Keywo__3E52440B" Association="Self.FK__WebLimita__Keywo__3E52440B">
             <End Role="Keywords" EntitySet="Keywords" />
             <End Role="WebLimitations" EntitySet="WebLimitations" />
           </AssociationSet>
-          <AssociationSet Name="FK__WebLimita__UserI__2A4B4B5E" Association="Self.FK__WebLimita__UserI__2A4B4B5E">
+          <AssociationSet Name="FK__WebLimita__UserI__3D5E1FD2" Association="Self.FK__WebLimita__UserI__3D5E1FD2">
             <End Role="Users" EntitySet="Users" />
             <End Role="WebLimitations" EntitySet="WebLimitations" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="ParentalControlModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -147,6 +148,8 @@
           <Property Name="ProgramLimitOccasionalMinutes" Type="Int32" Nullable="false" />
           <NavigationProperty Name="ProgramLimitations" Relationship="Self.FK__ProgramLi__UserI__25869641" FromRole="Users" ToRole="ProgramLimitations" />
           <NavigationProperty Name="WebLimitations" Relationship="Self.FK__WebLimita__UserI__2A4B4B5E" FromRole="Users" ToRole="WebLimitations" />
+          <Property Name="TimeLimitOccasionalDateTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ProgramLimitOccasionalDateTime" Type="DateTime" Nullable="false" Precision="3" />
         </EntityType>
         <EntityType Name="WebLimitation">
           <Key>
@@ -240,6 +243,8 @@
           <EntitySetMapping Name="Users">
             <EntityTypeMapping TypeName="ParentalControlModel.User">
               <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="ProgramLimitOccasionalDateTime" ColumnName="ProgramLimitOccasionalDateTime" />
+                <ScalarProperty Name="TimeLimitOccasionalDateTime" ColumnName="TimeLimitOccasionalDateTime" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Username" ColumnName="Username" />
                 <ScalarProperty Name="Password" ColumnName="Password" />

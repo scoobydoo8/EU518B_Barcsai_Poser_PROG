@@ -50,7 +50,7 @@ namespace ParentalControl.BL.ProcessControl
         }
 
         /// <inheritdoc/>
-        public event EventHandler<IProcessEventArgs> ProgramStartedOrderly;
+        public event EventHandler<IProcessEventArgs> ProgramStartedOrderlyOrActiveOccasional;
 
         /// <inheritdoc/>
         public event EventHandler<IProcessEventArgs> ProgramStartedOccassional;
@@ -65,7 +65,16 @@ namespace ParentalControl.BL.ProcessControl
             var admin = this.businessLogic.Database.ReadUsers(x => x.ID == this.businessLogic.Database.AdminID).FirstOrDefault() as User;
             if (admin.Username == adminUsername && BusinessLogic.ValidateHash(adminPassword, admin.Password))
             {
-                this.businessLogic.ProgramRemainingTime = new TimeSpan(0, minutes, 0);
+                var now = DateTime.Now;
+                var toDate = now.AddMinutes(minutes);
+                var toTime = new TimeSpan(toDate.Hour, toDate.Minute, 0);
+                if (this.businessLogic.ActiveUser.ProgramLimitFromTime <= toTime)
+                {
+                    toTime = this.businessLogic.ActiveUser.ProgramLimitToTime;
+                }
+
+                this.businessLogic.ProgramRemainingTime = toTime - new TimeSpan(now.Hour, now.Minute, 0);
+                this.businessLogic.Database.Transaction(() => this.businessLogic.Database.UpdateUsers(x => (x as User).ProgramLimitOccasionalDateTime = now.Add(this.businessLogic.ProgramRemainingTime), x => x.ID == this.businessLogic.ActiveUser.ID));
                 process?.Resume();
                 this.ranProcessesWhileTime.Add(process);
                 this.enabledProcesses.Add(process);
@@ -158,16 +167,34 @@ namespace ParentalControl.BL.ProcessControl
                                 return;
                             }
 
-                            bool isOrderly = this.businessLogic.ActiveUser.IsProgramLimitOrderly && BusinessLogic.IsOrderlyActive(this.businessLogic.ActiveUser.ProgramLimitFromTime, this.businessLogic.ActiveUser.ProgramLimitToTime);
-                            if (isOrderly)
+                            if (this.businessLogic.ProgramRemainingTime != default)
                             {
-                                var now = DateTime.Now;
-                                TimeSpan time = this.businessLogic.ActiveUser.ProgramLimitToTime - new TimeSpan(now.Hour, now.Minute, 0);
+                                process?.Resume();
+                                this.ranProcessesWhileTime.Add(process);
+                                this.enabledProcesses.Add(process);
+                                return;
+                            }
+
+                            var now = DateTime.Now;
+                            TimeSpan time = default;
+                            bool isOccasionalActive = (this.businessLogic.ActiveUser as User).ProgramLimitOccasionalDateTime != default && (this.businessLogic.ActiveUser as User).ProgramLimitOccasionalDateTime > now;
+                            bool isOrderly = this.businessLogic.ActiveUser.IsProgramLimitOrderly && BusinessLogic.IsOrderlyActive(this.businessLogic.ActiveUser.ProgramLimitFromTime, this.businessLogic.ActiveUser.ProgramLimitToTime);
+                            if (isOccasionalActive)
+                            {
+                                time = (this.businessLogic.ActiveUser as User).ProgramLimitOccasionalDateTime - now;
+                            }
+                            else if (isOrderly)
+                            {
+                                time = this.businessLogic.ActiveUser.ProgramLimitToTime - new TimeSpan(now.Hour, now.Minute, 0);
+                            }
+
+                            if (isOccasionalActive || isOrderly)
+                            {
                                 this.businessLogic.ProgramRemainingTime = time;
                                 process?.Resume();
                                 this.ranProcessesWhileTime.Add(process);
                                 this.enabledProcesses.Add(process);
-                                this.ProgramStartedOrderly?.Invoke(this, new ProcessEventArgs() { ID = process.Id, ProcessName = process.ProcessName });
+                                this.ProgramStartedOrderlyOrActiveOccasional?.Invoke(this, new ProcessEventArgs() { ID = process.Id, ProcessName = process.ProcessName });
                             }
                             else
                             {
@@ -230,13 +257,14 @@ namespace ParentalControl.BL.ProcessControl
 
         private void Timer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            var sub = new TimeSpan(0, 0, 1);
+            var sub = BusinessLogic.Sub;
             if (this.businessLogic.ProgramRemainingTime != default && this.businessLogic.ProgramRemainingTime.TotalSeconds > 0)
             {
                 this.businessLogic.ProgramRemainingTime.Subtract(sub);
             }
             else if (this.businessLogic.ProgramRemainingTime != default && this.businessLogic.ProgramRemainingTime.TotalSeconds <= 0)
             {
+                this.businessLogic.ProgramRemainingTime = default;
                 this.ranProcessesWhileTime = this.ranProcessesWhileTime.Except(this.enabledProcesses).ToList();
                 foreach (var process in this.enabledProcesses)
                 {

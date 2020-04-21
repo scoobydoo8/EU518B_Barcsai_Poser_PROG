@@ -80,6 +80,11 @@ namespace ParentalControl.Data.Database
         /// <inheritdoc/>
         public int TimeLimitOccasionalMinutes { get; set; }
 
+        /// <summary>
+        /// Gets or sets time limitation occasional date time.
+        /// </summary>
+        public DateTime TimeLimitOccasionalDateTime { get; set; }
+
         /// <inheritdoc/>
         public bool IsProgramLimitOrderly { get; set; }
 
@@ -91,6 +96,11 @@ namespace ParentalControl.Data.Database
 
         /// <inheritdoc/>
         public int ProgramLimitOccasionalMinutes { get; set; }
+
+        /// <summary>
+        /// Gets or sets program limitation occasional date time.
+        /// </summary>
+        public DateTime ProgramLimitOccasionalDateTime { get; set; }
 
         /// <summary>
         /// Gets or sets program limitations.

@@ -29,7 +29,7 @@ namespace ParentalControl.VM
             this.businessLogic.Database.DatabaseChanged += this.Database_DatabaseChanged;
             this.businessLogic.UserLoggedInFull += this.BusinessLogic_UserLoggedInFull;
             this.businessLogic.UserLoggedInOccassional += this.BusinessLogic_UserLoggedIn;
-            this.businessLogic.UserLoggedInOrderly += this.BusinessLogic_UserLoggedIn;
+            this.businessLogic.UserLoggedInOrderlyOrActiveOccasional += this.BusinessLogic_UserLoggedIn;
             this.businessLogic.UserLoggedOut += this.BusinessLogic_UserLoggedOut;
             this.businessLogic.TimerTick += this.BusinessLogic_TimerTick;
         }

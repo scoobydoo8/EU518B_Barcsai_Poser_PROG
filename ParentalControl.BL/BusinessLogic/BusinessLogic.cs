@@ -26,6 +26,11 @@ namespace ParentalControl.BL
     /// </summary>
     public class BusinessLogic : IBusinessLogic
     {
+        /// <summary>
+        /// Sub.
+        /// </summary>
+        internal static readonly TimeSpan Sub = new TimeSpan(0, 0, 1);
+
         private static BusinessLogic businessLogic;
         private DatabaseManager database;
         private ProxyController proxyController;
@@ -49,7 +54,7 @@ namespace ParentalControl.BL
         }
 
         /// <inheritdoc/>
-        public event EventHandler UserLoggedInOrderly;
+        public event EventHandler UserLoggedInOrderlyOrActiveOccasional;
 
         /// <inheritdoc/>
         public event EventHandler UserLoggedInOccassional;
@@ -175,15 +180,25 @@ namespace ParentalControl.BL
                 {
                     if (!this.ActiveUser.IsTimeLimitInactive)
                     {
+                        var now = DateTime.Now;
+                        TimeSpan time = default;
+                        bool isOccasionalActive = (this.ActiveUser as User).TimeLimitOccasionalDateTime != default && (this.ActiveUser as User).TimeLimitOccasionalDateTime > now;
                         bool isOrderly = this.ActiveUser.IsTimeLimitOrderly && IsOrderlyActive(this.ActiveUser.TimeLimitFromTime, this.ActiveUser.TimeLimitToTime);
-                        if (isOrderly)
+                        if (isOccasionalActive)
                         {
-                            var now = DateTime.Now;
-                            TimeSpan time = this.ActiveUser.TimeLimitToTime - new TimeSpan(now.Hour, now.Minute, 0);
+                            time = (this.ActiveUser as User).TimeLimitOccasionalDateTime - now;
+                        }
+                        else if (isOrderly)
+                        {
+                            time = this.ActiveUser.TimeLimitToTime - new TimeSpan(now.Hour, now.Minute, 0);
+                        }
+
+                        if (isOccasionalActive || isOrderly)
+                        {
                             this.TimeRemainingTime = time;
                             this.processController.AllProcessLimitStop();
                             this.proxyController.Start();
-                            this.UserLoggedInOrderly?.Invoke(this, EventArgs.Empty);
+                            this.UserLoggedInOrderlyOrActiveOccasional?.Invoke(this, EventArgs.Empty);
                             this.logger.LogLogin(this.ActiveUser.Username);
                         }
                         else
@@ -250,7 +265,16 @@ namespace ParentalControl.BL
             var admin = this.database.ReadUsers(x => x.ID == this.database.AdminID).FirstOrDefault() as User;
             if (admin.Username == adminUsername && ValidateHash(adminPassword, admin.Password))
             {
-                this.TimeRemainingTime = new TimeSpan(0, minutes, 0);
+                var now = DateTime.Now;
+                var toDate = now.AddMinutes(minutes);
+                var toTime = new TimeSpan(toDate.Hour, toDate.Minute, 0);
+                if (this.ActiveUser.TimeLimitFromTime <= toTime)
+                {
+                    toTime = this.ActiveUser.TimeLimitToTime;
+                }
+
+                this.TimeRemainingTime = toTime - new TimeSpan(now.Hour, now.Minute, 0);
+                this.database.Transaction(() => this.database.UpdateUsers(x => x.TimeLimitOccasionalDateTime = now.Add(this.TimeRemainingTime), x => x.ID == this.ActiveUser.ID));
                 this.processController.AllProcessLimitStop();
                 this.proxyController.Start();
                 return true;
@@ -262,10 +286,9 @@ namespace ParentalControl.BL
 
         private void Timer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            var sub = new TimeSpan(0, 0, 1);
             if (this.TimeRemainingTime != default && this.TimeRemainingTime.TotalSeconds > 0)
             {
-                this.TimeRemainingTime.Subtract(sub);
+                this.TimeRemainingTime.Subtract(Sub);
             }
             else if (this.TimeRemainingTime != default && this.TimeRemainingTime.TotalSeconds <= 0)
             {

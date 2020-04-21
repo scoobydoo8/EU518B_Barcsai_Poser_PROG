@@ -14,10 +14,12 @@ CREATE TABLE [dbo].[Users] (
 	[TimeLimitFromTime]					TIME (7)		NOT NULL,
 	[TimeLimitToTime]					TIME (7)		NOT NULL,
 	[TimeLimitOccasionalMinutes]		INT				NOT NULL,
+	[TimeLimitOccasionalDateTime]		DATETIME		NOT NULL,
 	[IsProgramLimitOrderly]				BIT				NOT NULL,
 	[ProgramLimitFromTime]				TIME (7)		NOT NULL,
 	[ProgramLimitToTime]				TIME (7)		NOT NULL,
 	[ProgramLimitOccasionalMinutes]		INT				NOT NULL,
+	[ProgramLimitOccasionalDateTime]	DATETIME		NOT NULL,
 
 	PRIMARY KEY							CLUSTERED		([ID] ASC)
 );
