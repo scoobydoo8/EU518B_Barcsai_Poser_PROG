@@ -32,6 +32,9 @@ namespace ParentalControl.VM
             this.businessLogic.UserLoggedInOrderlyOrActiveOccasional += this.BusinessLogic_UserLoggedIn;
             this.businessLogic.UserLoggedOut += this.BusinessLogic_UserLoggedOut;
             this.businessLogic.TimerTick += this.BusinessLogic_TimerTick;
+
+            // DEBUG
+            Console.WriteLine(this.businessLogic.Registration("Username", "Password", "?", "!"));
         }
 
         /// <summary>

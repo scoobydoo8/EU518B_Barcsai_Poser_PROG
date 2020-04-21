@@ -21,12 +21,14 @@ namespace ParentalControl.Data
     {
         private static DatabaseManager databaseManager = null;
         private ParentalControlEntities entities;
+        private Logger logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DatabaseManager"/> class.
         /// </summary>
         private DatabaseManager()
         {
+            this.logger = Logger.Get();
             this.entities = new ParentalControlEntities();
             var admin = this.entities.Users.FirstOrDefault();
             this.AdminID = admin == null ? 0 : admin.ID;
@@ -52,10 +54,7 @@ namespace ParentalControl.Data
             return databaseManager;
         }
 
-        /// <summary>
-        /// This must be used for create, update and delete transacions.
-        /// </summary>
-        /// <param name="action">Transaction action.</param>
+        /// <inheritdoc/>
         public void Transaction(Action action)
         {
             using (var transaction = this.entities.Database.BeginTransaction())
@@ -66,11 +65,36 @@ namespace ParentalControl.Data
                     this.entities.SaveChanges();
                     transaction.Commit();
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
+                    var exceptionMessage = e.GetType().Name + ":" + e.Message;
+                    this.logger.LogException(exceptionMessage);
                     transaction.Rollback();
                 }
             }
+        }
+
+        /// <inheritdoc/>
+        public bool Transaction(Func<bool> func)
+        {
+            bool ret = default;
+            using (var transaction = this.entities.Database.BeginTransaction())
+            {
+                try
+                {
+                    ret = func();
+                    this.entities.SaveChanges();
+                    transaction.Commit();
+                }
+                catch (Exception e)
+                {
+                    var exceptionMessage = e.GetType().Name + ":" + e.Message;
+                    this.logger.LogException(exceptionMessage);
+                    transaction.Rollback();
+                }
+            }
+
+            return ret;
         }
 
         /// <summary>

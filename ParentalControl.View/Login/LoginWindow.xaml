@@ -1,0 +1,42 @@
+﻿<Window
+    x:Class="ParentalControl.View.Login.LoginWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:ParentalControl.View.Login"
+    mc:Ignorable="d" WindowStartupLocation="CenterScreen"
+    SizeToContent="WidthAndHeight" ResizeMode="NoResize"
+    Title="Bejelentkezés">
+    <Grid Margin="10,0,10,10" Width="250">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="40"/>
+        </Grid.RowDefinitions>
+        <Grid.Resources>
+            <Style x:Key="ControlBaseStyle" TargetType="{x:Type Control}">
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                <Setter Property="FontSize" Value="14" />
+            </Style>
+            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource ControlBaseStyle}">
+                <Setter Property="Margin" Value="0,10,0,0" />
+            </Style>
+            <Style TargetType="{x:Type Label}" BasedOn="{StaticResource ControlBaseStyle}"/>
+            <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource ControlBaseStyle}"/>
+            <Style TargetType="{x:Type PasswordBox}" BasedOn="{StaticResource ControlBaseStyle}">
+                <Setter Property="PasswordChar" Value="*"/>
+            </Style>
+        </Grid.Resources>
+        <Label Grid.Row="0" Content="Felhasználónév"/>
+        <Label Grid.Row="2" Content="Jelszó"/>
+        <TextBox Grid.Row="1" x:Name="txtUsername"/>
+        <PasswordBox Grid.Row="3" x:Name="pswUsername"/>
+        <Button Grid.Row="4" Content="Bejelentkezés"/>
+        <Button Grid.Row="5" Content="Jelszó visszaállítás" Click="PasswordRecovery_Click"/>
+    </Grid>
+</Window>

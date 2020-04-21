@@ -44,10 +44,12 @@ namespace ParentalControl.Data.Database
             this.TimeLimitFromTime = default;
             this.TimeLimitToTime = default;
             this.TimeLimitOccasionalMinutes = 60;
+            this.TimeLimitOccasionalDateTime = DateTime.Now;
             this.IsProgramLimitOrderly = false;
             this.ProgramLimitFromTime = default;
             this.ProgramLimitToTime = default;
             this.ProgramLimitOccasionalMinutes = 30;
+            this.ProgramLimitOccasionalDateTime = DateTime.Now;
         }
 
         /// <inheritdoc/>

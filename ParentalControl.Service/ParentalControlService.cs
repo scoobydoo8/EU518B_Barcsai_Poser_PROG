@@ -14,6 +14,7 @@ namespace ParentalControl.Service
     using System.Text;
     using System.Threading.Tasks;
     using ParentalControl.View;
+    using ParentalControl.View.Login;
 
     /// <summary>
     /// Parental control service class.
@@ -53,7 +54,7 @@ namespace ParentalControl.Service
 
         private void StartProcess()
         {
-            var file = typeof(MainWindow).Assembly.Location;
+            var file = typeof(LoginWindow).Assembly.Location;
             ApplicationLoader.PROCESS_INFORMATION procInfo = default;
             ApplicationLoader.StartProcessAndBypassUAC(file, out procInfo);
             this.process = Process.GetProcessById(Convert.ToInt32(procInfo.dwProcessId));

@@ -235,7 +235,7 @@ namespace ParentalControl.BL
         public bool Registration(string username, string password, string securityQuestion, string securityAnswer)
         {
             CheckInput(username, password, securityQuestion, securityAnswer);
-            return this.database.CreateUser(username, GetHash(password), securityQuestion, GetHash(securityAnswer));
+            return this.database.Transaction(() => this.database.CreateUser(username, GetHash(password), securityQuestion, GetHash(securityAnswer)));
         }
 
         /// <inheritdoc/>
@@ -251,7 +251,7 @@ namespace ParentalControl.BL
 
             if (ValidateHash(securityAnswer, user.SecurityAnswer))
             {
-                this.database.UpdateUsers(x => x.Password = GetHash(newPassword), x => x.Username == username);
+                this.database.Transaction(() => this.database.UpdateUsers(x => x.Password = GetHash(newPassword), x => x.Username == username));
                 return true;
             }
 

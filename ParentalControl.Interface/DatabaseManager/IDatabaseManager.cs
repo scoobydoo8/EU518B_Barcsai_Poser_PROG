@@ -27,10 +27,17 @@ namespace ParentalControl.Interface.DatabaseManager
         int AdminID { get; }
 
         /// <summary>
-        /// This must be used for create, update and delete transacions.
+        /// This must be used for update and delete transacions.
         /// </summary>
         /// <param name="action">Transaction action.</param>
         void Transaction(Action action);
+
+        /// <summary>
+        /// This must be used for create transacions.
+        /// </summary>
+        /// <param name="func">Func.</param>
+        /// <returns>Success.</returns>
+        bool Transaction(Func<bool> func);
 
         /// <summary>
         /// Create program limitation.

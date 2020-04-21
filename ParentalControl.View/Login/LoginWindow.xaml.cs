@@ -1,8 +1,8 @@
-﻿// <copyright file="MainWindow.xaml.cs" company="PlaceholderCompany">
+﻿// <copyright file="LoginWindow.xaml.cs" company="PlaceholderCompany">
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace ParentalControl.View
+namespace ParentalControl.View.Login
 {
     using System;
     using System.Collections.Generic;
@@ -23,17 +23,23 @@ namespace ParentalControl.View
     /// <summary>
     /// Interaction logic for MainWindow.xaml.
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class LoginWindow : Window
     {
-        private ViewModel viewModel;
+        // private ViewModel viewModel;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MainWindow"/> class.
+        /// Initializes a new instance of the <see cref="LoginWindow"/> class.
         /// </summary>
-        public MainWindow()
+        public LoginWindow()
         {
             this.InitializeComponent();
-            this.viewModel = ViewModel.Get();
+
+            // this.viewModel = ViewModel.Get();
+        }
+
+        private void PasswordRecovery_Click(object sender, RoutedEventArgs e)
+        {
+            new LoginPasswordRecoveryWindow().ShowDialog();
         }
     }
 }

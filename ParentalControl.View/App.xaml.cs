@@ -19,7 +19,7 @@ namespace ParentalControl.View
         {
             var exceptionMessage = e.Exception.GetType().Name + ":" + e.Exception.Message;
             Logger.Get().LogException(exceptionMessage);
-            MessageBox.Show("Hiba történt:\n" + e.Exception.Message, "Hina!", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show("Hiba történt:\n" + e.Exception.Message, "Hiba!", MessageBoxButton.OK, MessageBoxImage.Warning);
             e.Handled = true;
         }
     }
