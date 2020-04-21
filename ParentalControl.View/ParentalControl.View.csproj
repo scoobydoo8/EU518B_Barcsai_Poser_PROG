@@ -122,6 +122,10 @@
       <Project>{11520837-c058-45d8-ba21-c87678e2f6f7}</Project>
       <Name>ParentalControl.Interface</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ParentalControl.Logger\ParentalControl.Logger.csproj">
+      <Project>{7080a15c-03d9-450d-a5b6-24bc336f9857}</Project>
+      <Name>ParentalControl.Logger</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ParentalControl.VM\ParentalControl.VM.csproj">
       <Project>{7c1f26a6-5e7a-4513-91de-cf86d6fa54cb}</Project>
       <Name>ParentalControl.VM</Name>
