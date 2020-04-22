@@ -220,7 +220,13 @@ namespace ParentalControl.BL.ProcessControl
             }
             catch (Win32Exception)
             {
-                Process.GetProcessById(id)?.Kill();
+                try
+                {
+                    Process.GetProcessById(id)?.Kill();
+                }
+                catch (Exception)
+                {
+                }
             }
             catch (Exception)
             {

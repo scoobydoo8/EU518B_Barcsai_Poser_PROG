@@ -5,9 +5,10 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:local="clr-namespace:ParentalControl.View.Login"
+    xmlns:view="clr-namespace:ParentalControl.View"
     mc:Ignorable="d" WindowStartupLocation="CenterScreen"
     SizeToContent="WidthAndHeight" ResizeMode="NoResize"
-    Title="Bejelentkezés">
+    Title="Bejelentkezés" Loaded="Window_Loaded">
     <Grid Margin="10,0,10,10" Width="250">
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
@@ -35,8 +36,25 @@
         <Label Grid.Row="0" Content="Felhasználónév"/>
         <Label Grid.Row="2" Content="Jelszó"/>
         <TextBox Grid.Row="1" x:Name="txtUsername"/>
-        <PasswordBox Grid.Row="3" x:Name="pswUsername"/>
-        <Button Grid.Row="4" Content="Bejelentkezés"/>
+        <PasswordBox Grid.Row="3" x:Name="pswPassword"/>
+        <Button Grid.Row="4" Content="Bejelentkezés" Click="Login_Click" IsDefault="True"/>
         <Button Grid.Row="5" Content="Jelszó visszaállítás" Click="PasswordRecovery_Click"/>
+        <view:NotifyIcon
+            x:Name="notifyIcon"
+            Text="Szülői felügyelet"
+            BalloonTipTitle="Szülői felügyelet"
+            BalloonTipIcon="Info"
+            Visibility="Visible"
+            IsEnabled="True">
+            <view:NotifyIcon.ContextMenu>
+                <ContextMenu>
+                    <MenuItem IsEnabled="False" x:Name="mniOccasionalTime" Header="Eseti számítógép használat" Click="OccasionalTime_Click"/>
+                    <MenuItem IsEnabled="False" x:Name="mniOccasionalProgram" Header="Eseti program használat" Click="OccasionalProgram_Click"/>
+                    <Separator/>
+                    <MenuItem IsEnabled="False" x:Name="mniChangePassword" Header="Jelszó változtatás" Click="ChangePassword_Click"/>
+                    <MenuItem IsEnabled="False" x:Name="mniLogOut" Header="Kijelentkezés" Click="LogOut_Click"/>
+                </ContextMenu>
+            </view:NotifyIcon.ContextMenu>
+        </view:NotifyIcon>
     </Grid>
 </Window>

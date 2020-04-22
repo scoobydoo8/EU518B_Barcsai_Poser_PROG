@@ -68,6 +68,7 @@ namespace ParentalControl.View.Login
                 this.IsUsernameValid = true;
                 this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.IsUsernameValid)));
                 this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.IsUsernameNotValid)));
+                this.pswSecurityAnswer.Focus();
             }
         }
 
@@ -94,6 +95,11 @@ namespace ParentalControl.View.Login
             {
                 MessageBox.Show("A jelszó visszaállítás sikertelen!\nA biztonsági válasz nem megfelelő!", "Sikertelen!", MessageBoxButton.OK, MessageBoxImage.Information);
             }
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.txtUsername.Focus();
         }
     }
 }
