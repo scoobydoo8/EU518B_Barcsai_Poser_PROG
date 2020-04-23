@@ -55,13 +55,25 @@ namespace ParentalControl.VM
         public List<IUser> ManagedUsers { get; private set; }
 
         /// <inheritdoc/>
+        public IUser SelectedManagedUser { get; set; }
+
+        /// <inheritdoc/>
         public List<IProgramLimitation> ManagedProgramLimitations { get; private set; }
+
+        /// <inheritdoc/>
+        public IProgramLimitation SelectedManagedProgramLimitation { get; set; }
 
         /// <inheritdoc/>
         public List<IWebLimitation> ManagedWebLimitations { get; private set; }
 
         /// <inheritdoc/>
+        public IWebLimitation SelectedManagedWebLimitation { get; set; }
+
+        /// <inheritdoc/>
         public List<IKeyword> ManagedKeywords { get; private set; }
+
+        /// <inheritdoc/>
+        public IKeyword SelectedManagedKeyword { get; set; }
 
         /// <summary>
         /// Singleton.

@@ -214,6 +214,12 @@ namespace ParentalControl.BL
                         this.logger.LogLogin(this.ActiveUser.Username);
                     }
                 }
+                else
+                {
+                    this.processController.AllProcessLimitStop();
+                    this.UserLoggedInFull?.Invoke(this, EventArgs.Empty);
+                    this.logger.LogLogin(this.ActiveUser.Username);
+                }
 
                 return true;
             }

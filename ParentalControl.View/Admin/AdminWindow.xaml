@@ -4,9 +4,29 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ParentalControl.View.Admin"
-        mc:Ignorable="d"
-        Title="Adminisztrációs felület" Height="450" Width="800">
-    <Grid>
-        
+        mc:Ignorable="d" WindowStartupLocation="CenterScreen"
+        SizeToContent="WidthAndHeight" ResizeMode="NoResize"
+        Title="Adminisztrációs felület" Loaded="Window_Loaded">
+    <Grid Margin="10,0,10,10" Width="800">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <TabControl Grid.Row="01" Grid.ColumnSpan="3" Height="300">
+            <TabItem Header="Számítógép hozzáférési korlátozás">
+
+            </TabItem>
+            <TabItem Header="Program hozzáférési korlátozás">
+
+            </TabItem>
+            <TabItem Header="Webes hozzáférési korlátozás">
+
+            </TabItem>
+        </TabControl>
     </Grid>
 </Window>

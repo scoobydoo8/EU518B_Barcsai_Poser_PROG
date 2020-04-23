@@ -22,9 +22,19 @@ namespace ParentalControl.Interface.ViewModel
         List<IUser> ManagedUsers { get; }
 
         /// <summary>
+        /// Gets or sets selected managed user.
+        /// </summary>
+        IUser SelectedManagedUser { get; set; }
+
+        /// <summary>
         /// Gets managed program limitations.
         /// </summary>
         List<IProgramLimitation> ManagedProgramLimitations { get; }
+
+        /// <summary>
+        /// Gets or sets selected managed program limitation.
+        /// </summary>
+        IProgramLimitation SelectedManagedProgramLimitation { get; set; }
 
         /// <summary>
         /// Gets managed web limitations.
@@ -32,8 +42,18 @@ namespace ParentalControl.Interface.ViewModel
         List<IWebLimitation> ManagedWebLimitations { get; }
 
         /// <summary>
+        /// Gets or sets selected managed web limitation.
+        /// </summary>
+        IWebLimitation SelectedManagedWebLimitation { get; set; }
+
+        /// <summary>
         /// Gets managed keywords.
         /// </summary>
         List<IKeyword> ManagedKeywords { get; }
+
+        /// <summary>
+        /// Gets or sets selected managed keyword.
+        /// </summary>
+        IKeyword SelectedManagedKeyword { get; set; }
     }
 }
