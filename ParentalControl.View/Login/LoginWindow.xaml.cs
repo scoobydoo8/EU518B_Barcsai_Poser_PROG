@@ -68,11 +68,7 @@ namespace ParentalControl.View.Login
                 return;
             }
 
-            if (this.viewModel.BL.LogIn(this.txtUsername.Text, this.pswPassword.Password))
-            {
-                this.Hide();
-            }
-            else
+            if (!this.viewModel.BL.LogIn(this.txtUsername.Text, this.pswPassword.Password))
             {
                 MessageBox.Show("A bejelentkezés sikertelen!\nA felhasználónév vagy a jelszó nem megfelelő!", "Sikertelen!", MessageBoxButton.OK, MessageBoxImage.Error);
             }
@@ -85,6 +81,7 @@ namespace ParentalControl.View.Login
 
         private void BL_UserLoggedInFull(object sender, EventArgs e)
         {
+            this.Hide();
             this.mniChangePassword.IsEnabled = true;
             this.mniLogOut.IsEnabled = true;
             if (this.viewModel.ActiveUser.ID == this.viewModel.BL.Database.AdminID)
@@ -97,14 +94,14 @@ namespace ParentalControl.View.Login
 
         private void BL_UserLoggedInOccassional(object sender, EventArgs e)
         {
-            AdminPasswordWindow adminPasswordWindow = new AdminPasswordWindow();
+            AdminPasswordWindow adminPasswordWindow = new AdminPasswordWindow(OccasionalPermission.TimeLimit);
             if (adminPasswordWindow.ShowDialog() == true)
             {
                 this.LimitedUserLoggedIn();
             }
             else
             {
-                this.Show();
+                this.viewModel.BL.LogOut();
             }
         }
 
@@ -115,6 +112,7 @@ namespace ParentalControl.View.Login
 
         private void LimitedUserLoggedIn()
         {
+            this.Hide();
             this.mniOccasionalTime.IsEnabled = true;
             this.mniChangePassword.IsEnabled = true;
             this.mniLogOut.IsEnabled = true;
@@ -125,6 +123,8 @@ namespace ParentalControl.View.Login
 
         private void BL_UserLoggedOut(object sender, EventArgs e)
         {
+            this.txtUsername.Text = string.Empty;
+            this.pswPassword.Password = string.Empty;
             this.mniOccasionalTime.IsEnabled = false;
             this.mniOccasionalProgram.IsEnabled = false;
             this.mniChangePassword.IsEnabled = false;
@@ -148,12 +148,12 @@ namespace ParentalControl.View.Login
 
         private void ProcessController_ProgramStartedFullLimit(object sender, IProcessEventArgs e)
         {
-            MessageBox.Show("Nincs engedélyed ezen program futtatására!", "Tiltott!", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show("Nincs engedélyed ezen program futtatására!\nProgram: " + e.ProcessName, "Tiltott!", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
 
         private void ProcessController_ProgramStartedOccassional(object sender, IProcessEventArgs e)
         {
-            AdminPasswordWindow adminPasswordWindow = new AdminPasswordWindow();
+            AdminPasswordWindow adminPasswordWindow = new AdminPasswordWindow(OccasionalPermission.ProgramLimit, e.ID);
             if (adminPasswordWindow.ShowDialog() == true)
             {
                 this.LimitedProgramStarted();
@@ -201,13 +201,13 @@ namespace ParentalControl.View.Login
 
         private void OccasionalTime_Click(object sender, RoutedEventArgs e)
         {
-            AdminPasswordWindow adminPasswordWindow = new AdminPasswordWindow();
+            AdminPasswordWindow adminPasswordWindow = new AdminPasswordWindow(OccasionalPermission.TimeLimit);
             adminPasswordWindow.ShowDialog();
         }
 
         private void OccasionalProgram_Click(object sender, RoutedEventArgs e)
         {
-            AdminPasswordWindow adminPasswordWindow = new AdminPasswordWindow();
+            AdminPasswordWindow adminPasswordWindow = new AdminPasswordWindow(OccasionalPermission.ProgramLimit);
             adminPasswordWindow.ShowDialog();
         }
 

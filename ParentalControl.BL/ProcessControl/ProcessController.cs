@@ -61,7 +61,17 @@ namespace ParentalControl.BL.ProcessControl
         /// <inheritdoc/>
         public bool IsOccassionalPermission(string adminUsername, string adminPassword, int minutes, int processID)
         {
-            var process = Process.GetProcessById(processID);
+            if (processID == 0 && this.businessLogic.ProgramRemainingTime == default)
+            {
+                throw new ArgumentOutOfRangeException(nameof(processID));
+            }
+
+            Process process = null;
+            if (processID != 0)
+            {
+                process = Process.GetProcessById(processID);
+            }
+
             var admin = this.businessLogic.Database.ReadUsers(x => x.ID == this.businessLogic.Database.AdminID).FirstOrDefault() as User;
             if (admin.Username == adminUsername && BusinessLogic.ValidateHash(adminPassword, admin.Password))
             {
@@ -83,6 +93,28 @@ namespace ParentalControl.BL.ProcessControl
 
             process?.Kill();
             return false;
+        }
+
+        /// <inheritdoc/>
+        public bool GetOccasionalPermission(int processID)
+        {
+            try
+            {
+                if (this.businessLogic.ProgramRemainingTime == default)
+                {
+                    return false;
+                }
+
+                var process = Process.GetProcessById(processID);
+                process?.Resume();
+                this.ranProcessesWhileTime.Add(process);
+                this.enabledProcesses.Add(process);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         /// <summary>

@@ -91,6 +91,12 @@ namespace ParentalControl.Interface.BusinessLogic
         bool PasswordRecovery(string username, string securityAnswer, string newPassword);
 
         /// <summary>
+        /// Change password.
+        /// </summary>
+        /// <param name="password">Password.</param>
+        void ChangePassword(string password);
+
+        /// <summary>
         /// Is occassional permission.
         /// </summary>
         /// <param name="adminUsername">Admin username.</param>

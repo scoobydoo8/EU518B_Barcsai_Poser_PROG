@@ -39,5 +39,12 @@ namespace ParentalControl.Interface.ProcessControl
         /// <param name="processID">Process ID.</param>
         /// <returns>Valid.</returns>
         bool IsOccassionalPermission(string adminUsername, string adminPassword, int minutes, int processID);
+
+        /// <summary>
+        /// Get occasional permission.
+        /// </summary>
+        /// <param name="processID">ProcessID.</param>
+        /// <returns>Success.</returns>
+        bool GetOccasionalPermission(int processID);
     }
 }

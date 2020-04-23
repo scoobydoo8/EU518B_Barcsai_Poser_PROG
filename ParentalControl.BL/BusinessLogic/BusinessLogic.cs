@@ -251,11 +251,24 @@ namespace ParentalControl.BL
 
             if (ValidateHash(securityAnswer, user.SecurityAnswer))
             {
-                this.database.Transaction(() => this.database.UpdateUsers(x => x.Password = GetHash(newPassword), x => x.Username == username));
+                this.database.Transaction(() => this.database.UpdateUsers(x => x.Password = GetHash(newPassword), condition));
                 return true;
             }
 
             return false;
+        }
+
+        /// <inheritdoc/>
+        public void ChangePassword(string password)
+        {
+            CheckInput(password);
+            if (this.ActiveUser == null)
+            {
+                throw new ArgumentException("Nincs bejelentkezett felhasználó!");
+            }
+
+            Func<User, bool> condition = x => x.ID == this.ActiveUser.ID;
+            this.database.Transaction(() => this.database.UpdateUsers(x => x.Password = GetHash(password), condition));
         }
 
         /// <inheritdoc/>
