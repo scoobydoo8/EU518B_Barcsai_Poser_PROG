@@ -99,7 +99,7 @@ namespace ParentalControl.View.User
                         }
                         else
                         {
-                            this.DialogResult = false;
+                            MessageBox.Show("Az eseti engedélyeztetés sikertelen!\nValószínűleg hibás a belépés!", "Sikertelen!", MessageBoxButton.OK, MessageBoxImage.Error);
                         }
                     }
                     else
@@ -117,7 +117,7 @@ namespace ParentalControl.View.User
                         }
                         else
                         {
-                            this.DialogResult = false;
+                            MessageBox.Show("Az eseti engedélyeztetés sikertelen!\nValószínűleg hibás a belépés!", "Sikertelen!", MessageBoxButton.OK, MessageBoxImage.Error);
                         }
                     }
                     else

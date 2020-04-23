@@ -6,6 +6,7 @@ namespace ParentalControl.VM
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.Linq;
     using System.Text;
@@ -52,25 +53,25 @@ namespace ParentalControl.VM
         public IUser ActiveUser { get; private set; }
 
         /// <inheritdoc/>
-        public List<IUser> ManagedUsers { get; private set; }
+        public ObservableCollection<IUser> ManagedUsers { get; private set; }
 
         /// <inheritdoc/>
         public IUser SelectedManagedUser { get; set; }
 
         /// <inheritdoc/>
-        public List<IProgramLimitation> ManagedProgramLimitations { get; private set; }
+        public ObservableCollection<IProgramLimitation> ManagedProgramLimitations { get; private set; }
 
         /// <inheritdoc/>
         public IProgramLimitation SelectedManagedProgramLimitation { get; set; }
 
         /// <inheritdoc/>
-        public List<IWebLimitation> ManagedWebLimitations { get; private set; }
+        public ObservableCollection<IWebLimitation> ManagedWebLimitations { get; private set; }
 
         /// <inheritdoc/>
         public IWebLimitation SelectedManagedWebLimitation { get; set; }
 
         /// <inheritdoc/>
-        public List<IKeyword> ManagedKeywords { get; private set; }
+        public ObservableCollection<IKeyword> ManagedKeywords { get; private set; }
 
         /// <inheritdoc/>
         public IKeyword SelectedManagedKeyword { get; set; }
@@ -95,22 +96,22 @@ namespace ParentalControl.VM
             {
                 if (e == "Users")
                 {
-                    this.ManagedUsers = this.businessLogic.Database.ReadUsers(x => x.ID != this.businessLogic.Database.AdminID);
+                    this.ManagedUsers = new ObservableCollection<IUser>(this.businessLogic.Database.ReadUsers(x => x.ID != this.businessLogic.Database.AdminID));
                     this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.ManagedUsers)));
                 }
                 else if (e == "ProgramLimitations")
                 {
-                    this.ManagedProgramLimitations = this.businessLogic.Database.ReadProgramLimitations();
+                    this.ManagedProgramLimitations = new ObservableCollection<IProgramLimitation>(this.businessLogic.Database.ReadProgramLimitations());
                     this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.ManagedProgramLimitations)));
                 }
                 else if (e == "WebLimitations")
                 {
-                    this.ManagedWebLimitations = this.businessLogic.Database.ReadWebLimitations();
+                    this.ManagedWebLimitations = new ObservableCollection<IWebLimitation>(this.businessLogic.Database.ReadWebLimitations());
                     this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.ManagedWebLimitations)));
                 }
                 else if (e == "Keywords")
                 {
-                    this.ManagedKeywords = this.businessLogic.Database.ReadKeywords();
+                    this.ManagedKeywords = new ObservableCollection<IKeyword>(this.businessLogic.Database.ReadKeywords());
                     this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.ManagedKeywords)));
                 }
             }
@@ -122,13 +123,13 @@ namespace ParentalControl.VM
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.ActiveUser)));
             if (this.ActiveUser.ID == this.businessLogic.Database.AdminID)
             {
-                this.ManagedUsers = this.businessLogic.Database.ReadUsers(x => x.ID != this.businessLogic.Database.AdminID);
-                this.ManagedProgramLimitations = this.businessLogic.Database.ReadProgramLimitations();
-                this.ManagedWebLimitations = this.businessLogic.Database.ReadWebLimitations();
-                this.ManagedKeywords = this.businessLogic.Database.ReadKeywords();
+                this.ManagedUsers = new ObservableCollection<IUser>(this.businessLogic.Database.ReadUsers(x => x.ID != this.businessLogic.Database.AdminID));
                 this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.ManagedUsers)));
+                this.ManagedProgramLimitations = new ObservableCollection<IProgramLimitation>(this.businessLogic.Database.ReadProgramLimitations());
                 this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.ManagedProgramLimitations)));
+                this.ManagedWebLimitations = new ObservableCollection<IWebLimitation>(this.businessLogic.Database.ReadWebLimitations());
                 this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.ManagedWebLimitations)));
+                this.ManagedKeywords = new ObservableCollection<IKeyword>(this.businessLogic.Database.ReadKeywords());
                 this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.ManagedKeywords)));
             }
         }

@@ -6,6 +6,7 @@ namespace ParentalControl.View.Admin
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
@@ -16,6 +17,7 @@ namespace ParentalControl.View.Admin
     using System.Windows.Input;
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
+    using System.Windows.Navigation;
     using System.Windows.Shapes;
     using ParentalControl.Interface.ViewModel;
     using ParentalControl.VM;
@@ -39,7 +41,16 @@ namespace ParentalControl.View.Admin
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            this.cmbUser.Focus();
+        }
 
+        private void User_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (this.viewModel.SelectedManagedUser != null)
+            {
+                this.tbcLimits.IsEnabled = true;
+                this.frmTimeLimit.Navigate(new AdminTimeLimitationPage());
+            }
         }
     }
 }

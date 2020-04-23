@@ -145,6 +145,7 @@ namespace ParentalControl.View.Login
             }
 
             this.Show();
+            this.txtUsername.Focus();
         }
 
         private void ProcessController_ProgramStartedFullLimit(object sender, IProcessEventArgs e)

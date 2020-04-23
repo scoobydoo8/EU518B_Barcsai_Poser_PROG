@@ -115,5 +115,14 @@ namespace ParentalControl.Data.Database
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<WebLimitation> WebLimitations { get; set; }
+
+        /// <summary>
+        /// To string.
+        /// </summary>
+        /// <returns>String.</returns>
+        public override string ToString()
+        {
+            return this.Username;
+        }
     }
 }

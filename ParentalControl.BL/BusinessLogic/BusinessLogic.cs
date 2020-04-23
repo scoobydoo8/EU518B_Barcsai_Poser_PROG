@@ -230,6 +230,7 @@ namespace ParentalControl.BL
         /// <inheritdoc/>
         public void LogOut()
         {
+            this.logger.LogLogout(this.ActiveUser.Username);
             this.TimeRemainingTime = default;
             this.ProgramRemainingTime = default;
             this.ActiveUser = default;

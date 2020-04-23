@@ -268,19 +268,19 @@ namespace ParentalControl.BL.ProcessControl
 
         private void ProcessStoppedEventWatcher_EventArrived(object sender, EventArrivedEventArgs e)
         {
-            var id = int.Parse(e.NewEvent.Properties["ProcessID"].Value.ToString());
+            var processName = e.NewEvent.Properties["ProcessName"].Value.ToString().Replace(".exe", string.Empty);
             try
             {
                 if (this.businessLogic != null && this.businessLogic.ActiveUser != null)
                 {
-                    this.logger.LogStopProcess(this.businessLogic.ActiveUser.Username, Process.GetProcessById(id).ProcessName);
+                    this.logger.LogStopProcess(this.businessLogic.ActiveUser.Username, processName);
                 }
             }
             catch (Exception)
             {
             }
 
-            this.ranProcessesWhileTime.Remove(this.ranProcessesWhileTime.Where(x => x.Id == id).FirstOrDefault());
+            this.ranProcessesWhileTime.Remove(this.ranProcessesWhileTime.Where(x => x.ProcessName == processName).FirstOrDefault());
         }
 
         private List<Process[]> GetAllToBeKilledProcesses(params string[] processNames)

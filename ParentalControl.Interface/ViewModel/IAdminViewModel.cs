@@ -6,6 +6,7 @@ namespace ParentalControl.Interface.ViewModel
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
@@ -19,7 +20,7 @@ namespace ParentalControl.Interface.ViewModel
         /// <summary>
         /// Gets managed users.
         /// </summary>
-        List<IUser> ManagedUsers { get; }
+        ObservableCollection<IUser> ManagedUsers { get; }
 
         /// <summary>
         /// Gets or sets selected managed user.
@@ -29,7 +30,7 @@ namespace ParentalControl.Interface.ViewModel
         /// <summary>
         /// Gets managed program limitations.
         /// </summary>
-        List<IProgramLimitation> ManagedProgramLimitations { get; }
+        ObservableCollection<IProgramLimitation> ManagedProgramLimitations { get; }
 
         /// <summary>
         /// Gets or sets selected managed program limitation.
@@ -39,7 +40,7 @@ namespace ParentalControl.Interface.ViewModel
         /// <summary>
         /// Gets managed web limitations.
         /// </summary>
-        List<IWebLimitation> ManagedWebLimitations { get; }
+        ObservableCollection<IWebLimitation> ManagedWebLimitations { get; }
 
         /// <summary>
         /// Gets or sets selected managed web limitation.
@@ -49,7 +50,7 @@ namespace ParentalControl.Interface.ViewModel
         /// <summary>
         /// Gets managed keywords.
         /// </summary>
-        List<IKeyword> ManagedKeywords { get; }
+        ObservableCollection<IKeyword> ManagedKeywords { get; }
 
         /// <summary>
         /// Gets or sets selected managed keyword.

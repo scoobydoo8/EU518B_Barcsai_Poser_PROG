@@ -56,5 +56,14 @@ namespace ParentalControl.Data.Database
         /// Gets or sets user.
         /// </summary>
         public virtual User User { get; set; }
+
+        /// <summary>
+        /// To string.
+        /// </summary>
+        /// <returns>String.</returns>
+        public override string ToString()
+        {
+            return string.Format("{0} - {1}", this.Name, this.Path);
+        }
     }
 }

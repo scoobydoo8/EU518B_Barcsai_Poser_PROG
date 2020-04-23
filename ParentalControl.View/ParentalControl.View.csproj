@@ -74,6 +74,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Admin\AdminProgramLimitationPage.xaml.cs">
+      <DependentUpon>AdminProgramLimitationPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Admin\AdminTimeLimitationPage.xaml.cs">
+      <DependentUpon>AdminTimeLimitationPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Admin\AdminWebLimitationPage.xaml.cs">
+      <DependentUpon>AdminWebLimitationPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="User\AdminPasswordWindow.xaml.cs">
       <DependentUpon>AdminPasswordWindow.xaml</DependentUpon>
     </Compile>
@@ -83,6 +92,18 @@
     <Compile Include="User\TimeRemainingWindow.xaml.cs">
       <DependentUpon>TimeRemainingWindow.xaml</DependentUpon>
     </Compile>
+    <Page Include="Admin\AdminProgramLimitationPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Admin\AdminTimeLimitationPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Admin\AdminWebLimitationPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Admin\AdminWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

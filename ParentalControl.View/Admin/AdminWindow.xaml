@@ -7,25 +7,34 @@
         mc:Ignorable="d" WindowStartupLocation="CenterScreen"
         SizeToContent="WidthAndHeight" ResizeMode="NoResize"
         Title="Adminisztrációs felület" Loaded="Window_Loaded">
-    <Grid Margin="10,0,10,10" Width="800">
+    <Grid Margin="10,0,10,10">
         <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="35"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="100"/>
-            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="200"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <TabControl Grid.Row="01" Grid.ColumnSpan="3" Height="300">
-            <TabItem Header="Számítógép hozzáférési korlátozás">
-
+        <Grid.Resources>
+            <Style x:Key="ControlBaseStyle" TargetType="{x:Type Control}">
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                <Setter Property="FontSize" Value="14" />
+            </Style>
+        </Grid.Resources>
+        <Label Content="Felhasználó:" Grid.Row="00" Grid.Column="00" Style="{StaticResource ControlBaseStyle}"/>
+        <ComboBox x:Name="cmbUser" Grid.Row="00" Grid.Column="01" SelectedItem="{Binding SelectedManagedUser}" ItemsSource="{Binding ManagedUsers}" Margin="5" Style="{StaticResource ControlBaseStyle}" SelectionChanged="User_SelectionChanged"/>
+        <TabControl x:Name="tbcLimits" Grid.Row="01" Grid.ColumnSpan="3" Style="{StaticResource ControlBaseStyle}" IsEnabled="False">
+            <TabItem x:Name="tbiTimeLimit" Header="Számítógép hozzáférési korlátozás">
+                <Frame x:Name="frmTimeLimit" NavigationUIVisibility="Hidden" Source="AdminTimeLimitationPage.xaml"/>
             </TabItem>
-            <TabItem Header="Program hozzáférési korlátozás">
-
+            <TabItem x:Name="tbiProgramLimit" Header="Program hozzáférési korlátozás">
+                <Frame x:Name="frmProgramLimit" NavigationUIVisibility="Hidden" Source="AdminProgramLimitationPage.xaml"/>
             </TabItem>
-            <TabItem Header="Webes hozzáférési korlátozás">
-
+            <TabItem x:Name="tbiWebLimit" Header="Webes hozzáférési korlátozás">
+                <Frame x:Name="frmWebLimit" NavigationUIVisibility="Hidden" Source="AdminWebLimitationPage.xaml"/>
             </TabItem>
         </TabControl>
     </Grid>
