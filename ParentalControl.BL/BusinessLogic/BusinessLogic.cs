@@ -281,7 +281,8 @@ namespace ParentalControl.BL
                 var now = DateTime.Now;
                 var toDate = now.AddMinutes(minutes);
                 var toTime = new TimeSpan(toDate.Hour, toDate.Minute, 0);
-                if (this.ActiveUser.TimeLimitFromTime <= toTime)
+                if (this.ActiveUser.TimeLimitToTime != default &&
+                    this.ActiveUser.TimeLimitFromTime <= toTime)
                 {
                     toTime = this.ActiveUser.TimeLimitToTime;
                 }
@@ -301,7 +302,7 @@ namespace ParentalControl.BL
         {
             if (this.TimeRemainingTime != default && this.TimeRemainingTime.TotalSeconds > 0)
             {
-                this.TimeRemainingTime.Subtract(Sub);
+                this.TimeRemainingTime -= Sub;
             }
             else if (this.TimeRemainingTime != default && this.TimeRemainingTime.TotalSeconds <= 0)
             {

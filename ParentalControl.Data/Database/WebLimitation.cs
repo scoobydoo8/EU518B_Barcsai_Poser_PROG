@@ -29,6 +29,10 @@ namespace ParentalControl.Data.Database
             this.KeywordID = keywordID;
         }
 
+        private WebLimitation()
+        {
+        }
+
         /// <inheritdoc/>
         public int ID { get; set; }
 

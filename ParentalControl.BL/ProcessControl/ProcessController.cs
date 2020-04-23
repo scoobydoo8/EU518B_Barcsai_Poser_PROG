@@ -78,7 +78,8 @@ namespace ParentalControl.BL.ProcessControl
                 var now = DateTime.Now;
                 var toDate = now.AddMinutes(minutes);
                 var toTime = new TimeSpan(toDate.Hour, toDate.Minute, 0);
-                if (this.businessLogic.ActiveUser.ProgramLimitFromTime <= toTime)
+                if (this.businessLogic.ActiveUser.ProgramLimitToTime != default &&
+                    this.businessLogic.ActiveUser.ProgramLimitFromTime <= toTime)
                 {
                     toTime = this.businessLogic.ActiveUser.ProgramLimitToTime;
                 }
@@ -298,7 +299,7 @@ namespace ParentalControl.BL.ProcessControl
             var sub = BusinessLogic.Sub;
             if (this.businessLogic.ProgramRemainingTime != default && this.businessLogic.ProgramRemainingTime.TotalSeconds > 0)
             {
-                this.businessLogic.ProgramRemainingTime.Subtract(sub);
+                this.businessLogic.ProgramRemainingTime -= sub;
             }
             else if (this.businessLogic.ProgramRemainingTime != default && this.businessLogic.ProgramRemainingTime.TotalSeconds <= 0)
             {

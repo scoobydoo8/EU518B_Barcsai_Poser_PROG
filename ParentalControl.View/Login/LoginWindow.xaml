@@ -33,12 +33,12 @@
                 <Setter Property="PasswordChar" Value="*"/>
             </Style>
         </Grid.Resources>
-        <Label Grid.Row="0" Content="Felhasználónév"/>
-        <Label Grid.Row="2" Content="Jelszó"/>
-        <TextBox Grid.Row="1" x:Name="txtUsername"/>
-        <PasswordBox Grid.Row="3" x:Name="pswPassword"/>
-        <Button Grid.Row="4" Content="Bejelentkezés" Click="Login_Click" IsDefault="True"/>
-        <Button Grid.Row="5" Content="Jelszó visszaállítás" Click="PasswordRecovery_Click"/>
+        <Label Grid.Row="00" Content="Felhasználónév"/>
+        <Label Grid.Row="02" Content="Jelszó"/>
+        <TextBox Grid.Row="01" x:Name="txtUsername"/>
+        <PasswordBox Grid.Row="03" x:Name="pswPassword"/>
+        <Button Grid.Row="04" Content="Bejelentkezés" Click="Login_Click" IsDefault="True"/>
+        <Button Grid.Row="05" Content="Jelszó visszaállítás" Click="PasswordRecovery_Click"/>
         <view:NotifyIcon
             x:Name="notifyIcon"
             Text="Szülői felügyelet"

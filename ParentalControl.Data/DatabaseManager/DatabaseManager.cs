@@ -7,7 +7,9 @@ namespace ParentalControl.Data
     using System;
     using System.Collections.Generic;
     using System.Data.Entity;
+    using System.Diagnostics;
     using System.Linq;
+    using System.Security.Cryptography;
     using System.Text;
     using System.Threading.Tasks;
     using ParentalControl.Data.Database;
@@ -30,8 +32,32 @@ namespace ParentalControl.Data
         {
             this.logger = Logger.Get();
             this.entities = new ParentalControlEntities();
+
+            // DEBUG
+            Debug.WriteLine(this.Transaction(() => this.CreateUser("admin", GetHash("pass"), "?", GetHash("!"))));
+
             var admin = this.entities.Users.FirstOrDefault();
             this.AdminID = admin == null ? 0 : admin.ID;
+
+            // DEBUG
+            Debug.WriteLine(this.Transaction(() => this.CreateUser("username", GetHash("pass"), "?", GetHash("!"))));
+        }
+
+        // DEBUG
+        static string GetHash(string rawstring)
+        {
+            using (SHA256 sha256Hash = SHA256.Create())
+            {
+                byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(rawstring));
+
+                StringBuilder builder = new StringBuilder();
+                for (int i = 0; i < bytes.Length; i++)
+                {
+                    builder.Append(bytes[i].ToString("x2"));
+                }
+
+                return builder.ToString();
+            }
         }
 
         /// <inheritdoc/>

@@ -17,6 +17,7 @@ namespace ParentalControl.View.User
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
     using System.Windows.Shapes;
+    using ParentalControl.Interface.ViewModel;
     using ParentalControl.VM;
 
     /// <summary>
@@ -40,7 +41,7 @@ namespace ParentalControl.View.User
     /// </summary>
     public partial class AdminPasswordWindow : Window
     {
-        private ViewModel viewModel;
+        private IViewModel viewModel;
         private OccasionalPermission occasionalPermission;
         private int processID;
 
@@ -129,6 +130,11 @@ namespace ParentalControl.View.User
             {
                 MessageBox.Show("Nem megfelelő perc!", "Hiba!", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.txtUsername.Focus();
         }
     }
 }

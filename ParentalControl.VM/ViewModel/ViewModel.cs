@@ -18,7 +18,7 @@ namespace ParentalControl.VM
     /// <summary>
     /// View model class.
     /// </summary>
-    public class ViewModel : INotifyPropertyChanged, IViewModel, IAdminViewModel
+    public class ViewModel : INotifyPropertyChanged, IViewModel, IAdminViewModel, ITimeRemainingViewModel
     {
         private static ViewModel viewModel;
         private BusinessLogic businessLogic;
@@ -32,9 +32,6 @@ namespace ParentalControl.VM
             this.businessLogic.UserLoggedInOrderlyOrActiveOccasional += this.BusinessLogic_UserLoggedIn;
             this.businessLogic.UserLoggedOut += this.BusinessLogic_UserLoggedOut;
             this.businessLogic.TimerTick += this.BusinessLogic_TimerTick;
-
-            // DEBUG
-            Console.WriteLine(this.businessLogic.Registration("Username", "Password", "?", "!"));
         }
 
         /// <summary>
@@ -44,6 +41,12 @@ namespace ParentalControl.VM
 
         /// <inheritdoc/>
         public IBusinessLogic BL { get => this.businessLogic; }
+
+        /// <inheritdoc/>
+        public TimeSpan TimeRemainingTime { get => this.businessLogic.TimeRemainingTime; }
+
+        /// <inheritdoc/>
+        public TimeSpan ProgramRemainingTime { get => this.businessLogic.ProgramRemainingTime; }
 
         /// <inheritdoc/>
         public IUser ActiveUser { get; private set; }
@@ -140,8 +143,8 @@ namespace ParentalControl.VM
 
         private void BusinessLogic_TimerTick(object sender, System.Timers.ElapsedEventArgs e)
         {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.businessLogic.TimeRemainingTime)));
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.businessLogic.ProgramRemainingTime)));
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.TimeRemainingTime)));
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.ProgramRemainingTime)));
         }
     }
 }

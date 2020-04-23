@@ -20,6 +20,7 @@ namespace ParentalControl.View.Login
     using System.Windows.Navigation;
     using System.Windows.Shapes;
     using ParentalControl.Interface.ProcessControl;
+    using ParentalControl.Interface.ViewModel;
     using ParentalControl.View.Admin;
     using ParentalControl.View.User;
     using ParentalControl.VM;
@@ -29,7 +30,7 @@ namespace ParentalControl.View.Login
     /// </summary>
     public partial class LoginWindow : Window
     {
-        private ViewModel viewModel;
+        private IViewModel viewModel;
         private AdminWindow adminWindow;
         private TimeRemainingWindow timeRemainingWindow;
 
@@ -178,12 +179,18 @@ namespace ParentalControl.View.Login
             if (this.adminWindow == null)
             {
                 this.adminWindow = new AdminWindow();
-                this.adminWindow.Show();
+                this.adminWindow.Closed += this.AdminWindow_Closed;
+                this.adminWindow?.Show();
             }
             else
             {
-                this.adminWindow.Focus();
+                this.adminWindow?.Focus();
             }
+        }
+
+        private void AdminWindow_Closed(object sender, EventArgs e)
+        {
+            this.adminWindow = null;
         }
 
         private void NotifyIcon_MouseDoubleClick_User(object sender, MouseButtonEventArgs e)
@@ -191,12 +198,18 @@ namespace ParentalControl.View.Login
             if (this.timeRemainingWindow == null)
             {
                 this.timeRemainingWindow = new TimeRemainingWindow();
-                this.timeRemainingWindow.Show();
+                this.timeRemainingWindow.Closed += this.TimeRemainingWindow_Closed;
+                this.timeRemainingWindow?.Show();
             }
             else
             {
-                this.timeRemainingWindow.Focus();
+                this.timeRemainingWindow?.Focus();
             }
+        }
+
+        private void TimeRemainingWindow_Closed(object sender, EventArgs e)
+        {
+            this.timeRemainingWindow = null;
         }
 
         private void OccasionalTime_Click(object sender, RoutedEventArgs e)

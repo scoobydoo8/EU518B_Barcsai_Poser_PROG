@@ -18,6 +18,7 @@ namespace ParentalControl.View.Login
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
     using System.Windows.Shapes;
+    using ParentalControl.Interface.ViewModel;
     using ParentalControl.VM;
 
     /// <summary>
@@ -25,7 +26,7 @@ namespace ParentalControl.View.Login
     /// </summary>
     public partial class LoginPasswordRecoveryWindow : Window, INotifyPropertyChanged
     {
-        private ViewModel viewModel;
+        private IViewModel viewModel;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LoginPasswordRecoveryWindow"/> class.

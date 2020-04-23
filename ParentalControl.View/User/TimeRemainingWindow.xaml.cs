@@ -17,6 +17,8 @@ namespace ParentalControl.View.User
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
     using System.Windows.Shapes;
+    using ParentalControl.Interface.ViewModel;
+    using ParentalControl.VM;
 
     /// <summary>
     /// Interaction logic for TimeRemainingWindow.xaml.
@@ -29,6 +31,7 @@ namespace ParentalControl.View.User
         public TimeRemainingWindow()
         {
             this.InitializeComponent();
+            this.DataContext = (ITimeRemainingViewModel)ViewModel.Get();
         }
     }
 }

@@ -5,8 +5,24 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ParentalControl.View.User"
         mc:Ignorable="d"
-        Title="TimeRemainingWindow" Height="450" Width="800">
-    <Grid>
-        
+        SizeToContent="WidthAndHeight" ResizeMode="NoResize"
+        Title="Hátralévő idő">
+    <Grid Margin="10,0,10,10" Width="250">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="100"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="100"/>
+        </Grid.RowDefinitions>
+        <Grid.Resources>
+            <Style TargetType="{x:Type Label}">
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            </Style>
+        </Grid.Resources>
+        <Label Grid.Row="00" Content="A számítógép használat hátralévő ideje"/>
+        <Label Grid.Row="01" FontSize="60" Content="{Binding TimeRemainingTime}"/>
+        <Label Grid.Row="02" Content="A program használat hátralévő ideje"/>
+        <Label Grid.Row="03" FontSize="60" Content="{Binding ProgramRemainingTime}"/>
     </Grid>
 </Window>

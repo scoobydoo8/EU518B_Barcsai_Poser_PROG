@@ -33,6 +33,9 @@ namespace ParentalControl.Data.Database
             this.IsFullLimit = isFullLimit;
         }
 
+        private ProgramLimitation()
+        {
+        }
 
         /// <inheritdoc/>
         public int ID { get; set; }
