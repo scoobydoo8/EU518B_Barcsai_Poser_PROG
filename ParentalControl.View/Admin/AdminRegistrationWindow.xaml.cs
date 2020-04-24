@@ -43,6 +43,15 @@ namespace ParentalControl.View.Admin
 
         private void Registration_Click(object sender, RoutedEventArgs e)
         {
+            if (this.txtUsername.Text == string.Empty ||
+                this.pswPassword.Password == string.Empty ||
+                this.txtSecurityQuestion.Text == string.Empty ||
+                this.pswSecurityAnswer.Password == string.Empty)
+            {
+                MessageBox.Show("Egyik bemenet sem lehet üres!", "Üres bemenet!", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
             var user = this.viewModel.BL.Database.ReadUsers(x => x.Username == this.txtUsername.Text).FirstOrDefault();
             if (user == null)
             {

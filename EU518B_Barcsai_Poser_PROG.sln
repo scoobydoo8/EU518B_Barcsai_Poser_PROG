@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParentalControl.VM", "Paren
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParentalControl.Logger", "ParentalControl.Logger\ParentalControl.Logger.csproj", "{7080A15C-03D9-450D-A5B6-24BC336F9857}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParentalControl.AdminConfig", "ParentalControl.AdminConfig\ParentalControl.AdminConfig.csproj", "{986CAF76-868E-4130-8F7F-E9A4DBC3B138}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{7080A15C-03D9-450D-A5B6-24BC336F9857}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7080A15C-03D9-450D-A5B6-24BC336F9857}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7080A15C-03D9-450D-A5B6-24BC336F9857}.Release|Any CPU.Build.0 = Release|Any CPU
+		{986CAF76-868E-4130-8F7F-E9A4DBC3B138}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{986CAF76-868E-4130-8F7F-E9A4DBC3B138}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{986CAF76-868E-4130-8F7F-E9A4DBC3B138}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{986CAF76-868E-4130-8F7F-E9A4DBC3B138}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

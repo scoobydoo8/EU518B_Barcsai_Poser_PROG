@@ -1,0 +1,52 @@
+﻿<Window x:Class="ParentalControl.AdminConfig.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ParentalControl.AdminConfig"
+        mc:Ignorable="d" WindowStartupLocation="CenterScreen"
+        SizeToContent="WidthAndHeight" ResizeMode="NoResize"
+        Title="Regisztráció" Loaded="Window_Loaded">
+    <Grid Margin="10,0,10,10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="40"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="125"/>
+            <ColumnDefinition Width="200"/>
+        </Grid.ColumnDefinitions>
+        <Grid.Resources>
+            <Style x:Key="ControlBaseStyle" TargetType="{x:Type Control}">
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                <Setter Property="FontSize" Value="14" />
+            </Style>
+            <Style TargetType="{x:Type Label}" BasedOn="{StaticResource ControlBaseStyle}">
+                <Setter Property="HorizontalContentAlignment" Value="Left" />
+            </Style>
+            <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource ControlBaseStyle}">
+                <Setter Property="Margin" Value="0,5,0,5" />
+            </Style>
+            <Style TargetType="{x:Type PasswordBox}" BasedOn="{StaticResource ControlBaseStyle}">
+                <Setter Property="Margin" Value="0,5,0,5" />
+                <Setter Property="PasswordChar" Value="*"/>
+            </Style>
+            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource ControlBaseStyle}">
+                <Setter Property="Margin" Value="0,10,0,0" />
+            </Style>
+        </Grid.Resources>
+        <Label Grid.Row="00" Grid.Column="00" Content="Felhasználónév:"/>
+        <Label Grid.Row="01" Grid.Column="00" Content="Jelszó:"/>
+        <Label Grid.Row="02" Grid.Column="00" Content="Biztonsági kérdés:"/>
+        <Label Grid.Row="03" Grid.Column="00" Content="Biztonsági válasz:"/>
+        <TextBox Grid.Row="00" Grid.Column="01" x:Name="txtUsername" MaxLength="16" TabIndex="1"/>
+        <TextBox Grid.Row="02" Grid.Column="01" x:Name="txtSecurityQuestion" MaxLength="127" TabIndex="3"/>
+        <PasswordBox Grid.Row="01" Grid.Column="01" x:Name="pswPassword" TabIndex="2"/>
+        <PasswordBox Grid.Row="03" Grid.Column="01" x:Name="pswSecurityAnswer" TabIndex="4"/>
+        <Button Grid.Row="04" Grid.Column="01" Content="Regisztráció" HorizontalAlignment="Right" Width="100" Click="Registration_Click" TabIndex="5" IsDefault="True"/>
+    </Grid>
+</Window>
