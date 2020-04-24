@@ -17,6 +17,7 @@ namespace ParentalControl
     public class Logger
     {
         private static Logger logger;
+        private object lockObject = new object();
 
         private Logger()
         {
@@ -114,10 +115,16 @@ namespace ParentalControl
             }
 
             string fileName = string.Format("{0}{1}{2}.log", directory, DateTime.Now.ToString("yyyy-MM-dd"), logType == LogType.Exception ? "_exceptions" : string.Empty);
-            using (var sw = new StreamWriter(fileName, true))
+            Task.Run(() =>
             {
-                sw.WriteLine(message);
-            }
+                lock (this.lockObject)
+                {
+                    using (var sw = new StreamWriter(fileName, true))
+                    {
+                        sw.WriteLine(message);
+                    }
+                }
+            });
         }
 
         private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)

@@ -56,5 +56,10 @@ namespace ParentalControl.Interface.ViewModel
         /// Gets or sets selected managed keyword.
         /// </summary>
         IKeyword SelectedManagedKeyword { get; set; }
+
+        /// <summary>
+        /// User selection changed.
+        /// </summary>
+        void User_SelectionChanged();
     }
 }

@@ -42,15 +42,30 @@ namespace ParentalControl.View.Admin
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             this.cmbUser.Focus();
+            this.Left = (SystemParameters.PrimaryScreenWidth - this.ActualWidth) / 2;
+            this.Top = SystemParameters.PrimaryScreenHeight * 0.2;
         }
 
         private void User_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (this.viewModel.SelectedManagedUser != null)
             {
+                this.viewModel.User_SelectionChanged();
                 this.tbcLimits.IsEnabled = true;
                 this.frmTimeLimit.Navigate(new AdminTimeLimitationPage());
+                this.frmProgramLimit.Navigate(new AdminProgramLimitationPage());
+                this.frmWebLimit.Navigate(new AdminWebLimitationPage());
             }
+        }
+
+        private void Registration_Click(object sender, RoutedEventArgs e)
+        {
+            AdminRegistrationWindow adminRegistrationWindow = new AdminRegistrationWindow();
+            adminRegistrationWindow.Tag = "child";
+            adminRegistrationWindow.ShowDialog();
+            this.cmbUser.ItemsSource = this.viewModel.ManagedUsers;
+            this.cmbUser.SelectedItem = null;
+            this.tbcLimits.IsEnabled = false;
         }
     }
 }

@@ -96,6 +96,7 @@ namespace ParentalControl.View.Login
         private void BL_UserLoggedInOccassional(object sender, EventArgs e)
         {
             AdminPasswordWindow adminPasswordWindow = new AdminPasswordWindow(OccasionalPermission.TimeLimit);
+            adminPasswordWindow.Tag = "child";
             if (adminPasswordWindow.ShowDialog() == true)
             {
                 this.LimitedUserLoggedIn();
@@ -146,6 +147,13 @@ namespace ParentalControl.View.Login
 
             this.Show();
             this.txtUsername.Focus();
+            foreach (Window window in App.Current.Windows)
+            {
+                if (window.Tag != null && window.Tag.ToString() == "child")
+                {
+                    window.Close();
+                }
+            }
         }
 
         private void ProcessController_ProgramStartedFullLimit(object sender, IProcessEventArgs e)
@@ -156,6 +164,7 @@ namespace ParentalControl.View.Login
         private void ProcessController_ProgramStartedOccassional(object sender, IProcessEventArgs e)
         {
             AdminPasswordWindow adminPasswordWindow = new AdminPasswordWindow(OccasionalPermission.ProgramLimit, e.ID);
+            adminPasswordWindow.Tag = "child";
             if (adminPasswordWindow.ShowDialog() == true)
             {
                 this.LimitedProgramStarted();
@@ -216,18 +225,21 @@ namespace ParentalControl.View.Login
         private void OccasionalTime_Click(object sender, RoutedEventArgs e)
         {
             AdminPasswordWindow adminPasswordWindow = new AdminPasswordWindow(OccasionalPermission.TimeLimit);
+            adminPasswordWindow.Tag = "child";
             adminPasswordWindow.ShowDialog();
         }
 
         private void OccasionalProgram_Click(object sender, RoutedEventArgs e)
         {
             AdminPasswordWindow adminPasswordWindow = new AdminPasswordWindow(OccasionalPermission.ProgramLimit);
+            adminPasswordWindow.Tag = "child";
             adminPasswordWindow.ShowDialog();
         }
 
         private void ChangePassword_Click(object sender, RoutedEventArgs e)
         {
             ChangePasswordWindow changePasswordWindow = new ChangePasswordWindow();
+            changePasswordWindow.Tag = "child";
             changePasswordWindow.ShowDialog();
         }
 

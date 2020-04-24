@@ -19,7 +19,7 @@ namespace ParentalControl.Interface.DatabaseManager
         /// <summary>
         /// Database changed event.
         /// </summary>
-        event EventHandler<string> DatabaseChanged;
+        event EventHandler DatabaseChanged;
 
         /// <summary>
         /// Gets adminID.

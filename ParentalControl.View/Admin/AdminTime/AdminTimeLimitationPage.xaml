@@ -5,7 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:ParentalControl.View.Admin"
       mc:Ignorable="d"
-      Title="Számítógép hozzáférési korlátozás">
+      Title="Számítógép hozzáférési korlátozás" Loaded="Page_Loaded">
     <Grid Margin="10,0,10,10" Background="White">
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
@@ -35,8 +35,8 @@
         <Label Grid.Row="02" Grid.Column="00" Content="Mettől:" Margin="40,0,0,0"/>
         <Label Grid.Row="03" Grid.Column="00" Content="Meddig:" Margin="40,0,0,0"/>
         <Label Grid.Row="04" Grid.Column="00" Content="Eseti engedély (perc):"/>
-        <CheckBox Grid.Row="00" Grid.Column="01" x:Name="chbFullFree" HorizontalAlignment="Left" IsChecked="{Binding IsTimeLimitInactive}"/>
-        <CheckBox Grid.Row="01" Grid.Column="01" x:Name="chbOrderlyFree" HorizontalAlignment="Left" IsChecked="{Binding IsTimeLimitOrderly}"/>
+        <CheckBox Grid.Row="00" Grid.Column="01" x:Name="chbFullFree" HorizontalAlignment="Left" IsChecked="{Binding IsTimeLimitInactive}" Checked="FullFree_Checked" Unchecked="FullFree_Unchecked"/>
+        <CheckBox Grid.Row="01" Grid.Column="01" x:Name="chbOrderlyFree" HorizontalAlignment="Left" IsChecked="{Binding IsTimeLimitOrderly}" Checked="OrderlyFree_Checked" Unchecked="OrderlyFree_Unchecked"/>
         <TextBox Grid.Row="02" Grid.Column="01" x:Name="txtFromTime" Text="{Binding TimeLimitFromTime}"/>
         <TextBox Grid.Row="03" Grid.Column="01" x:Name="txtToTime" Text="{Binding TimeLimitToTime}"/>
         <TextBox Grid.Row="04" Grid.Column="01" x:Name="txtOccasionalMinutes" Text="{Binding TimeLimitOccasionalMinutes}"/>

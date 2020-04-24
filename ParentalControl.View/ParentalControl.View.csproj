@@ -74,15 +74,24 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Admin\AdminProgramLimitationPage.xaml.cs">
+    <Compile Include="Admin\AdminProgram\AdminProgramLimitationPage.xaml.cs">
       <DependentUpon>AdminProgramLimitationPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Admin\AdminTimeLimitationPage.xaml.cs">
+    <Compile Include="Admin\AdminProgram\BooleanToGroupingConverter.cs" />
+    <Compile Include="Admin\AdminRegistrationWindow.xaml.cs">
+      <DependentUpon>AdminRegistrationWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Admin\AdminTime\AdminTimeLimitationPage.xaml.cs">
       <DependentUpon>AdminTimeLimitationPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Admin\AdminWebLimitationPage.xaml.cs">
+    <Compile Include="Admin\AdminWeb\AdminWebLimitationAddOrEditKeywordWindow.xaml.cs">
+      <DependentUpon>AdminWebLimitationAddOrEditKeywordWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Admin\AdminWeb\AdminWebLimitationPage.xaml.cs">
       <DependentUpon>AdminWebLimitationPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Admin\AdminWeb\KeywordAndWebLimitationToBooleanConverter.cs" />
+    <Compile Include="Admin\AdminWeb\KeywordAndWebLimitationToGroupingConverter.cs" />
     <Compile Include="User\AdminPasswordWindow.xaml.cs">
       <DependentUpon>AdminPasswordWindow.xaml</DependentUpon>
     </Compile>
@@ -92,15 +101,23 @@
     <Compile Include="User\TimeRemainingWindow.xaml.cs">
       <DependentUpon>TimeRemainingWindow.xaml</DependentUpon>
     </Compile>
-    <Page Include="Admin\AdminProgramLimitationPage.xaml">
+    <Page Include="Admin\AdminProgram\AdminProgramLimitationPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Admin\AdminTimeLimitationPage.xaml">
+    <Page Include="Admin\AdminRegistrationWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Admin\AdminWebLimitationPage.xaml">
+    <Page Include="Admin\AdminTime\AdminTimeLimitationPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Admin\AdminWeb\AdminWebLimitationAddOrEditKeywordWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Admin\AdminWeb\AdminWebLimitationPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
