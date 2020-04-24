@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ParentalControl.View.Admin"
-        mc:Ignorable="d" WindowStartupLocation="Manual"
+        mc:Ignorable="d" WindowStartupLocation="CenterScreen"
         SizeToContent="WidthAndHeight" ResizeMode="NoResize"
         Title="Program korlátozás hozzáadása">
     <Grid Margin="10,0,10,10">

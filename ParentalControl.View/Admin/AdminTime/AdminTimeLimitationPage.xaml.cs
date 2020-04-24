@@ -40,6 +40,7 @@ namespace ParentalControl.View.Admin
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
+            this.bindingGroup.BeginEdit();
             this.chbOrderlyFree.IsEnabled = this.chbFullFree.IsChecked != true;
             this.txtFromTime.IsEnabled = this.chbFullFree.IsChecked != true && this.chbOrderlyFree.IsChecked == true;
             this.txtToTime.IsEnabled = this.chbFullFree.IsChecked != true && this.chbOrderlyFree.IsChecked == true;
@@ -48,9 +49,11 @@ namespace ParentalControl.View.Admin
 
         private void Save_Click(object sender, RoutedEventArgs e)
         {
+            this.bindingGroup.CommitEdit();
             if (this.txtFromTime.Text == "00:00:00" && this.txtToTime.Text == "00:00:00")
             {
                 this.txtToTime.Text = "23:59:00";
+                this.viewModel.SelectedManagedUser.TimeLimitToTime = TimeSpan.Parse("23:59:00");
             }
 
             if (TimeSpan.Parse(this.txtFromTime.Text) > TimeSpan.Parse(this.txtToTime.Text))
@@ -70,6 +73,7 @@ namespace ParentalControl.View.Admin
                     x.TimeLimitOccasionalMinutes = this.viewModel.SelectedManagedUser.TimeLimitOccasionalMinutes;
                 },
                 x => x.ID == this.viewModel.SelectedManagedUser.ID));
+            this.bindingGroup.BeginEdit();
         }
 
         private void FullFree_Checked(object sender, RoutedEventArgs e)
@@ -95,6 +99,7 @@ namespace ParentalControl.View.Admin
             if (this.txtFromTime.Text == "00:00:00" && this.txtToTime.Text == "00:00:00")
             {
                 this.txtToTime.Text = "23:59:00";
+                this.viewModel.SelectedManagedUser.TimeLimitToTime = TimeSpan.Parse("23:59:00");
             }
         }
 

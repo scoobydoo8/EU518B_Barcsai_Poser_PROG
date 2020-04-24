@@ -30,6 +30,9 @@
             </Style>
             <Style TargetType="{x:Type Label}" BasedOn="{StaticResource ControlBaseStyle}"/>
         </Grid.Resources>
+        <Grid.BindingGroup>
+            <BindingGroup x:Name="bindingGroup"/>
+        </Grid.BindingGroup>
         <Label Grid.Row="00" Grid.Column="00" Content="Korlátozás mentes:"/>
         <Label Grid.Row="01" Grid.Column="00" Content="Rendszeres engedély:"/>
         <Label Grid.Row="02" Grid.Column="00" Content="Mettől:" Margin="40,0,0,0"/>
