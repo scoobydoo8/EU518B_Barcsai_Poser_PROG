@@ -43,7 +43,7 @@ namespace ParentalControl.AdminConfig
         {
             if (this.databaseManager.ReadUsers((Func<User, bool>)null).Count > 0)
             {
-                this.StartService("ParentalControl.Service", 5000);
+                this.StartService("ParentalControlService", 5000);
                 this.Close();
             }
 
@@ -64,7 +64,7 @@ namespace ParentalControl.AdminConfig
             if (this.databaseManager.Transaction(() => this.databaseManager.CreateUser(this.txtUsername.Text, this.GetHash(this.pswPassword.Password), this.txtSecurityQuestion.Text, this.GetHash(this.pswSecurityAnswer.Password))))
             {
                 MessageBox.Show("A regisztráció sikeres!", "Siker!", MessageBoxButton.OK, MessageBoxImage.Information);
-                this.StartService("ParentalControl.Service", 5000);
+                this.StartService("ParentalControlService", 5000);
                 this.Close();
             }
             else
