@@ -40,45 +40,74 @@ namespace ParentalControl.View.Admin
             this.DataContext = this.viewModel;
         }
 
-        private void Page_Loaded(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-
-        private void Settings_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void New_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void Edit_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void Delete_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
-        }
-
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
         {
-
+            if (this.IsLoaded)
+            {
+                var chbProgramLimitation = sender as CheckBox;
+                var stpProgramLimitation = chbProgramLimitation.Parent as StackPanel;
+                if (stpProgramLimitation.Children.Count > 1)
+                {
+                    var lblProgramLimitation = stpProgramLimitation.Children[1] as Label;
+                    string programLimitationString = lblProgramLimitation.Content.ToString();
+                    this.viewModel.BL.Database.Transaction(() => this.viewModel.BL.Database.UpdateProgramLimitations(x => x.IsFullLimit = true, x => x.ToString() == programLimitationString));
+                }
+            }
         }
 
         private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
+            if (this.IsLoaded)
+            {
+                var chbProgramLimitation = sender as CheckBox;
+                var stpProgramLimitation = chbProgramLimitation.Parent as StackPanel;
+                if (stpProgramLimitation.Children.Count > 1)
+                {
+                    var lblProgramLimitation = stpProgramLimitation.Children[1] as Label;
+                    string programLimitationString = lblProgramLimitation.Content.ToString();
+                    this.viewModel.BL.Database.Transaction(() => this.viewModel.BL.Database.UpdateProgramLimitations(x => x.IsFullLimit = false, x => x.ToString() == programLimitationString));
+                }
+            }
+        }
 
+        private void Settings_Click(object sender, RoutedEventArgs e)
+        {
+            AdminProgramLimitationSettingsWindow adminProgramLimitationSettingsWindow = new AdminProgramLimitationSettingsWindow();
+            adminProgramLimitationSettingsWindow.Tag = "child";
+            adminProgramLimitationSettingsWindow.ShowDialog();
+        }
+
+        private void New_Click(object sender, RoutedEventArgs e)
+        {
+            AdminProgramLimitationAddOrEditProgramLimitationWindow adminProgramLimitationAddOrEditProgramLimitationWindow = new AdminProgramLimitationAddOrEditProgramLimitationWindow();
+            adminProgramLimitationAddOrEditProgramLimitationWindow.Tag = "child";
+            adminProgramLimitationAddOrEditProgramLimitationWindow.ShowDialog();
+        }
+
+        private void Edit_Click(object sender, RoutedEventArgs e)
+        {
+            AdminProgramLimitationAddOrEditProgramLimitationWindow adminProgramLimitationAddOrEditProgramLimitationWindow = new AdminProgramLimitationAddOrEditProgramLimitationWindow(this.viewModel.SelectedManagedProgramLimitation);
+            adminProgramLimitationAddOrEditProgramLimitationWindow.Tag = "child";
+            adminProgramLimitationAddOrEditProgramLimitationWindow.ShowDialog();
+        }
+
+        private void Delete_Click(object sender, RoutedEventArgs e)
+        {
+            this.viewModel.BL.Database.Transaction(() => this.viewModel.BL.Database.DeleteProgramLimitations(x => x.ID == this.viewModel.SelectedManagedProgramLimitation.ID));
+        }
+
+        private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (this.viewModel.SelectedManagedProgramLimitation != null)
+            {
+                this.btnEdit.IsEnabled = true;
+                this.btnDelete.IsEnabled = true;
+            }
+            else
+            {
+                this.btnEdit.IsEnabled = false;
+                this.btnDelete.IsEnabled = false;
+            }
         }
     }
 }

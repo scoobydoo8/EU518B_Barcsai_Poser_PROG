@@ -11,15 +11,12 @@ namespace ParentalControl.View.Admin
     using System.Text;
     using System.Threading.Tasks;
     using System.Windows.Data;
-    using ParentalControl.Interface.ViewModel;
 
     /// <summary>
     /// Boolean to grouping converter class.
     /// </summary>
     public class BooleanToGroupingConverter : IValueConverter
     {
-        private IAdminViewModel viewModel;
-
         /// <summary>
         /// Convert.
         /// </summary>

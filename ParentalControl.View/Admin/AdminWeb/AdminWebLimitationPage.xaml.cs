@@ -29,7 +29,6 @@ namespace ParentalControl.View.Admin
     public partial class AdminWebLimitationPage : Page
     {
         private IAdminViewModel viewModel;
-        private bool loaded = false;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AdminWebLimitationPage"/> class.
@@ -43,7 +42,7 @@ namespace ParentalControl.View.Admin
 
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
         {
-            if (this.loaded)
+            if (this.IsLoaded)
             {
                 var chbKeyword = sender as CheckBox;
                 var stpKeyword = chbKeyword.Parent as StackPanel;
@@ -63,7 +62,7 @@ namespace ParentalControl.View.Admin
 
         private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
-            if (this.loaded)
+            if (this.IsLoaded)
             {
                 var chbKeyword = sender as CheckBox;
                 var stpKeyword = chbKeyword.Parent as StackPanel;
@@ -79,11 +78,6 @@ namespace ParentalControl.View.Admin
                     }
                 }
             }
-        }
-
-        private void Page_Loaded(object sender, RoutedEventArgs e)
-        {
-            this.loaded = true;
         }
 
         private void New_Click(object sender, RoutedEventArgs e)
@@ -102,7 +96,7 @@ namespace ParentalControl.View.Admin
 
         private void Delete_Click(object sender, RoutedEventArgs e)
         {
-            this.viewModel.BL.Database.Transaction(() => this.viewModel.BL.Database.DeleteKeywords(x => x.Name == this.viewModel.SelectedManagedKeyword.Name));
+            this.viewModel.BL.Database.Transaction(() => this.viewModel.BL.Database.DeleteKeywords(x => x.ID == this.viewModel.SelectedManagedKeyword.ID));
         }
 
         private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)

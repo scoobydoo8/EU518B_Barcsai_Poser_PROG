@@ -63,7 +63,7 @@ namespace ParentalControl.Data.Database
         /// <returns>String.</returns>
         public override string ToString()
         {
-            return string.Format("{0} - {1}", this.Name, this.Path);
+            return this.Name;
         }
     }
 }
