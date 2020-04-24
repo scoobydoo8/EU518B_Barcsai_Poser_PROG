@@ -21,7 +21,7 @@ namespace ParentalControl.View.Admin
     using ParentalControl.VM;
 
     /// <summary>
-    /// Interaction logic for AdminProgramLimitationSettingsWindow.xaml
+    /// Interaction logic for AdminProgramLimitationSettingsWindow.xaml.
     /// </summary>
     public partial class AdminProgramLimitationSettingsWindow : Window
     {

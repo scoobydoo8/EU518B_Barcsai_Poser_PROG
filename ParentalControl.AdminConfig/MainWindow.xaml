@@ -9,11 +9,11 @@
         Title="Regisztráció" Loaded="Window_Loaded">
     <Grid Margin="10,0,10,10">
         <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="30"/>
             <RowDefinition Height="40"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="35"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="125"/>
@@ -36,7 +36,7 @@
                 <Setter Property="PasswordChar" Value="*"/>
             </Style>
             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource ControlBaseStyle}">
-                <Setter Property="Margin" Value="0,10,0,0" />
+                <Setter Property="Margin" Value="0,5,0,0" />
             </Style>
         </Grid.Resources>
         <Label Grid.Row="00" Grid.Column="00" Content="Felhasználónév:"/>
