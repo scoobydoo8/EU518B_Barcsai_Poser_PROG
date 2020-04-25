@@ -17,9 +17,8 @@ namespace ParentalControl.View
     {
         private void Application_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
-            var exceptionMessage = e.Exception.GetType().Name + ":" + e.Exception.Message;
-            Logger.Get().LogException(exceptionMessage);
-            MessageBox.Show("Hiba történt:\n" + e.Exception.Message, "Hiba!", MessageBoxButton.OK, MessageBoxImage.Warning);
+            Logger.Get().LogException(e.Exception);
+            MessageBox.Show("Hiba történt:\n" + e.Exception.Message + "\nTovábbi részletek a naplóban megtalálhatóak.", "Hiba!", MessageBoxButton.OK, MessageBoxImage.Warning);
             e.Handled = true;
         }
     }

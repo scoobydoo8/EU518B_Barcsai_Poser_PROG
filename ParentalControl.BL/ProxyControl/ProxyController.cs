@@ -39,14 +39,7 @@ namespace ParentalControl.BL.ProxyControl
             {
                 ExceptionFunc = exception =>
                 {
-                    if (exception is ProxyHttpException phex)
-                    {
-                        this.logger.LogException("ProxyHttpException:" + exception.Message + ":" + phex.InnerException?.Message);
-                    }
-                    else
-                    {
-                        this.logger.LogException(exception.GetType().Name + ":" + exception.Message);
-                    }
+                    this.logger.LogException(exception);
                 },
             };
 

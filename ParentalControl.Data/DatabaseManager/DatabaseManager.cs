@@ -70,8 +70,7 @@ namespace ParentalControl.Data
                 }
                 catch (Exception e)
                 {
-                    var exceptionMessage = e.GetType().Name + ":" + e.Message;
-                    this.logger.LogException(exceptionMessage);
+                    this.logger.LogException(e);
                     transaction.Rollback();
                 }
             }
@@ -92,8 +91,7 @@ namespace ParentalControl.Data
                 }
                 catch (Exception e)
                 {
-                    var exceptionMessage = e.GetType().Name + ":" + e.Message;
-                    this.logger.LogException(exceptionMessage);
+                    this.logger.LogException(e);
                     transaction.Rollback();
                 }
             }

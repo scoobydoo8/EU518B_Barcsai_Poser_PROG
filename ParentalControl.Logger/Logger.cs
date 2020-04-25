@@ -51,9 +51,11 @@ namespace ParentalControl
         /// <summary>
         /// Log exception.
         /// </summary>
-        /// <param name="exceptionMessage">Exception message.</param>
-        public void LogException(string exceptionMessage)
+        /// <param name="e">Exception.</param>
+        public void LogException(Exception e)
         {
+            var exceptionMessage = e.GetType().Name + ":" + e.Message;
+            this.GetInnerExceptionMassage(e.InnerException, ref exceptionMessage);
             this.Log(exceptionMessage, LogType.Exception);
         }
 
@@ -129,8 +131,16 @@ namespace ParentalControl
 
         private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            var exceptionMessage = e.ExceptionObject.GetType().Name + ":" + (e.ExceptionObject as Exception).Message;
-            this.LogException(exceptionMessage);
+            this.LogException(e.ExceptionObject as Exception);
+        }
+
+        private void GetInnerExceptionMassage(Exception e, ref string exceptionMessage)
+        {
+            if (e != null)
+            {
+                exceptionMessage += "::" + e.GetType().Name + ":" + e.Message;
+                this.GetInnerExceptionMassage(e.InnerException, ref exceptionMessage);
+            }
         }
     }
 }
