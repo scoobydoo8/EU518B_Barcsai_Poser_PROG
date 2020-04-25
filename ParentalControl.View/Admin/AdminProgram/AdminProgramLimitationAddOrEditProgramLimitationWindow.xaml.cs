@@ -61,7 +61,7 @@ namespace ParentalControl.View.Admin
                 return;
             }
 
-            if (!this.viewModel.BL.Database.ReadProgramLimitations(x => x.Name == this.txtName.Text && x.Path == this.txtPath.Text).Any())
+            if (!this.viewModel.BL.Database.ReadProgramLimitations(x => x.Path == this.txtPath.Text).Any())
             {
                 if (this.programLimitation == null)
                 {

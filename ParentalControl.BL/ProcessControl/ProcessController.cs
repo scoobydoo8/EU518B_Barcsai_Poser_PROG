@@ -31,6 +31,7 @@ namespace ParentalControl.BL.ProcessControl
         private bool eventWatchersStarted;
         private Logger logger;
         private Timer timer;
+        private bool programStartedTimer = false;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ProcessController"/> class.
@@ -78,7 +79,8 @@ namespace ParentalControl.BL.ProcessControl
                 var now = DateTime.Now;
                 var toDate = now.AddMinutes(minutes);
                 var toTime = new TimeSpan(toDate.Hour, toDate.Minute, 0);
-                if (this.businessLogic.ActiveUser.ProgramLimitToTime != default &&
+                if (this.businessLogic.ActiveUser.IsProgramLimitOrderly &&
+                    this.businessLogic.ActiveUser.ProgramLimitToTime != default &&
                     this.businessLogic.ActiveUser.ProgramLimitFromTime <= toTime)
                 {
                     toTime = this.businessLogic.ActiveUser.ProgramLimitToTime;
@@ -89,10 +91,20 @@ namespace ParentalControl.BL.ProcessControl
                 process?.Resume();
                 this.ranProcessesWhileTime.Add(process);
                 this.enabledProcesses.Add(process);
+                this.programStartedTimer = true;
                 return true;
             }
 
-            process?.Kill();
+            try
+            {
+                process?.Kill();
+            }
+            catch (Exception e)
+            {
+                this.logger.LogException(e);
+                process?.Resume();
+            }
+
             return false;
         }
 
@@ -110,6 +122,7 @@ namespace ParentalControl.BL.ProcessControl
                 process?.Resume();
                 this.ranProcessesWhileTime.Add(process);
                 this.enabledProcesses.Add(process);
+                this.programStartedTimer = true;
                 return true;
             }
             catch (Exception)
@@ -123,9 +136,18 @@ namespace ParentalControl.BL.ProcessControl
         /// </summary>
         public void AllProcessLimitStart()
         {
+            this.programStartedTimer = false;
             foreach (var ranProcess in this.ranProcessesWhileTime)
             {
-                ranProcess?.Kill();
+                try
+                {
+                    ranProcess?.Kill();
+                }
+                catch (Exception e)
+                {
+                    this.logger.LogException(e);
+                    ranProcess?.Resume();
+                }
             }
 
             this.ranProcessesWhileTime = new List<Process>();
@@ -136,7 +158,15 @@ namespace ParentalControl.BL.ProcessControl
             {
                 foreach (var toBeKilledProcess in toBeKilledProcesses)
                 {
-                    toBeKilledProcess?.Kill();
+                    try
+                    {
+                        toBeKilledProcess?.Kill();
+                    }
+                    catch (Exception e)
+                    {
+                        this.logger.LogException(e);
+                        toBeKilledProcess?.Resume();
+                    }
                 }
             }
 
@@ -186,16 +216,34 @@ namespace ParentalControl.BL.ProcessControl
                     {
                         if (process.ProcessName.ToLower() == "cmd" || process.ProcessName.ToLower() == "powershell" || process.ProcessName.ToLower() == "taskmgr")
                         {
-                            process?.Kill();
+                            try
+                            {
+                                process?.Kill();
+                            }
+                            catch (Exception ex)
+                            {
+                                this.logger.LogException(ex);
+                                process?.Resume();
+                            }
+
                             return;
                         }
 
-                        var program = this.programLimitations.Where(x => x.Path == fileName).FirstOrDefault();
+                        var program = this.programLimitations.Where(x => x?.Path == fileName).FirstOrDefault();
                         if (program != null)
                         {
                             if (program.IsFullLimit)
                             {
-                                process?.Kill();
+                                try
+                                {
+                                    process?.Kill();
+                                }
+                                catch (Exception ex)
+                                {
+                                    this.logger.LogException(ex);
+                                    process?.Resume();
+                                }
+
                                 this.ProgramStartedFullLimit?.Invoke(this, new ProcessEventArgs() { ProcessName = process.ProcessName });
                                 return;
                             }
@@ -205,28 +253,34 @@ namespace ParentalControl.BL.ProcessControl
                                 process?.Resume();
                                 this.ranProcessesWhileTime.Add(process);
                                 this.enabledProcesses.Add(process);
+                                this.programStartedTimer = true;
                                 return;
                             }
 
                             var now = DateTime.Now;
                             TimeSpan time = default;
+                            TimeSpan timeOccasional = default;
+                            TimeSpan timeOrderly = default;
                             bool isOccasionalActive = (this.businessLogic.ActiveUser as User).ProgramLimitOccasionalDateTime != default && (this.businessLogic.ActiveUser as User).ProgramLimitOccasionalDateTime > now;
                             bool isOrderly = this.businessLogic.ActiveUser.IsProgramLimitOrderly && BusinessLogic.IsOrderlyActive(this.businessLogic.ActiveUser.ProgramLimitFromTime, this.businessLogic.ActiveUser.ProgramLimitToTime);
                             if (isOccasionalActive)
                             {
-                                time = (this.businessLogic.ActiveUser as User).ProgramLimitOccasionalDateTime - now;
-                            }
-                            else if (isOrderly)
-                            {
-                                time = this.businessLogic.ActiveUser.ProgramLimitToTime - new TimeSpan(now.Hour, now.Minute, 0);
+                                timeOccasional = (this.businessLogic.ActiveUser as User).ProgramLimitOccasionalDateTime - now;
                             }
 
+                            if (isOrderly)
+                            {
+                                timeOrderly = this.businessLogic.ActiveUser.ProgramLimitToTime - new TimeSpan(now.Hour, now.Minute, 0);
+                            }
+
+                            time = timeOccasional > timeOrderly ? timeOccasional : timeOrderly;
                             if (isOccasionalActive || isOrderly)
                             {
                                 this.businessLogic.ProgramRemainingTime = time;
                                 process?.Resume();
                                 this.ranProcessesWhileTime.Add(process);
                                 this.enabledProcesses.Add(process);
+                                this.programStartedTimer = true;
                                 this.ProgramStartedOrderlyOrActiveOccasional?.Invoke(this, new ProcessEventArgs() { ID = process.Id, ProcessName = process.ProcessName });
                             }
                             else
@@ -248,17 +302,27 @@ namespace ParentalControl.BL.ProcessControl
                 }
                 else
                 {
-                    process?.Kill();
+                    try
+                    {
+                        process?.Kill();
+                    }
+                    catch (Exception ex)
+                    {
+                        this.logger.LogException(ex);
+                        process?.Resume();
+                    }
                 }
             }
             catch (Win32Exception)
             {
+                var process = Process.GetProcessById(id);
                 try
                 {
-                    Process.GetProcessById(id)?.Kill();
+                    process?.Kill();
                 }
                 catch (Exception)
                 {
+                    process?.Resume();
                 }
             }
             catch (Exception)
@@ -280,7 +344,7 @@ namespace ParentalControl.BL.ProcessControl
             {
             }
 
-            this.ranProcessesWhileTime.Remove(this.ranProcessesWhileTime.Where(x => x.ProcessName == processName).FirstOrDefault());
+            this.ranProcessesWhileTime.Remove(this.ranProcessesWhileTime.Where(x => x?.ProcessName == processName).FirstOrDefault());
         }
 
         private List<Process[]> GetAllToBeKilledProcesses(params string[] processNames)
@@ -301,13 +365,22 @@ namespace ParentalControl.BL.ProcessControl
             {
                 this.businessLogic.ProgramRemainingTime -= sub;
             }
-            else if (this.businessLogic.ProgramRemainingTime != default && this.businessLogic.ProgramRemainingTime.TotalSeconds <= 0)
+            else if ((this.businessLogic.ProgramRemainingTime == default || (this.businessLogic.ProgramRemainingTime != default && this.businessLogic.ProgramRemainingTime.TotalSeconds <= 0)) && this.programStartedTimer)
             {
+                this.programStartedTimer = false;
                 this.businessLogic.ProgramRemainingTime = default;
                 this.ranProcessesWhileTime = this.ranProcessesWhileTime.Except(this.enabledProcesses).ToList();
                 foreach (var process in this.enabledProcesses)
                 {
-                    process?.Kill();
+                    try
+                    {
+                        process?.Kill();
+                    }
+                    catch (Exception ex)
+                    {
+                        this.logger.LogException(ex);
+                        process?.Resume();
+                    }
                 }
 
                 this.enabledProcesses = new List<Process>();

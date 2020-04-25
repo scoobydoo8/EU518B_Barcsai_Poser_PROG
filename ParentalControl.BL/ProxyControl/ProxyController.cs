@@ -24,7 +24,6 @@ namespace ParentalControl.BL.ProxyControl
     {
         private ProxyServer proxyServer;
         private BusinessLogic businessLogic;
-        private ExplicitProxyEndPoint proxyEndPoint;
         private RegistryMonitor registryMonitor;
         private List<string> keywords;
         private Logger logger;
@@ -43,8 +42,6 @@ namespace ParentalControl.BL.ProxyControl
                 },
             };
 
-            this.proxyEndPoint = new ExplicitProxyEndPoint(IPAddress.Any, 6969);
-            this.proxyServer.AddEndPoint(this.proxyEndPoint);
             this.registryMonitor = new RegistryMonitor("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings");
             this.registryMonitor.RegChanged += this.OnProxyRegChanged;
         }
@@ -54,27 +51,27 @@ namespace ParentalControl.BL.ProxyControl
         /// </summary>
         public void Start()
         {
-            this.businessLogic = BusinessLogic.Get();
-            if (this.businessLogic.ActiveUser == null)
+            if (!this.proxyServer.ProxyRunning)
             {
-                throw new ArgumentNullException(nameof(this.businessLogic.ActiveUser));
-            }
+                this.businessLogic = BusinessLogic.Get();
+                if (this.businessLogic.ActiveUser == null)
+                {
+                    throw new ArgumentNullException(nameof(this.businessLogic.ActiveUser));
+                }
 
-            this.keywords = new List<string>();
-            var webLimitations = this.businessLogic.Database.ReadWebLimitations(x => x.UserID == this.businessLogic.ActiveUser.ID);
-            foreach (var webLimitation in webLimitations)
-            {
-                this.keywords.Add(this.businessLogic.Database.ReadKeywords(x => x.ID == webLimitation.KeywordID).FirstOrDefault()?.Name);
-            }
+                this.keywords = new List<string>();
+                var webLimitations = this.businessLogic.Database.ReadWebLimitations(x => x.UserID == this.businessLogic.ActiveUser.ID);
+                foreach (var webLimitation in webLimitations)
+                {
+                    this.keywords.Add(this.businessLogic.Database.ReadKeywords(x => x.ID == webLimitation.KeywordID).FirstOrDefault()?.Name);
+                }
 
-            if (this.keywords.Count == 0)
-            {
-                return;
+                this.proxyServer.BeforeRequest += this.ProxyServer_BeforeRequest;
+                var proxyEndPoint = new ExplicitProxyEndPoint(IPAddress.Any, 6969);
+                this.proxyServer.AddEndPoint(proxyEndPoint);
+                this.proxyServer.Start();
+                this.proxyServer.SetAsSystemProxy(proxyEndPoint, ProxyProtocolType.AllHttp);
             }
-
-            this.proxyServer.BeforeRequest += this.ProxyServer_BeforeRequest;
-            this.proxyServer.Start();
-            this.proxyServer.SetAsSystemProxy(this.proxyEndPoint, ProxyProtocolType.AllHttp);
         }
 
         /// <summary>
@@ -82,8 +79,11 @@ namespace ParentalControl.BL.ProxyControl
         /// </summary>
         public void Stop()
         {
-            this.proxyServer.BeforeRequest -= this.ProxyServer_BeforeRequest;
-            this.proxyServer.Stop();
+            if (this.proxyServer.ProxyRunning)
+            {
+                this.proxyServer.BeforeRequest -= this.ProxyServer_BeforeRequest;
+                this.proxyServer.Stop();
+            }
         }
 
         private Task ProxyServer_BeforeRequest(object sender, SessionEventArgs e)
@@ -112,7 +112,12 @@ namespace ParentalControl.BL.ProxyControl
 
         private void OnProxyRegChanged(object sender, EventArgs e)
         {
-            this.proxyServer.SetAsSystemProxy(this.proxyEndPoint, ProxyProtocolType.AllHttp);
+            if (this.proxyServer.ProxyRunning)
+            {
+                var proxyEndPoint = new ExplicitProxyEndPoint(IPAddress.Any, 6969);
+                this.proxyServer.AddEndPoint(proxyEndPoint);
+                this.proxyServer.SetAsSystemProxy(proxyEndPoint, ProxyProtocolType.AllHttp);
+            }
         }
     }
 }

@@ -9,7 +9,7 @@
         Title="Adminisztrációs felület" Loaded="Window_Loaded">
     <Grid Margin="10,0,10,10">
         <Grid.RowDefinitions>
-            <RowDefinition Height="35"/>
+            <RowDefinition Height="40"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>

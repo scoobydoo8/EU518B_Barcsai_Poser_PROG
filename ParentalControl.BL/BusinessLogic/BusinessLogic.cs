@@ -37,6 +37,7 @@ namespace ParentalControl.BL
         private ProcessController processController;
         private Logger logger;
         private Timer timer;
+        private bool loggedInTimer = false;
 
         private BusinessLogic()
         {
@@ -182,23 +183,28 @@ namespace ParentalControl.BL
                     {
                         var now = DateTime.Now;
                         TimeSpan time = default;
+                        TimeSpan timeOccasional = default;
+                        TimeSpan timeOrderly = default;
                         bool isOccasionalActive = (this.ActiveUser as User).TimeLimitOccasionalDateTime != default && (this.ActiveUser as User).TimeLimitOccasionalDateTime > now;
                         bool isOrderly = this.ActiveUser.IsTimeLimitOrderly && IsOrderlyActive(this.ActiveUser.TimeLimitFromTime, this.ActiveUser.TimeLimitToTime);
                         if (isOccasionalActive)
                         {
-                            time = (this.ActiveUser as User).TimeLimitOccasionalDateTime - now;
-                        }
-                        else if (isOrderly)
-                        {
-                            time = this.ActiveUser.TimeLimitToTime - new TimeSpan(now.Hour, now.Minute, 0);
+                            timeOccasional = (this.ActiveUser as User).TimeLimitOccasionalDateTime - now;
                         }
 
+                        if (isOrderly)
+                        {
+                            timeOrderly = this.ActiveUser.TimeLimitToTime - new TimeSpan(now.Hour, now.Minute, 0);
+                        }
+
+                        time = timeOccasional > timeOrderly ? timeOccasional : timeOrderly;
                         if (isOccasionalActive || isOrderly)
                         {
                             this.TimeRemainingTime = time;
                             this.processController.AllProcessLimitStop();
                             this.proxyController.Start();
                             this.UserLoggedInOrderlyOrActiveOccasional?.Invoke(this, EventArgs.Empty);
+                            this.loggedInTimer = true;
                             this.logger.LogLogin(this.ActiveUser.Username);
                         }
                         else
@@ -217,6 +223,7 @@ namespace ParentalControl.BL
                 else
                 {
                     this.processController.AllProcessLimitStop();
+                    this.proxyController.Start();
                     this.UserLoggedInFull?.Invoke(this, EventArgs.Empty);
                     this.logger.LogLogin(this.ActiveUser.Username);
                 }
@@ -231,10 +238,12 @@ namespace ParentalControl.BL
         public void LogOut()
         {
             this.logger.LogLogout(this.ActiveUser.Username);
+            this.loggedInTimer = false;
             this.TimeRemainingTime = default;
             this.ProgramRemainingTime = default;
             this.ActiveUser = default;
             this.processController.AllProcessLimitStart();
+            this.proxyController.Stop();
             this.UserLoggedOut?.Invoke(this, EventArgs.Empty);
         }
 
@@ -298,6 +307,7 @@ namespace ParentalControl.BL
                 this.database.Transaction(() => this.database.UpdateUsers(x => x.TimeLimitOccasionalDateTime = now.Add(this.TimeRemainingTime), x => x.ID == this.ActiveUser.ID));
                 this.processController.AllProcessLimitStop();
                 this.proxyController.Start();
+                this.loggedInTimer = true;
                 return true;
             }
 
@@ -311,7 +321,7 @@ namespace ParentalControl.BL
             {
                 this.TimeRemainingTime -= Sub;
             }
-            else if (this.TimeRemainingTime != default && this.TimeRemainingTime.TotalSeconds <= 0)
+            else if ((this.TimeRemainingTime == default || (this.TimeRemainingTime != default && this.TimeRemainingTime.TotalSeconds <= 0)) && this.loggedInTimer)
             {
                 this.LogOut();
             }

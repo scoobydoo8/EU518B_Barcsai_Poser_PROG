@@ -37,7 +37,7 @@
     <CodeAnalysisRuleSet>..\oenik.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ReadyToInstaller|AnyCPU'">
-    <OutputPath>bin\ReadyToInstaller\</OutputPath>
+    <OutputPath>..\ReadyToInstaller\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>

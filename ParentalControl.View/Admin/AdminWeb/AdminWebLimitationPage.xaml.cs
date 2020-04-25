@@ -51,7 +51,7 @@ namespace ParentalControl.View.Admin
                     var lblKeyword = stpKeyword.Children[1] as Label;
                     string keywordName = lblKeyword.Content.ToString();
                     var keyword = this.viewModel.BL.Database.ReadKeywords(x => x.Name == keywordName).First();
-                    var webLimit = this.viewModel.BL.Database.ReadWebLimitations(x => x.KeywordID == keyword.ID).FirstOrDefault();
+                    var webLimit = this.viewModel.BL.Database.ReadWebLimitations(x => x.UserID == this.viewModel.SelectedManagedUser.ID && x.KeywordID == keyword.ID).FirstOrDefault();
                     if (webLimit == null)
                     {
                         this.viewModel.BL.Database.Transaction(() => this.viewModel.BL.Database.CreateWebLimitation(this.viewModel.SelectedManagedUser.ID, keyword.ID));
@@ -71,7 +71,7 @@ namespace ParentalControl.View.Admin
                     var lblKeyword = stpKeyword.Children[1] as Label;
                     string keywordName = lblKeyword.Content.ToString();
                     var keyword = this.viewModel.BL.Database.ReadKeywords(x => x.Name == keywordName).First();
-                    var webLimit = this.viewModel.BL.Database.ReadWebLimitations(x => x.KeywordID == keyword.ID).FirstOrDefault();
+                    var webLimit = this.viewModel.BL.Database.ReadWebLimitations(x => x.UserID == this.viewModel.SelectedManagedUser.ID && x.KeywordID == keyword.ID).FirstOrDefault();
                     if (webLimit != null)
                     {
                         this.viewModel.BL.Database.Transaction(() => this.viewModel.BL.Database.DeleteWebLimitations(x => x.UserID == this.viewModel.SelectedManagedUser.ID && x.KeywordID == keyword.ID));

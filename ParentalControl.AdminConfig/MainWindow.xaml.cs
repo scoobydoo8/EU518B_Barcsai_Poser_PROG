@@ -6,6 +6,8 @@ namespace ParentalControl.AdminConfig
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.IO;
     using System.Linq;
     using System.Security.Cryptography;
     using System.ServiceProcess;
@@ -19,7 +21,6 @@ namespace ParentalControl.AdminConfig
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
     using System.Windows.Navigation;
-    using System.Windows.Shapes;
     using ParentalControl.Data;
     using ParentalControl.Data.Database;
 
@@ -48,6 +49,20 @@ namespace ParentalControl.AdminConfig
             }
 
             this.txtUsername.Focus();
+
+            Task.Run(() =>
+            {
+                string installutil = @"C:\Windows\Microsoft.NET\Framework64\v4.0.30319\InstallUtil.exe";
+                string parameters = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ParentalControl.Service.exe");
+                this.ExecuteProcess(installutil, parameters, null, (errorSender, errorE) =>
+                {
+                    if (errorE.Data != null && errorE.Data != string.Empty)
+                    {
+                        MessageBox.Show("Hiba a szolgáltatás telepítése közben!\n" + errorE.Data, "Hiba!", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+                );
+            });
         }
 
         private void Registration_Click(object sender, RoutedEventArgs e)
@@ -101,6 +116,30 @@ namespace ParentalControl.AdminConfig
                 }
 
                 return builder.ToString();
+            }
+        }
+
+        private void ExecuteProcess(string processPath, string parameters, DataReceivedEventHandler output, DataReceivedEventHandler errorOutput)
+        {
+            using (Process process = new Process()
+            {
+                StartInfo = new ProcessStartInfo(processPath, parameters)
+                {
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    RedirectStandardError = true,
+                    RedirectStandardOutput = true,
+                    StandardErrorEncoding = Encoding.UTF8,
+                    StandardOutputEncoding = Encoding.UTF8,
+                },
+            })
+            {
+                process.OutputDataReceived += output;
+                process.ErrorDataReceived += errorOutput;
+                process.Start();
+                process.BeginOutputReadLine();
+                process.BeginErrorReadLine();
+                process.WaitForExit();
             }
         }
     }

@@ -45,7 +45,7 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ReadyToInstaller|AnyCPU'">
-    <OutputPath>bin\ReadyToInstaller\</OutputPath>
+    <OutputPath>..\ReadyToInstaller\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -141,6 +141,7 @@
     <Compile Include="User\TimeRemainingWindow.xaml.cs">
       <DependentUpon>TimeRemainingWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="User\TimeSpanToFormattedStringConverter.cs" />
     <Page Include="Admin\AdminProgram\AdminProgramLimitationAddOrEditProgramLimitationWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

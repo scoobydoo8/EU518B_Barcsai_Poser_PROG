@@ -19,10 +19,11 @@
                 <Setter Property="VerticalContentAlignment" Value="Center"/>
                 <Setter Property="HorizontalContentAlignment" Value="Center"/>
             </Style>
+            <local:TimeSpanToFormattedStringConverter x:Key="TimeSpanToFormattedStringConverter"/>
         </Grid.Resources>
         <Label Grid.Row="00" FontSize="14" Content="A számítógép használat hátralévő ideje"/>
-        <Label Grid.Row="01" FontSize="60" Content="{Binding TimeRemainingTime}"/>
+        <Label Grid.Row="01" FontSize="60" Content="{Binding TimeRemainingTime, Mode=OneWay, Converter={StaticResource TimeSpanToFormattedStringConverter}}"/>
         <Label Grid.Row="02" FontSize="14" Content="A program használat hátralévő ideje"/>
-        <Label Grid.Row="03" FontSize="60" Content="{Binding ProgramRemainingTime}"/>
+        <Label Grid.Row="03" FontSize="60" Content="{Binding ProgramRemainingTime, Mode=OneWay, Converter={StaticResource TimeSpanToFormattedStringConverter}}"/>
     </Grid>
 </Window>

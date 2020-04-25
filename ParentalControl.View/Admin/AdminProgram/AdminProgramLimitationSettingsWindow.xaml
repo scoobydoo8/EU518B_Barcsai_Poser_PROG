@@ -41,6 +41,6 @@
         <TextBox Grid.Row="01" Grid.Column="01" x:Name="txtFromTime" Text="{Binding ProgramLimitFromTime}"/>
         <TextBox Grid.Row="02" Grid.Column="01" x:Name="txtToTime" Text="{Binding ProgramLimitToTime}"/>
         <TextBox Grid.Row="03" Grid.Column="01" x:Name="txtOccasionalMinutes" Text="{Binding ProgramLimitOccasionalMinutes}"/>
-        <Button Grid.Row="04" Grid.Column="01" Content="Mentés" Margin="0,10,0,0" Click="Save_Click"/>
+        <Button Grid.Row="04" Grid.Column="01" Content="Mentés" Margin="0,10,0,0" Click="Save_Click" IsDefault="True"/>
     </Grid>
 </Window>
