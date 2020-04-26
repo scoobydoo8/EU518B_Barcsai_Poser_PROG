@@ -66,15 +66,19 @@ namespace ParentalControl.View.Admin
             this.bindingGroup.CommitEdit();
             if (this.txtFromTime.Text == "00:00:00" && this.txtToTime.Text == "00:00:00")
             {
-                this.txtToTime.Text = "23:59:00";
                 this.viewModel.SelectedManagedUser.ProgramLimitToTime = TimeSpan.Parse("23:59:00");
             }
 
-            if (TimeSpan.Parse(this.txtFromTime.Text) > TimeSpan.Parse(this.txtToTime.Text))
+            if (this.viewModel.SelectedManagedUser.ProgramLimitFromTime > this.viewModel.SelectedManagedUser.ProgramLimitToTime)
             {
-                var help = this.txtFromTime.Text;
-                this.txtFromTime.Text = this.txtToTime.Text;
-                this.txtToTime.Text = help;
+                var help = this.viewModel.SelectedManagedUser.ProgramLimitFromTime;
+                this.viewModel.SelectedManagedUser.ProgramLimitFromTime = this.viewModel.SelectedManagedUser.ProgramLimitToTime;
+                this.viewModel.SelectedManagedUser.ProgramLimitToTime = help;
+            }
+
+            if (this.viewModel.SelectedManagedUser.ProgramLimitOccasionalMinutes < 1)
+            {
+                this.viewModel.SelectedManagedUser.ProgramLimitOccasionalMinutes = 30;
             }
 
             bool fromTime = this.viewModel.SelectedManagedUser.TimeLimitFromTime > this.viewModel.SelectedManagedUser.ProgramLimitFromTime;
