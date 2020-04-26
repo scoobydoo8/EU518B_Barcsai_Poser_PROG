@@ -53,7 +53,6 @@ namespace ParentalControl.BL.ProxyControl
         {
             if (!this.proxyServer.ProxyRunning)
             {
-                this.registryMonitor.Start();
                 this.businessLogic = BusinessLogic.Get();
                 if (this.businessLogic.ActiveUser == null)
                 {
@@ -72,6 +71,7 @@ namespace ParentalControl.BL.ProxyControl
                 this.proxyServer.AddEndPoint(proxyEndPoint);
                 this.proxyServer.Start();
                 this.proxyServer.SetAsSystemProxy(proxyEndPoint, ProxyProtocolType.AllHttp);
+                this.registryMonitor.Start();
             }
         }
 
