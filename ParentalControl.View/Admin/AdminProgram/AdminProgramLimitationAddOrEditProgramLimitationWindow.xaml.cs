@@ -73,7 +73,7 @@ namespace ParentalControl.View.Admin
                         x =>
                         {
                             x.Name = this.txtName.Text;
-                            x.Path = this.txtPath.Text;
+                            x.Path = this.txtPath.Text.ToLower();
                         }, x => x.ID == this.programLimitation.ID));
                 }
 

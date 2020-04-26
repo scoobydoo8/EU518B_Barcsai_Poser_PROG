@@ -217,7 +217,7 @@ namespace ParentalControl.BL.ProcessControl
             try
             {
                 var process = Process.GetProcessById(id);
-                var fileName = process.MainModule.FileName;
+                var fileName = process.MainModule.FileName.ToLower();
 
                 process?.Suspend();
                 if (this.businessLogic != null && this.businessLogic.ActiveUser != null)
