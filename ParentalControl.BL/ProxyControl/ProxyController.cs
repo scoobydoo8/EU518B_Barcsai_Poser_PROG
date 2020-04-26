@@ -25,6 +25,7 @@ namespace ParentalControl.BL.ProxyControl
         private ProxyServer proxyServer;
         private BusinessLogic businessLogic;
         private RegistryMonitor registryMonitor;
+        private ExplicitProxyEndPoint proxyEndPoint;
         private List<string> keywords;
         private Logger logger;
 
@@ -67,10 +68,10 @@ namespace ParentalControl.BL.ProxyControl
                 }
 
                 this.proxyServer.BeforeRequest += this.ProxyServer_BeforeRequest;
-                var proxyEndPoint = new ExplicitProxyEndPoint(IPAddress.Any, 6969);
-                this.proxyServer.AddEndPoint(proxyEndPoint);
+                this.proxyEndPoint = new ExplicitProxyEndPoint(IPAddress.Any, 6969);
+                this.proxyServer.AddEndPoint(this.proxyEndPoint);
                 this.proxyServer.Start();
-                this.proxyServer.SetAsSystemProxy(proxyEndPoint, ProxyProtocolType.AllHttp);
+                this.proxyServer.SetAsSystemProxy(this.proxyEndPoint, ProxyProtocolType.AllHttp);
                 this.registryMonitor.Start();
             }
         }
@@ -116,9 +117,7 @@ namespace ParentalControl.BL.ProxyControl
         {
             if (this.proxyServer.ProxyRunning)
             {
-                var proxyEndPoint = new ExplicitProxyEndPoint(IPAddress.Any, 6969);
-                this.proxyServer.AddEndPoint(proxyEndPoint);
-                this.proxyServer.SetAsSystemProxy(proxyEndPoint, ProxyProtocolType.AllHttp);
+                this.proxyServer.SetAsSystemProxy(this.proxyEndPoint, ProxyProtocolType.AllHttp);
             }
         }
     }
