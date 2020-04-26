@@ -193,7 +193,8 @@ namespace ParentalControl.BL
                             var toTime = new TimeSpan(timeLimitOccasionalDateTime.Hour, timeLimitOccasionalDateTime.Minute, 0);
                             if (this.ActiveUser.IsTimeLimitOrderly &&
                                 this.ActiveUser.TimeLimitToTime != default &&
-                                this.ActiveUser.TimeLimitFromTime <= toTime)
+                                this.ActiveUser.TimeLimitFromTime <= toTime &&
+                                this.ActiveUser.TimeLimitToTime > toTime)
                             {
                                 timeOccasional = this.ActiveUser.TimeLimitToTime - new TimeSpan(now.Hour, now.Minute, 0);
                             }
@@ -310,7 +311,8 @@ namespace ParentalControl.BL
                 var toTime = new TimeSpan(toDate.Hour, toDate.Minute, 0);
                 if (this.ActiveUser.IsTimeLimitOrderly &&
                     this.ActiveUser.TimeLimitToTime != default &&
-                    this.ActiveUser.TimeLimitFromTime <= toTime)
+                    this.ActiveUser.TimeLimitFromTime <= toTime &&
+                    this.ActiveUser.TimeLimitToTime > toTime)
                 {
                     toTime = this.ActiveUser.TimeLimitToTime;
                 }

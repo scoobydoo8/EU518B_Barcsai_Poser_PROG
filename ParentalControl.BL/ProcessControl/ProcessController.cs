@@ -81,7 +81,8 @@ namespace ParentalControl.BL.ProcessControl
                 var toTime = new TimeSpan(toDate.Hour, toDate.Minute, 0);
                 if (this.businessLogic.ActiveUser.IsProgramLimitOrderly &&
                     this.businessLogic.ActiveUser.ProgramLimitToTime != default &&
-                    this.businessLogic.ActiveUser.ProgramLimitFromTime <= toTime)
+                    this.businessLogic.ActiveUser.ProgramLimitFromTime <= toTime &&
+                    this.businessLogic.ActiveUser.ProgramLimitToTime > toTime)
                 {
                     toTime = this.businessLogic.ActiveUser.ProgramLimitToTime;
                 }
@@ -271,11 +272,23 @@ namespace ParentalControl.BL.ProcessControl
                             TimeSpan time = default;
                             TimeSpan timeOccasional = default;
                             TimeSpan timeOrderly = default;
-                            bool isOccasionalActive = (this.businessLogic.ActiveUser as User).ProgramLimitOccasionalDateTime != default && (this.businessLogic.ActiveUser as User).ProgramLimitOccasionalDateTime > now;
+                            var programLimitOccasionalDateTime = (this.businessLogic.ActiveUser as User).ProgramLimitOccasionalDateTime;
+                            bool isOccasionalActive = programLimitOccasionalDateTime != default && programLimitOccasionalDateTime > now;
                             bool isOrderly = this.businessLogic.ActiveUser.IsProgramLimitOrderly && BusinessLogic.IsOrderlyActive(this.businessLogic.ActiveUser.ProgramLimitFromTime, this.businessLogic.ActiveUser.ProgramLimitToTime);
                             if (isOccasionalActive)
                             {
-                                timeOccasional = (this.businessLogic.ActiveUser as User).ProgramLimitOccasionalDateTime - now;
+                                var toTime = new TimeSpan(programLimitOccasionalDateTime.Hour, programLimitOccasionalDateTime.Minute, 0);
+                                if (this.businessLogic.ActiveUser.IsProgramLimitOrderly &&
+                                    this.businessLogic.ActiveUser.ProgramLimitToTime != default &&
+                                    this.businessLogic.ActiveUser.ProgramLimitFromTime <= toTime &&
+                                    this.businessLogic.ActiveUser.ProgramLimitToTime > toTime)
+                                {
+                                    timeOccasional = this.businessLogic.ActiveUser.ProgramLimitToTime - new TimeSpan(now.Hour, now.Minute, 0);
+                                }
+                                else
+                                {
+                                    timeOccasional = programLimitOccasionalDateTime - now;
+                                }
                             }
 
                             if (isOrderly)
