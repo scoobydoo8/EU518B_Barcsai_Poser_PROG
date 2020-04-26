@@ -65,7 +65,7 @@ namespace ParentalControl.View.Admin
             {
                 if (this.programLimitation == null)
                 {
-                    this.viewModel.BL.Database.Transaction(() => this.viewModel.BL.Database.CreateProgramLimitation(this.viewModel.SelectedManagedUser.ID, this.txtName.Text, this.txtPath.Text));
+                    this.viewModel.BL.Database.Transaction(() => this.viewModel.BL.Database.CreateProgramLimitation(this.viewModel.SelectedManagedUser.ID, this.txtName.Text, this.txtPath.Text.ToLower()));
                 }
                 else
                 {
