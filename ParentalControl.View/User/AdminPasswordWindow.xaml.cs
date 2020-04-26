@@ -89,6 +89,12 @@ namespace ParentalControl.View.User
 
             if (int.TryParse(this.txtMinutes.Text, out int minutes))
             {
+                if (minutes < 1)
+                {
+                    MessageBox.Show("A perc csak nullánál nagyobb szám lehet!", "Hibás perc!", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
                 if (this.occasionalPermission == OccasionalPermission.TimeLimit)
                 {
                     if (this.viewModel.BL.TimeRemainingTime == default || this.viewModel.BL.TimeRemainingTime.TotalMinutes < minutes)

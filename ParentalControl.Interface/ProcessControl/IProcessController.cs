@@ -46,5 +46,11 @@ namespace ParentalControl.Interface.ProcessControl
         /// <param name="processID">ProcessID.</param>
         /// <returns>Success.</returns>
         bool GetOccasionalPermission(int processID);
+
+        /// <summary>
+        /// Kill process.
+        /// </summary>
+        /// <param name="processID">ProcessID.</param>
+        void KillProcess(int processID);
     }
 }

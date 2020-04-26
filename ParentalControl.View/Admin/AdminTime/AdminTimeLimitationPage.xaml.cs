@@ -52,15 +52,19 @@ namespace ParentalControl.View.Admin
             this.bindingGroup.CommitEdit();
             if (this.txtFromTime.Text == "00:00:00" && this.txtToTime.Text == "00:00:00")
             {
-                this.txtToTime.Text = "23:59:00";
                 this.viewModel.SelectedManagedUser.TimeLimitToTime = TimeSpan.Parse("23:59:00");
             }
 
-            if (TimeSpan.Parse(this.txtFromTime.Text) > TimeSpan.Parse(this.txtToTime.Text))
+            if (this.viewModel.SelectedManagedUser.TimeLimitFromTime > this.viewModel.SelectedManagedUser.TimeLimitToTime)
             {
-                var help = this.txtFromTime.Text;
-                this.txtFromTime.Text = this.txtToTime.Text;
-                this.txtToTime.Text = help;
+                var help = this.viewModel.SelectedManagedUser.TimeLimitFromTime;
+                this.viewModel.SelectedManagedUser.TimeLimitFromTime = this.viewModel.SelectedManagedUser.TimeLimitToTime;
+                this.viewModel.SelectedManagedUser.TimeLimitToTime = help;
+            }
+
+            if (this.viewModel.SelectedManagedUser.TimeLimitOccasionalMinutes < 1)
+            {
+                this.viewModel.SelectedManagedUser.TimeLimitOccasionalMinutes = 60;
             }
 
             this.viewModel.BL.Database.Transaction(() => this.viewModel.BL.Database.UpdateUsers(
@@ -73,6 +77,7 @@ namespace ParentalControl.View.Admin
                     x.TimeLimitOccasionalMinutes = this.viewModel.SelectedManagedUser.TimeLimitOccasionalMinutes;
                 },
                 x => x.ID == this.viewModel.SelectedManagedUser.ID));
+            MessageBox.Show("Sikeres mentés!", "Siker!", MessageBoxButton.OK, MessageBoxImage.Information);
             this.bindingGroup.BeginEdit();
         }
 

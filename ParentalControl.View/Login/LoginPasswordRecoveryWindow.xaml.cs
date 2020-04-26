@@ -71,6 +71,10 @@ namespace ParentalControl.View.Login
                 this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.IsUsernameNotValid)));
                 this.pswSecurityAnswer.Focus();
             }
+            else
+            {
+                MessageBox.Show("Nem létezik ilyen felhasználó!", "Nem létező felhasználó!", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
 
         private void PasswordRecovery_Click(object sender, RoutedEventArgs e)

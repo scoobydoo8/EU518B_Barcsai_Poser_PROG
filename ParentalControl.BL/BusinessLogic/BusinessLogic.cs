@@ -311,7 +311,6 @@ namespace ParentalControl.BL
                 return true;
             }
 
-            this.LogOut();
             return false;
         }
 

@@ -102,9 +102,16 @@ namespace ParentalControl.View.Login
             {
                 AdminPasswordWindow adminPasswordWindow = new AdminPasswordWindow(OccasionalPermission.TimeLimit);
                 adminPasswordWindow.Tag = "child";
-                if (adminPasswordWindow.ShowDialog() == true)
+                bool? result = adminPasswordWindow.ShowDialog();
+                if (result == true)
                 {
                     this.LimitedUserLoggedIn();
+                }
+                else if (result == false)
+                {
+                    this.viewModel.BL.LogOut();
+                    this.txtUsername.Text = string.Empty;
+                    this.pswPassword.Password = string.Empty;
                 }
             });
         }
@@ -176,9 +183,14 @@ namespace ParentalControl.View.Login
             {
                 AdminPasswordWindow adminPasswordWindow = new AdminPasswordWindow(OccasionalPermission.ProgramLimit, e.ID);
                 adminPasswordWindow.Tag = "child";
-                if (adminPasswordWindow.ShowDialog() == true)
+                bool? result = adminPasswordWindow.ShowDialog();
+                if (result == true)
                 {
                     this.LimitedProgramStarted();
+                }
+                else if (result == false)
+                {
+                    this.viewModel.BL.ProcessController.KillProcess(e.ID);
                 }
             });
         }

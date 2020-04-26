@@ -60,8 +60,7 @@ namespace ParentalControl.AdminConfig
                     {
                         MessageBox.Show("Hiba a szolgáltatás telepítése közben!\n" + errorE.Data, "Hiba!", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
-                }
-                );
+                });
             });
         }
 

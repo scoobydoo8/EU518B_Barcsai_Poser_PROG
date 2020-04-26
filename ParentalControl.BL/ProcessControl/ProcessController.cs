@@ -95,16 +95,6 @@ namespace ParentalControl.BL.ProcessControl
                 return true;
             }
 
-            try
-            {
-                process?.Kill();
-            }
-            catch (Exception e)
-            {
-                this.logger.LogException(e);
-                process?.Resume();
-            }
-
             return false;
         }
 
@@ -128,6 +118,26 @@ namespace ParentalControl.BL.ProcessControl
             catch (Exception)
             {
                 return false;
+            }
+        }
+
+        /// <inheritdoc/>
+        public void KillProcess(int processID)
+        {
+            if (processID == 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(processID));
+            }
+
+            var process = Process.GetProcessById(processID);
+            try
+            {
+                process?.Kill();
+            }
+            catch (Exception e)
+            {
+                this.logger.LogException(e);
+                process?.Resume();
             }
         }
 
