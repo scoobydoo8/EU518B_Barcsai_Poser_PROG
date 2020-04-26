@@ -185,11 +185,22 @@ namespace ParentalControl.BL
                         TimeSpan time = default;
                         TimeSpan timeOccasional = default;
                         TimeSpan timeOrderly = default;
-                        bool isOccasionalActive = (this.ActiveUser as User).TimeLimitOccasionalDateTime != default && (this.ActiveUser as User).TimeLimitOccasionalDateTime > now;
+                        var timeLimitOccasionalDateTime = (this.ActiveUser as User).TimeLimitOccasionalDateTime;
+                        bool isOccasionalActive = timeLimitOccasionalDateTime != default && timeLimitOccasionalDateTime > now;
                         bool isOrderly = this.ActiveUser.IsTimeLimitOrderly && IsOrderlyActive(this.ActiveUser.TimeLimitFromTime, this.ActiveUser.TimeLimitToTime);
                         if (isOccasionalActive)
                         {
-                            timeOccasional = (this.ActiveUser as User).TimeLimitOccasionalDateTime - now;
+                            var toTime = new TimeSpan(timeLimitOccasionalDateTime.Hour, timeLimitOccasionalDateTime.Minute, 0);
+                            if (this.ActiveUser.IsTimeLimitOrderly &&
+                                this.ActiveUser.TimeLimitToTime != default &&
+                                this.ActiveUser.TimeLimitFromTime <= toTime)
+                            {
+                                timeOccasional = this.ActiveUser.TimeLimitToTime - new TimeSpan(now.Hour, now.Minute, 0);
+                            }
+                            else
+                            {
+                                timeOccasional = timeLimitOccasionalDateTime - now;
+                            }
                         }
 
                         if (isOrderly)
@@ -297,7 +308,8 @@ namespace ParentalControl.BL
                 var now = DateTime.Now;
                 var toDate = now.AddMinutes(minutes);
                 var toTime = new TimeSpan(toDate.Hour, toDate.Minute, 0);
-                if (this.ActiveUser.TimeLimitToTime != default &&
+                if (this.ActiveUser.IsTimeLimitOrderly &&
+                    this.ActiveUser.TimeLimitToTime != default &&
                     this.ActiveUser.TimeLimitFromTime <= toTime)
                 {
                     toTime = this.ActiveUser.TimeLimitToTime;
