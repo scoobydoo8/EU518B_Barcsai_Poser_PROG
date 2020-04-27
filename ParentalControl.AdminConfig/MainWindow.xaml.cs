@@ -44,24 +44,11 @@ namespace ParentalControl.AdminConfig
         {
             if (this.databaseManager.ReadUsers((Func<User, bool>)null).Count > 0)
             {
-                this.StartService("ParentalControlService", 5000);
+                this.ExecuteProcess("ParentalControl.View.exe");
                 this.Close();
             }
 
             this.txtUsername.Focus();
-
-            Task.Run(() =>
-            {
-                string installutil = @"C:\Windows\Microsoft.NET\Framework64\v4.0.30319\InstallUtil.exe";
-                string parameters = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ParentalControl.Service.exe");
-                this.ExecuteProcess(installutil, parameters, null, (errorSender, errorE) =>
-                {
-                    if (errorE.Data != null && errorE.Data != string.Empty)
-                    {
-                        MessageBox.Show("Hiba a szolgáltatás telepítése közben!\n" + errorE.Data, "Hiba!", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
-                });
-            });
         }
 
         private void Registration_Click(object sender, RoutedEventArgs e)
@@ -78,27 +65,12 @@ namespace ParentalControl.AdminConfig
             if (this.databaseManager.Transaction(() => this.databaseManager.CreateUser(this.txtUsername.Text, this.GetHash(this.pswPassword.Password), this.txtSecurityQuestion.Text, this.GetHash(this.pswSecurityAnswer.Password))))
             {
                 MessageBox.Show("A regisztráció sikeres!", "Siker!", MessageBoxButton.OK, MessageBoxImage.Information);
-                this.StartService("ParentalControlService", 5000);
+                this.ExecuteProcess("ParentalControl.View.exe");
                 this.Close();
             }
             else
             {
                 MessageBox.Show("A regisztráció nem sikerült!", "Sikertelen!", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-        }
-
-        private void StartService(string serviceName, int timeoutMilliseconds)
-        {
-            ServiceController service = new ServiceController(serviceName);
-            try
-            {
-                TimeSpan timeout = TimeSpan.FromMilliseconds(timeoutMilliseconds);
-                service.Start();
-                service.WaitForStatus(ServiceControllerStatus.Running, timeout);
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show("A szolgáltatás elindítása nem sikerült!\nLehetséges, hogy a program nem települt teljesen, kérjük telepítse újra!\nA hiba részletes leírása: " + e.Message, "Hiba!", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -118,7 +90,7 @@ namespace ParentalControl.AdminConfig
             }
         }
 
-        private void ExecuteProcess(string processPath, string parameters, DataReceivedEventHandler output, DataReceivedEventHandler errorOutput)
+        private void ExecuteProcess(string processPath, string parameters = "", DataReceivedEventHandler output = null, DataReceivedEventHandler errorOutput = null)
         {
             using (Process process = new Process()
             {
