@@ -22,6 +22,7 @@ namespace ParentalControl.BL.ProxyControl
     /// </summary>
     internal class ProxyController
     {
+        private static readonly char[] UTF8Charaters = { 'á', 'é', 'í', 'ó', 'ö', 'ő', 'ú', 'ü', 'ű' };
         private ProxyServer proxyServer;
         private BusinessLogic businessLogic;
         private RegistryMonitor registryMonitor;
@@ -89,6 +90,23 @@ namespace ParentalControl.BL.ProxyControl
             }
         }
 
+        private static string ReplaceUTF8CharactersToUTF8Codes(string utf8String)
+        {
+            utf8String = utf8String.ToLower();
+            foreach (var utf8Charater in UTF8Charaters)
+            {
+                if (utf8String.Contains(utf8Charater))
+                {
+                    string replace = Encoding.UTF8.GetBytes(utf8Charater.ToString())
+                        .Select(x => string.Format("{0:X}", x).ToLower())
+                        .Aggregate((x, y) => string.Format("%{0}%{1}", x, y));
+                    utf8String = utf8String.Replace(utf8Charater.ToString(), replace);
+                }
+            }
+
+            return utf8String;
+        }
+
         private Task ProxyServer_BeforeRequest(object sender, SessionEventArgs e)
         {
             this.logger.LogHttpUrl(this.businessLogic.ActiveUser.Username, e.HttpClient.Request.Url);
@@ -97,9 +115,12 @@ namespace ParentalControl.BL.ProxyControl
                 throw new ArgumentNullException(nameof(this.businessLogic.ActiveUser));
             }
 
-            var absoluteUri = e.HttpClient.Request.RequestUri.AbsoluteUri;
-            if (this.keywords.Where(x => absoluteUri.Contains(x)).Any() ||
-                this.keywords.Where(x => absoluteUri.Contains(HttpUtility.HtmlEncode(x))).Any())
+            var absoluteUri = e.HttpClient.Request.RequestUri.AbsoluteUri.ToLower();
+            if (this.keywords.Where(
+                x =>
+                absoluteUri.Contains(x) ||
+                absoluteUri.Contains(HttpUtility.HtmlEncode(x)) ||
+                absoluteUri.Contains(ReplaceUTF8CharactersToUTF8Codes(x))).Any())
             {
                 e.Ok("<!DOCTYPE html>" +
                       "<html><body><h1>" +

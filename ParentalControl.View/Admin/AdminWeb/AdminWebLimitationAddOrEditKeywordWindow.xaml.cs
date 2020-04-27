@@ -67,11 +67,11 @@ namespace ParentalControl.View.Admin
             {
                 if (this.keyword == null)
                 {
-                    this.viewModel.BL.Database.Transaction(() => this.viewModel.BL.Database.CreateKeyword(this.txtName.Text));
+                    this.viewModel.BL.Database.Transaction(() => this.viewModel.BL.Database.CreateKeyword(this.txtName.Text.ToLower()));
                 }
                 else
                 {
-                    this.viewModel.BL.Database.Transaction(() => this.viewModel.BL.Database.UpdateKeywords(x => x.Name = this.txtName.Text, x => x.ID == this.keyword.ID));
+                    this.viewModel.BL.Database.Transaction(() => this.viewModel.BL.Database.UpdateKeywords(x => x.Name = this.txtName.Text.ToLower(), x => x.ID == this.keyword.ID));
                 }
 
                 this.DialogResult = true;
