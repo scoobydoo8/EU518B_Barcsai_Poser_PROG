@@ -90,27 +90,11 @@ namespace ParentalControl.AdminConfig
             }
         }
 
-        private void ExecuteProcess(string processPath, string parameters = "", DataReceivedEventHandler output = null, DataReceivedEventHandler errorOutput = null)
+        private void ExecuteProcess(string processPath)
         {
-            using (Process process = new Process()
+            using (Process process = new Process() { StartInfo = new ProcessStartInfo(processPath, string.Empty), })
             {
-                StartInfo = new ProcessStartInfo(processPath, parameters)
-                {
-                    UseShellExecute = false,
-                    CreateNoWindow = true,
-                    RedirectStandardError = true,
-                    RedirectStandardOutput = true,
-                    StandardErrorEncoding = Encoding.UTF8,
-                    StandardOutputEncoding = Encoding.UTF8,
-                },
-            })
-            {
-                process.OutputDataReceived += output;
-                process.ErrorDataReceived += errorOutput;
                 process.Start();
-                process.BeginOutputReadLine();
-                process.BeginErrorReadLine();
-                process.WaitForExit();
             }
         }
     }
