@@ -4,13 +4,13 @@
 
 namespace ParentalControl
 {
-    using ParentalControl.Interface;
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
+    using ParentalControl.Interface;
 
     /// <summary>
     /// Logger class.
