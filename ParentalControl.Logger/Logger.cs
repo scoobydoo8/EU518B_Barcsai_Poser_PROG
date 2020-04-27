@@ -4,6 +4,7 @@
 
 namespace ParentalControl
 {
+    using ParentalControl.Interface;
     using System;
     using System.Collections.Generic;
     using System.IO;
@@ -109,14 +110,15 @@ namespace ParentalControl
 
         private void Log(string param, LogType logType)
         {
-            string message = string.Format("{0};{1};{2}", DateTime.Now.ToString("HH:mm:ss"), (int)logType, param).Replace(Environment.NewLine, "\t");
+            var now = FreshDateTime.Now;
+            string message = string.Format("{0};{1};{2}", now.ToString("HH:mm:ss"), (int)logType, param).Replace(Environment.NewLine, "\t");
             string directory = "Log\\";
             if (!Directory.Exists(directory))
             {
                 Directory.CreateDirectory(directory);
             }
 
-            string fileName = string.Format("{0}{1}{2}.log", directory, DateTime.Now.ToString("yyyy-MM-dd"), logType == LogType.Exception ? "_exceptions" : string.Empty);
+            string fileName = string.Format("{0}{1}{2}.log", directory, now.ToString("yyyy-MM-dd"), logType == LogType.Exception ? "_exceptions" : string.Empty);
             Task.Run(() =>
             {
                 lock (this.lockObject)

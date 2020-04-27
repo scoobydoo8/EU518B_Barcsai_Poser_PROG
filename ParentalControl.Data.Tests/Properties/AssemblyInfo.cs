@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("ParentalControl.Data.Tests")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Szülői felügyelet: Adatbázis tesztek")]
+[assembly: AssemblyDescription("Adatbázis tesztek. Az adat réteg teszt eseteit tartalmazza. (Nem tartalma a működő programnak.)")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("ParentalControl.Data.Tests")]
+[assembly: AssemblyCompany("BDZ")]
+[assembly: AssemblyProduct("Parental Control: Data Tests")]
 [assembly: AssemblyCopyright("Copyright ©  2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

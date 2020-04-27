@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("ParentalControl.Interface")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Szülői felügyelet: Interfészek")]
+[assembly: AssemblyDescription("Interfészek. A rétegek közötti kommunikációt teszi lehetővé.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("ParentalControl.Interface")]
+[assembly: AssemblyCompany("BDZ")]
+[assembly: AssemblyProduct("Parental Control: Interface")]
 [assembly: AssemblyCopyright("Copyright ©  2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("ParentalControl.Logger")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Szülői felügyelet: Naplózó")]
+[assembly: AssemblyDescription("Naplózó. A rendszer eseményeinek naplózását hajtja végre, beleértve a hibák legrészletesebb leírását.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("ParentalControl.Logger")]
+[assembly: AssemblyCompany("BDZ")]
+[assembly: AssemblyProduct("Parental Control: Logger")]
 [assembly: AssemblyCopyright("Copyright ©  2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

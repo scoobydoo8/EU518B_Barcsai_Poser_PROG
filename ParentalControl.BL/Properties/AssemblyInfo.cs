@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("ParentalControl.BL")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Szülői felügyelet: Üzleti logika")]
+[assembly: AssemblyDescription("Üzleti logika. A számítógép, program és webes korlátozást tartalmazza.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("ParentalControl.BL")]
+[assembly: AssemblyCompany("BDZ")]
+[assembly: AssemblyProduct("Parental Control: Business Logic")]
 [assembly: AssemblyCopyright("Copyright ©  2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

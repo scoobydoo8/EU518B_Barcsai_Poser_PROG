@@ -8,11 +8,11 @@ using System.Windows;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("ParentalControl.AdminConfig")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Szülői felügyelet: Adminisztrátori konfigurátor")]
+[assembly: AssemblyDescription("Adminisztrátori konfigurátor. Első indításkor ezen program szükséges az adminisztrátori fiók létrehozásához.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("ParentalControl.AdminConfig")]
+[assembly: AssemblyCompany("BDZ")]
+[assembly: AssemblyProduct("Parental Control: Admin Config")]
 [assembly: AssemblyCopyright("Copyright ©  2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

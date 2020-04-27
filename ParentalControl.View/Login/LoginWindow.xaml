@@ -8,7 +8,7 @@
     xmlns:view="clr-namespace:ParentalControl.View"
     mc:Ignorable="d" WindowStartupLocation="CenterScreen"
     SizeToContent="WidthAndHeight" ResizeMode="NoResize"
-    Title="Bejelentkezés" Loaded="Window_Loaded">
+    Title="Bejelentkezés" Loaded="Window_Loaded" Closing="Window_Closing">
     <Grid Margin="10,0,10,10" Width="250">
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>

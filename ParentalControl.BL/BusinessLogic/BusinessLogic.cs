@@ -16,6 +16,7 @@ namespace ParentalControl.BL
     using ParentalControl.BL.ProxyControl;
     using ParentalControl.Data;
     using ParentalControl.Data.Database;
+    using ParentalControl.Interface;
     using ParentalControl.Interface.BusinessLogic;
     using ParentalControl.Interface.Database;
     using ParentalControl.Interface.DatabaseManager;
@@ -165,7 +166,7 @@ namespace ParentalControl.BL
         /// <returns>Bool.</returns>
         public static bool IsOrderlyActive(TimeSpan fromTime, TimeSpan toTime)
         {
-            var now = DateTime.Now;
+            var now = FreshDateTime.Now;
             TimeSpan nowTimeSpan = new TimeSpan(now.Hour, now.Minute, 0);
             return fromTime <= nowTimeSpan && nowTimeSpan < toTime;
         }
@@ -181,7 +182,7 @@ namespace ParentalControl.BL
                 {
                     if (!this.ActiveUser.IsTimeLimitInactive)
                     {
-                        var now = DateTime.Now;
+                        var now = FreshDateTime.Now;
                         TimeSpan time = default;
                         TimeSpan timeOccasional = default;
                         TimeSpan timeOrderly = default;
@@ -306,7 +307,7 @@ namespace ParentalControl.BL
             var admin = this.database.ReadUsers(x => x.ID == this.database.AdminID).FirstOrDefault() as User;
             if (admin.Username == adminUsername && ValidateHash(adminPassword, admin.Password))
             {
-                var now = DateTime.Now;
+                var now = FreshDateTime.Now;
                 var toDate = now.AddMinutes(minutes);
                 var toTime = new TimeSpan(toDate.Hour, toDate.Minute, 0);
                 if (this.ActiveUser.IsTimeLimitOrderly &&

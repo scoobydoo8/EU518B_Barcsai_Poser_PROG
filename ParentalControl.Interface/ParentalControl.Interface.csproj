@@ -78,6 +78,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FreshDateTime.cs" />
     <Compile Include="BusinessLogic\IBusinessLogic.cs" />
     <Compile Include="DatabaseManager\IDatabaseManager.cs" />
     <Compile Include="Database\IKeyword.cs" />

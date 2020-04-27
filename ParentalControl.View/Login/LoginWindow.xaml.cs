@@ -6,6 +6,7 @@ namespace ParentalControl.View.Login
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Diagnostics;
     using System.Linq;
     using System.Text;
@@ -33,6 +34,7 @@ namespace ParentalControl.View.Login
         private IViewModel viewModel;
         private AdminWindow adminWindow;
         private TimeRemainingWindow timeRemainingWindow;
+        private bool manualClose = false;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LoginWindow"/> class.
@@ -53,6 +55,12 @@ namespace ParentalControl.View.Login
             this.viewModel.BL.ProcessController.ProgramStartedFullLimit += this.ProcessController_ProgramStartedFullLimit;
             this.viewModel.BL.ProcessController.ProgramStartedOccassional += this.ProcessController_ProgramStartedOccassional;
             this.viewModel.BL.ProcessController.ProgramStartedOrderlyOrActiveOccasional += this.ProcessController_ProgramStartedOrderlyOrActiveOccasional;
+            if (this.viewModel.BL.Database.ReadUsers().Count < 1)
+            {
+                MessageBox.Show("Nincs adminisztrátori felhasználó létrehozva!\nA \"ParentalControl.AdminConfig.exe\" futtatása szükséges!", "Nincs admin fiók!", MessageBoxButton.OK, MessageBoxImage.Error);
+                this.manualClose = true;
+                this.Close();
+            }
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -298,6 +306,15 @@ namespace ParentalControl.View.Login
             {
                 this.viewModel.BL.LogOut();
             });
+        }
+
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            if (!this.manualClose)
+            {
+                MessageBox.Show("Az alkalmazás nem zárható be!", "Nem bezárható!", MessageBoxButton.OK, MessageBoxImage.Error);
+                e.Cancel = true;
+            }
         }
     }
 }

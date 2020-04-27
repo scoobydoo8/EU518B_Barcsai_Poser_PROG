@@ -14,6 +14,7 @@ namespace ParentalControl.BL.ProcessControl
     using System.Threading.Tasks;
     using System.Timers;
     using ParentalControl.Data.Database;
+    using ParentalControl.Interface;
     using ParentalControl.Interface.Database;
     using ParentalControl.Interface.ProcessControl;
 
@@ -76,7 +77,7 @@ namespace ParentalControl.BL.ProcessControl
             var admin = this.businessLogic.Database.ReadUsers(x => x.ID == this.businessLogic.Database.AdminID).FirstOrDefault() as User;
             if (admin.Username == adminUsername && BusinessLogic.ValidateHash(adminPassword, admin.Password))
             {
-                var now = DateTime.Now;
+                var now = FreshDateTime.Now;
                 var toDate = now.AddMinutes(minutes);
                 var toTime = new TimeSpan(toDate.Hour, toDate.Minute, 0);
                 if (this.businessLogic.ActiveUser.IsProgramLimitOrderly &&
@@ -219,6 +220,11 @@ namespace ParentalControl.BL.ProcessControl
                 var process = Process.GetProcessById(id);
                 var fileName = process.MainModule.FileName.ToLower();
 
+                if (fileName.Contains("uninstall.exe"))
+                {
+                    return;
+                }
+
                 process?.Suspend();
                 if (this.businessLogic != null && this.businessLogic.ActiveUser != null)
                 {
@@ -268,7 +274,7 @@ namespace ParentalControl.BL.ProcessControl
                                 return;
                             }
 
-                            var now = DateTime.Now;
+                            var now = FreshDateTime.Now;
                             TimeSpan time = default;
                             TimeSpan timeOccasional = default;
                             TimeSpan timeOrderly = default;
