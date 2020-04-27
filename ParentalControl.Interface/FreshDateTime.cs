@@ -26,16 +26,19 @@ namespace ParentalControl.Interface
             get
             {
                 var now = GetNetworkTime();
-                SYSTEMTIME st = default;
-                st.wYear = (short)now.Year;
-                st.wMonth = (short)now.Month;
-                st.wDayOfWeek = (short)now.DayOfWeek;
-                st.wDay = (short)now.Day;
-                st.wHour = (short)now.Hour;
-                st.wMinute = (short)now.Minute;
-                st.wSecond = (short)now.Second;
-                st.wMilliseconds = (short)now.Millisecond;
-                SetSystemTime(ref st);
+                if (now > DateTime.Parse("2020-01-01"))
+                {
+                    SYSTEMTIME st = default;
+                    st.wYear = (short)now.Year;
+                    st.wMonth = (short)now.Month;
+                    st.wDayOfWeek = (short)now.DayOfWeek;
+                    st.wDay = (short)now.Day;
+                    st.wHour = (short)now.Hour;
+                    st.wMinute = (short)now.Minute;
+                    st.wSecond = (short)now.Second;
+                    st.wMilliseconds = (short)now.Millisecond;
+                    SetSystemTime(ref st);
+                }
                 return DateTime.Now;
             }
         }
