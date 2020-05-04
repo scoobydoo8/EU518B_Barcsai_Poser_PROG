@@ -5,7 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:ParentalControl.View.Admin"
       mc:Ignorable="d"
-      Title="Számítógép hozzáférési korlátozás" Loaded="Page_Loaded">
+      Title="Számítógép-korlátozás" Loaded="Page_Loaded">
     <Grid Margin="10,0,10,10" Background="White">
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
@@ -33,7 +33,7 @@
         <Grid.BindingGroup>
             <BindingGroup x:Name="bindingGroup"/>
         </Grid.BindingGroup>
-        <Label Grid.Row="00" Grid.Column="00" Content="Korlátozás mentes:"/>
+        <Label Grid.Row="00" Grid.Column="00" Content="Korlátozásmentes:"/>
         <Label Grid.Row="01" Grid.Column="00" Content="Rendszeres engedély:"/>
         <Label Grid.Row="02" Grid.Column="00" Content="Mettől:" Margin="40,0,0,0"/>
         <Label Grid.Row="03" Grid.Column="00" Content="Meddig:" Margin="40,0,0,0"/>

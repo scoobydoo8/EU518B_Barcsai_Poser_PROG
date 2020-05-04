@@ -98,6 +98,7 @@ namespace ParentalControl.View.Login
                 if (this.viewModel.ActiveUser.ID == this.viewModel.BL.Database.AdminID)
                 {
                     this.notifyIcon.MouseDoubleClick += this.NotifyIcon_MouseDoubleClick_Admin;
+                    this.notifyIcon.BalloonTipTitle = "Adminisztrációs felület";
                     this.notifyIcon.BalloonTipText = "A gyorsindító ikonra dupla kattintással érhető el az adminisztrációs felület.";
                     this.notifyIcon.ShowBalloonTip(2000);
                 }
@@ -138,6 +139,7 @@ namespace ParentalControl.View.Login
                 this.mniChangePassword.IsEnabled = true;
                 this.mniLogOut.IsEnabled = true;
                 this.notifyIcon.MouseDoubleClick += this.NotifyIcon_MouseDoubleClick_User;
+                this.notifyIcon.BalloonTipTitle = "Hátralévő idő";
                 this.notifyIcon.BalloonTipText = "A gyorsindító ikonra dupla kattintással tekinthető meg a hátralévő idő.";
                 this.notifyIcon.ShowBalloonTip(2000);
             });
@@ -215,6 +217,7 @@ namespace ParentalControl.View.Login
                 this.mniOccasionalProgram.IsEnabled = true;
                 this.notifyIcon.MouseDoubleClick -= this.NotifyIcon_MouseDoubleClick_User;
                 this.notifyIcon.MouseDoubleClick += this.NotifyIcon_MouseDoubleClick_User;
+                this.notifyIcon.BalloonTipTitle = "Hátralévő idő";
                 this.notifyIcon.BalloonTipText = "A gyorsindító ikonra dupla kattintással tekinthető meg a hátralévő idő.";
                 this.notifyIcon.ShowBalloonTip(2000);
             });

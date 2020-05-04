@@ -47,7 +47,7 @@ namespace ParentalControl.View.Admin
             : this()
         {
             this.programLimitation = programLimitation;
-            this.Title = "Program korlátozás szerkesztése";
+            this.Title = "Programkorlátozás szerkesztése";
             this.txtName.Text = this.programLimitation.Name;
             this.txtPath.Text = this.programLimitation.Path;
         }
@@ -81,7 +81,7 @@ namespace ParentalControl.View.Admin
             }
             else
             {
-                MessageBox.Show("A program korlátozás már létezik!", "Létező program korlátozás!", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("A programkorlátozás már létezik!", "Létező program korlátozás!", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 

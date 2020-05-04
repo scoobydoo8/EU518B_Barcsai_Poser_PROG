@@ -25,8 +25,10 @@ namespace ParentalControl.Interface
         {
             get
             {
-                var now = GetNetworkTime();
-                if (now > DateTime.Parse("2020-01-01"))
+                var limit = DateTime.Parse("2020-01-01");
+                DateTime now = default;
+                Task.Run(() => now = GetNetworkTime()).Wait(5000);
+                if (now > limit)
                 {
                     SYSTEMTIME st = default;
                     st.wYear = (short)now.Year;
@@ -39,6 +41,7 @@ namespace ParentalControl.Interface
                     st.wMilliseconds = (short)now.Millisecond;
                     SetSystemTime(ref st);
                 }
+
                 return DateTime.Now;
             }
         }

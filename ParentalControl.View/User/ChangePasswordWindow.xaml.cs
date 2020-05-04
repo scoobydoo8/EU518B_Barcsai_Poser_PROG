@@ -48,7 +48,7 @@ namespace ParentalControl.View.User
             else
             {
                 ViewModel.Get().BL.ChangePassword(this.pswNewPassword.Password);
-                MessageBox.Show("A jelszó változtatás sikeres!", "Siker!", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("A jelszóváltoztatás sikeres!", "Siker!", MessageBoxButton.OK, MessageBoxImage.Information);
                 this.Close();
             }
         }

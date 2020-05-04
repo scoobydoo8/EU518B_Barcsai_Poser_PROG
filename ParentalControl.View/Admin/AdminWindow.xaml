@@ -28,13 +28,13 @@
         <ComboBox x:Name="cmbUser" Grid.Row="00" Grid.Column="01" SelectedItem="{Binding SelectedManagedUser}" ItemsSource="{Binding ManagedUsers}" Margin="5" Style="{StaticResource ControlBaseStyle}" SelectionChanged="User_SelectionChanged"/>
         <Button Content="Regisztráció" Grid.Row="00" Grid.Column="02" Margin="5" Click="Registration_Click" Style="{StaticResource ControlBaseStyle}" Width="100" HorizontalAlignment="Left"/>
         <TabControl x:Name="tbcLimits" Grid.Row="01" Grid.ColumnSpan="3" Style="{StaticResource ControlBaseStyle}" IsEnabled="False">
-            <TabItem x:Name="tbiTimeLimit" Header="Számítógép hozzáférési korlátozás">
+            <TabItem x:Name="tbiTimeLimit" Header="Számítógép-korlátozás">
                 <Frame x:Name="frmTimeLimit" NavigationUIVisibility="Hidden" Source="AdminTime\AdminTimeLimitationPage.xaml"/>
             </TabItem>
-            <TabItem x:Name="tbiProgramLimit" Header="Program hozzáférési korlátozás">
+            <TabItem x:Name="tbiProgramLimit" Header="Programkorlátozás">
                 <Frame x:Name="frmProgramLimit" NavigationUIVisibility="Hidden" Source="AdminProgram\AdminProgramLimitationPage.xaml"/>
             </TabItem>
-            <TabItem x:Name="tbiWebLimit" Header="Webes hozzáférési korlátozás">
+            <TabItem x:Name="tbiWebLimit" Header="Webes korlátozás">
                 <Frame x:Name="frmWebLimit" NavigationUIVisibility="Hidden" Source="AdminWeb\AdminWebLimitationPage.xaml"/>
             </TabItem>
         </TabControl>

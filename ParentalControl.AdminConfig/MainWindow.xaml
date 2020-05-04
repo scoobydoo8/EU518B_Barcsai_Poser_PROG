@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ParentalControl.AdminConfig"
         mc:Ignorable="d" WindowStartupLocation="CenterScreen"
         SizeToContent="WidthAndHeight" ResizeMode="NoResize"
-        Title="Regisztráció" Loaded="Window_Loaded">
+        Title="Adminisztrátori regisztráció" Loaded="Window_Loaded">
     <Grid Margin="10,0,10,10">
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>

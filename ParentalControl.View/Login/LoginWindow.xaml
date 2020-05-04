@@ -42,7 +42,6 @@
         <view:NotifyIcon
             x:Name="notifyIcon"
             Text="Szülői felügyelet"
-            BalloonTipTitle="Szülői felügyelet"
             BalloonTipIcon="Info"
             Visibility="Visible"
             IsEnabled="True">
@@ -51,7 +50,7 @@
                     <MenuItem IsEnabled="False" x:Name="mniOccasionalTime" Header="Eseti számítógép használat" Click="OccasionalTime_Click"/>
                     <MenuItem IsEnabled="False" x:Name="mniOccasionalProgram" Header="Eseti program használat" Click="OccasionalProgram_Click"/>
                     <Separator/>
-                    <MenuItem IsEnabled="False" x:Name="mniChangePassword" Header="Jelszó változtatás" Click="ChangePassword_Click"/>
+                    <MenuItem IsEnabled="False" x:Name="mniChangePassword" Header="Jelszóváltoztatás" Click="ChangePassword_Click"/>
                     <MenuItem IsEnabled="False" x:Name="mniLogOut" Header="Kijelentkezés" Click="LogOut_Click"/>
                 </ContextMenu>
             </view:NotifyIcon.ContextMenu>
